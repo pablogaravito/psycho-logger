@@ -12,6 +12,7 @@ public interface SessionService {
      */
     Session getSession(Long id);
     Session saveSession(Session session);
+    Session updateSession(Long id, Session session);
     void deleteSession(Long id);
 
 }

@@ -9,17 +9,10 @@ import java.util.Set;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Entity
 @Table(name = "session")
 public class Session {
-
-    public Session(@NonNull String subject, @NonNull String content) {
-        this.subject = subject;
-        this.content = content;
-        this.isPaid = false;
-        this.isImportant = false;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,13 +31,13 @@ public class Session {
 
     @NonNull
     @Column(name = "is_important", nullable = false)
-    private boolean isImportant;
+    private boolean isImportant = false;
 
 
 
     @NonNull
     @Column(name = "is_paid", nullable = false)
-    private boolean isPaid;
+    private boolean isPaid = false;
 
     @JsonIgnore
     @ManyToMany

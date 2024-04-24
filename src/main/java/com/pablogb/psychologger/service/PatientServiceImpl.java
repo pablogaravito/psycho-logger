@@ -28,6 +28,12 @@ public class PatientServiceImpl implements PatientService{
     }
 
     @Override
+    public Patient updatePatient(Long id, Patient patient) {
+        patient.setId(id);
+        return patientRepository.save(patient);
+    }
+
+    @Override
     public void deletePatient(Long id) {
         patientRepository.deleteById(id);
     }
@@ -39,7 +45,8 @@ public class PatientServiceImpl implements PatientService{
 
     @Override
     public Set<Session> getPatientSessions(Long id) {
-        return null;
+        Patient patient = getPatient(id);
+        return patient.getSessions();
     }
 
     static Patient unwrapPatient(Optional<Patient> entity, Long id) {

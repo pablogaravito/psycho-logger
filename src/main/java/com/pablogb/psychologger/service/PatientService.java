@@ -11,7 +11,8 @@ import java.util.Set;
 
 public interface PatientService {
     Patient getPatient(Long id);
-    Patient saveStudent(Patient student);
+    Patient saveStudent(Patient patient);
+    Patient updatePatient(Long id, Patient patient);
     void deletePatient(Long id);
     List<Patient> getPatients();
     Set<Session> getPatientSessions(Long id);

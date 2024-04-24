@@ -47,8 +47,9 @@ public class Patient {
     @Column(name = "is_active", nullable = false)
     private boolean isActive;
 
-    // sex del patient
-    // private
+    @NonNull
+    @Column(name = "sex", nullable = false)
+    private Sex sex;
 
     @JsonIgnore
     @ManyToMany
