@@ -1,15 +1,16 @@
-package com.pablogb.psychologger.entity;
+package com.pablogb.psychologger.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
 @RequiredArgsConstructor
+@NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "session")
 public class Session {
@@ -28,27 +29,18 @@ public class Session {
     @Column(name = "content", nullable = false)
     private String content;
 
-
     @NonNull
     @Column(name = "is_important", nullable = false)
     private boolean isImportant = false;
-
-
 
     @NonNull
     @Column(name = "is_paid", nullable = false)
     private boolean isPaid = false;
 
-    @JsonIgnore
-    @ManyToMany
-    @JoinTable(
-            name = "patient_session",
-            joinColumns = @JoinColumn(name = "session_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "patient_id", referencedColumnName = "id")
-    )
-    private Set<Patient> patients;
+    @Column(name = "next_week")
+    private String nextWeek;
 
-
-
-
+    @NonNull
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "sessions")
+    private Set<Patient> patient;
 }

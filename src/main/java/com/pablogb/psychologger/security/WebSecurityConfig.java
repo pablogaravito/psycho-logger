@@ -29,6 +29,11 @@ public class WebSecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
                 );
+        http.headers(headers ->
+                headers
+                        .frameOptions((frameOptions) -> frameOptions.disable())
+        );
+
         return http.build();
     }
 }

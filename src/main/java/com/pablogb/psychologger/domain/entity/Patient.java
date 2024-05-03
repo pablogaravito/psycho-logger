@@ -1,41 +1,39 @@
-package com.pablogb.psychologger.entity;
+package com.pablogb.psychologger.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
 @RequiredArgsConstructor
+@NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "patient")
 public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
     @NotBlank(message = "Name cannot be blank")
     @NonNull
-    @Column(name = "first_names")
+    @Column(name = "first_names", nullable = false)
     private String firstNames;
 
     @NotBlank(message = "Last Name cannot be blank")
     @NonNull
-    @Column(name = "last_names")
+    @Column(name = "last_names", nullable = false)
     private String lastNames;
 
     @NotBlank(message = "Short name cannot be blank")
     @NonNull
-    @Column(name = "short_name")
+    @Column(name = "short_name", nullable = false)
     private String shortName;
 
     @Past(message = "The birth date must be in the past")
@@ -45,14 +43,14 @@ public class Patient {
 
     @NonNull
     @Column(name = "is_active", nullable = false)
-    private boolean isActive;
+    private boolean isActive = true;
 
     @NonNull
     @Column(name = "sex", nullable = false)
     private Sex sex;
 
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
             name = "patient_session",
             joinColumns = @JoinColumn(name = "patient_id", referencedColumnName = "id"),

@@ -1,7 +1,7 @@
 package com.pablogb.psychologger.controller;
 
-import com.pablogb.psychologger.entity.Patient;
-import com.pablogb.psychologger.entity.Session;
+import com.pablogb.psychologger.domain.entity.Patient;
+import com.pablogb.psychologger.domain.entity.Session;
 import com.pablogb.psychologger.service.PatientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +29,9 @@ public class PatientController {
         return new ResponseEntity<>(patientService.getPatient(id), HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<HttpStatus> savePatient(@Valid @RequestBody Patient patient) {
-        patientService.saveStudent(patient);
+        patientService.savePatient(patient);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

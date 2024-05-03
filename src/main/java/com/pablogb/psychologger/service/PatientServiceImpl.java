@@ -1,7 +1,7 @@
 package com.pablogb.psychologger.service;
 
-import com.pablogb.psychologger.entity.Patient;
-import com.pablogb.psychologger.entity.Session;
+import com.pablogb.psychologger.domain.entity.Patient;
+import com.pablogb.psychologger.domain.entity.Session;
 import com.pablogb.psychologger.exception.EntityNotFoundException;
 import com.pablogb.psychologger.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +23,8 @@ public class PatientServiceImpl implements PatientService{
     }
 
     @Override
-    public Patient saveStudent(Patient student) {
-        return patientRepository.save(student);
+    public Patient savePatient(Patient patient) {
+        return patientRepository.save(patient);
     }
 
     @Override
