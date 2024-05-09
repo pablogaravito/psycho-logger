@@ -1,8 +1,9 @@
-package com.pablogb.psychologger.service;
+package com.pablogb.psychologger.service.impl;
 
-import com.pablogb.psychologger.domain.entity.Session;
+import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.exception.EntityNotFoundException;
 import com.pablogb.psychologger.repository.SessionRepository;
+import com.pablogb.psychologger.service.SessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,20 +16,20 @@ public class SessionServiceImpl implements SessionService {
 
 
     @Override
-    public Session getSession(Long id) {
-        Optional<Session> session = sessionRepository.findById(id);
+    public SessionEntity getSession(Long id) {
+        Optional<SessionEntity> session = sessionRepository.findById(id);
         return unwrapSession(session, id);
     }
 
     @Override
-    public Session saveSession(Session session) {
-        return sessionRepository.save(session);
+    public SessionEntity saveSession(SessionEntity sessionEntity) {
+        return sessionRepository.save(sessionEntity);
     }
 
     @Override
-    public Session updateSession(Long id, Session session) {
-        session.setId(id);
-        return sessionRepository.save(session);
+    public SessionEntity updateSession(Long id, SessionEntity sessionEntity) {
+        sessionEntity.setId(id);
+        return sessionRepository.save(sessionEntity);
     }
 
     @Override
@@ -36,14 +37,9 @@ public class SessionServiceImpl implements SessionService {
         sessionRepository.deleteById(id);
     }
 
-//    @Override
-//    public Set<Session> getLast10Sessions() {
-//        return sessionRepository.getLast10Sessions();
-//    }
-
-    static Session unwrapSession(Optional<Session> entity, Long id) {
+    static SessionEntity unwrapSession(Optional<SessionEntity> entity, Long id) {
         if (entity.isPresent()) return entity.get();
-        else throw new EntityNotFoundException(id, Session.class);
+        else throw new EntityNotFoundException(id, SessionEntity.class);
     }
 
 }

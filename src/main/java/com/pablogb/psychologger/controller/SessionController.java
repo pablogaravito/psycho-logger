@@ -1,6 +1,6 @@
 package com.pablogb.psychologger.controller;
 
-import com.pablogb.psychologger.domain.entity.Session;
+import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.service.SessionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,24 +10,24 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/session")
+@RequestMapping("/sessions")
 public class SessionController {
 
     private final SessionService sessionService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Session> getSession(@PathVariable Long id) {
+    public ResponseEntity<SessionEntity> getSession(@PathVariable Long id) {
         return new ResponseEntity<>(sessionService.getSession(id), HttpStatus.OK);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Session> saveSession(@Valid @RequestBody Session session) {
-        return new ResponseEntity<>(sessionService.saveSession(session), HttpStatus.CREATED);
+    public ResponseEntity<SessionEntity> saveSession(@Valid @RequestBody SessionEntity sessionEntity) {
+        return new ResponseEntity<>(sessionService.saveSession(sessionEntity), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Session> updateSession(@PathVariable Long id, @Valid @RequestBody Session session) {
-        return new ResponseEntity<>(sessionService.updateSession(id, session), HttpStatus.OK);
+    public ResponseEntity<SessionEntity> updateSession(@PathVariable Long id, @Valid @RequestBody SessionEntity sessionEntity) {
+        return new ResponseEntity<>(sessionService.updateSession(id, sessionEntity), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

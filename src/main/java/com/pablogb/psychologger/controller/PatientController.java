@@ -1,7 +1,9 @@
 package com.pablogb.psychologger.controller;
 
-import com.pablogb.psychologger.domain.entity.Patient;
-import com.pablogb.psychologger.domain.entity.Session;
+import com.pablogb.psychologger.domain.dao.PatientDto;
+import com.pablogb.psychologger.domain.entity.PatientEntity;
+import com.pablogb.psychologger.domain.entity.SessionEntity;
+import com.pablogb.psychologger.mapper.Mapper;
 import com.pablogb.psychologger.service.PatientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,10 +16,12 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/patient")
+@RequestMapping("/patients")
 public class PatientController {
 
     private final PatientService patientService;
+
+    private final Mapper<PatientEntity, PatientDto> patientMapper;
 
     @GetMapping("/greeting")
     public String testGreeting() {
@@ -25,19 +29,45 @@ public class PatientController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Patient> getPatient(@PathVariable Long id) {
-        return new ResponseEntity<>(patientService.getPatient(id), HttpStatus.OK);
+    public ResponseEntity<PatientDto> getPatient(@PathVariable Long id) {
+        PatientEntity foundPatient = patientService.getPatient(id);
+        PatientDto patientDto = patientMapper.mapTo(foundPatient);
+        return new ResponseEntity<>(patientDto, HttpStatus.OK);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<HttpStatus> savePatient(@Valid @RequestBody Patient patient) {
-        patientService.savePatient(patient);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    @PostMapping
+    public ResponseEntity<PatientDto> createPatient(@RequestBody PatientDto patientDto) {
+        PatientEntity patientEntity = patientMapper.mapFrom(patientDto);
+        PatientEntity savedPatientEntity = patientService.savePatient(patientEntity);
+        return new ResponseEntity<>(patientMapper.mapTo(savedPatientEntity) , HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Patient> updatePatient(@PathVariable Long id, @Valid @RequestBody Patient patient) {
-        return new ResponseEntity<>(patientService.updatePatient(id, patient), HttpStatus.OK) ;
+    public ResponseEntity<PatientDto> fullUpdatePatient(
+            @PathVariable Long id,
+            @RequestBody PatientDto patientDto) {
+        if (!patientService.patientExists(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        patientDto.setId(id);
+        PatientEntity patientEntity = patientMapper.mapFrom(patientDto);
+        PatientEntity savedPatientEntity = patientService.savePatient(patientEntity);
+        return new ResponseEntity<>(patientMapper.mapTo(savedPatientEntity), HttpStatus.OK) ;
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<PatientDto> partialUpdatePatient(
+            @PathVariable Long id,
+            @RequestBody PatientDto patientDto) {
+
+        if (!patientService.patientExists(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        PatientEntity patientEntity = patientMapper.mapFrom(patientDto);
+        PatientEntity updatedPatient = patientService.partialUpdatePatient(id, patientEntity);
+        return new ResponseEntity<>(patientMapper.mapTo(updatedPatient), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
@@ -46,13 +76,13 @@ public class PatientController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Patient>> getPatients() {
+    @GetMapping
+    public ResponseEntity<List<PatientEntity>> getPatients() {
         return new ResponseEntity<>(patientService.getPatients(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}/sessions")
-    public ResponseEntity<Set<Session>> getPatientSessions(@PathVariable Long id) {
+    public ResponseEntity<Set<SessionEntity>> getPatientSessions(@PathVariable Long id) {
         return new ResponseEntity<>(patientService.getPatientSessions(id), HttpStatus.OK);
     }
 }

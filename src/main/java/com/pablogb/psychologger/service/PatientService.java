@@ -1,17 +1,19 @@
 package com.pablogb.psychologger.service;
 
-import com.pablogb.psychologger.domain.entity.Patient;
-import com.pablogb.psychologger.domain.entity.Session;
+import com.pablogb.psychologger.domain.entity.PatientEntity;
+import com.pablogb.psychologger.domain.entity.SessionEntity;
 
 import java.util.List;
 import java.util.Set;
 
 
 public interface PatientService {
-    Patient getPatient(Long id);
-    Patient savePatient(Patient patient);
-    Patient updatePatient(Long id, Patient patient);
+    PatientEntity getPatient(Long id);
+    List<PatientEntity> getPatients();
+    Set<SessionEntity> getPatientSessions(Long id);
+    PatientEntity savePatient(PatientEntity patientEntity);
+    PatientEntity partialUpdatePatient(Long id, PatientEntity patientEntity);
     void deletePatient(Long id);
-    List<Patient> getPatients();
-    Set<Session> getPatientSessions(Long id);
+    boolean patientExists(Long id);
+
 }

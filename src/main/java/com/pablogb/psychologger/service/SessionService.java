@@ -1,12 +1,12 @@
 package com.pablogb.psychologger.service;
 
-import com.pablogb.psychologger.domain.entity.Session;
+import com.pablogb.psychologger.domain.entity.SessionEntity;
 
 public interface SessionService {
 
-    Session getSession(Long id);
-    Session saveSession(Session session);
-    Session updateSession(Long id, Session session);
+    SessionEntity getSession(Long id);
+    SessionEntity saveSession(SessionEntity sessionEntity);
+    SessionEntity updateSession(Long id, SessionEntity sessionEntity);
     void deleteSession(Long id);
 
     //Set<Session> getLast10Sessions();

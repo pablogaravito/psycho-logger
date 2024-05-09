@@ -13,7 +13,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "session")
-public class Session {
+public class SessionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,16 +31,16 @@ public class Session {
 
     @NonNull
     @Column(name = "is_important", nullable = false)
-    private boolean isImportant = false;
+    private Boolean isImportant = false;
 
     @NonNull
     @Column(name = "is_paid", nullable = false)
-    private boolean isPaid = false;
+    private Boolean isPaid = false;
 
     @Column(name = "next_week")
     private String nextWeek;
 
     @NonNull
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "sessions")
-    private Set<Patient> patient;
+    private Set<PatientEntity> patients;
 }
