@@ -1,5 +1,6 @@
 package com.pablogb.psychologger;
 
+import com.pablogb.psychologger.domain.dao.PatchPatientDto;
 import com.pablogb.psychologger.domain.dao.PatientDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
@@ -20,7 +21,7 @@ public final class TestDataUtil {
                 .lastNames("Garavito Badaracco")
                 .shortName("Pablo Garavito")
                 .birthDate(LocalDate.parse("1987-05-12"))
-                .sex(Sex.M)
+                .sex(Sex.MALE)
                 .isActive(true)
                 .build();
     }
@@ -32,7 +33,7 @@ public final class TestDataUtil {
                 .lastNames("Garavito Badaracco")
                 .shortName("Pablo Garavito")
                 .birthDate(LocalDate.parse("1987-05-12"))
-                .sex(Sex.M)
+                .sex(Sex.MALE)
                 .isActive(true)
                 .build();
     }
@@ -44,16 +45,16 @@ public final class TestDataUtil {
                 .lastNames("Pérez Alcarraz")
                 .shortName("Briseth Pérez")
                 .birthDate(LocalDate.parse("2008-08-11"))
-                .sex(Sex.F)
+                .sex(Sex.FEMALE)
                 .isActive(true)
                 .build();
     }
 
-    public static PatientDto createIncompletePatientDto() {
-        return PatientDto.builder()
+    public static PatchPatientDto createIncompletePatientDto() {
+        return PatchPatientDto.builder()
                 .id(1L)
                 .shortName("Pando America")
-                .sex(Sex.M)
+                .sex(Sex.MALE)
                 .isActive(true)
                 .build();
     }

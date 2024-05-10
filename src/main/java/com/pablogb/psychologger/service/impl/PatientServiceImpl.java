@@ -1,5 +1,6 @@
 package com.pablogb.psychologger.service.impl;
 
+import com.pablogb.psychologger.domain.dao.PatchPatientDto;
 import com.pablogb.psychologger.domain.dao.PatientDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
@@ -41,14 +42,14 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientEntity partialUpdatePatient(PatientDto patientDto) {
-        return patientRepository.findById(patientDto.getId()).map(existingPatient -> {
-            Optional.ofNullable(patientDto.getFirstNames()).ifPresent(existingPatient::setFirstNames);
-            Optional.ofNullable(patientDto.getLastNames()).ifPresent(existingPatient::setLastNames);
-            Optional.ofNullable(patientDto.getShortName()).ifPresent(existingPatient::setShortName);
-            Optional.ofNullable(patientDto.getSex()).ifPresent(existingPatient::setSex);
-            Optional.ofNullable(patientDto.getBirthDate()).ifPresent(existingPatient::setBirthDate);
-            Optional.ofNullable(patientDto.getIsActive()).ifPresent(existingPatient::setIsActive);
+    public PatientEntity partialUpdatePatient(PatchPatientDto patchPatientDto) {
+        return patientRepository.findById(patchPatientDto.getId()).map(existingPatient -> {
+            Optional.ofNullable(patchPatientDto.getFirstNames()).ifPresent(existingPatient::setFirstNames);
+            Optional.ofNullable(patchPatientDto.getLastNames()).ifPresent(existingPatient::setLastNames);
+            Optional.ofNullable(patchPatientDto.getShortName()).ifPresent(existingPatient::setShortName);
+            Optional.ofNullable(patchPatientDto.getSex()).ifPresent(existingPatient::setSex);
+            Optional.ofNullable(patchPatientDto.getBirthDate()).ifPresent(existingPatient::setBirthDate);
+            Optional.ofNullable(patchPatientDto.getIsActive()).ifPresent(existingPatient::setIsActive);
             return patientRepository.save(existingPatient);
         }).orElseThrow(() -> new RuntimeException("Patient does not exist"));
     }

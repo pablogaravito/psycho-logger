@@ -23,31 +23,31 @@ public class PatientEntity {
 
     @NotBlank(message = "First Name cannot be blank")
     @NonNull
-    @Column(name = "first_names")
+    @Column(name = "first_names", nullable = false)
     private String firstNames;
 
     @NotBlank(message = "Last Name cannot be blank")
     @NonNull
-    @Column(name = "last_names")
+    @Column(name = "last_names", nullable = false)
     private String lastNames;
 
     @NotBlank(message = "Short name cannot be blank")
     @NonNull
-    @Column(name = "short_name")
+    @Column(name = "short_name", nullable = false)
     private String shortName;
 
     @Past(message = "The birth date must be in the past")
     @NonNull
-    @Column(name = "birth_date")
+    @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
     @NonNull
-    @Column(name = "is_active")
+    @Column(name = "is_active", nullable = false)
     @Builder.Default
     private Boolean isActive = true;
 
     @NonNull
-    @Column(name = "sex")
+    @Column(name = "sex", nullable = false)
     private Sex sex;
 
     @JsonIgnore

@@ -1,5 +1,6 @@
 package com.pablogb.psychologger.controller;
 
+import com.pablogb.psychologger.domain.dao.PatchPatientDto;
 import com.pablogb.psychologger.domain.dao.PatientDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
@@ -59,15 +60,15 @@ public class PatientController {
     @PatchMapping("/{id}")
     public ResponseEntity<PatientDto> partialUpdatePatient(
             @PathVariable Long id,
-            @RequestBody PatientDto patientDto) {
+            @RequestBody PatchPatientDto patchPatientDto) {
 
         if (!patientService.patientExists(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        patientDto.setId(id);
+        patchPatientDto.setId(id);
 
-        PatientEntity updatedPatient = patientService.partialUpdatePatient(patientDto);
+        PatientEntity updatedPatient = patientService.partialUpdatePatient(patchPatientDto);
         return new ResponseEntity<>(patientMapper.mapTo(updatedPatient), HttpStatus.OK);
     }
 

@@ -20,7 +20,7 @@ public class SessionController {
         return new ResponseEntity<>(sessionService.getSession(id), HttpStatus.OK);
     }
 
-    @PostMapping("/register")
+    @PostMapping
     public ResponseEntity<SessionEntity> saveSession(@Valid @RequestBody SessionEntity sessionEntity) {
         return new ResponseEntity<>(sessionService.saveSession(sessionEntity), HttpStatus.CREATED);
     }

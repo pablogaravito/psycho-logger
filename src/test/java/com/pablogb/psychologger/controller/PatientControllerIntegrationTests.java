@@ -3,7 +3,7 @@ package com.pablogb.psychologger.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pablogb.psychologger.TestDataUtil;
-import com.pablogb.psychologger.domain.dao.PatientDto;
+import com.pablogb.psychologger.domain.dao.PatchPatientDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.service.PatientService;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ class PatientControllerIntegrationTests {
     @Autowired
     private PatientService patientService;
 
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
 
     public PatientControllerIntegrationTests() {
@@ -80,7 +80,7 @@ class PatientControllerIntegrationTests {
 
     @Test
     void testThatCreateIncompletePatientReturnsHttpStatus400() throws Exception {
-        PatientDto incompletePatient = TestDataUtil.createIncompletePatientDto();
+        PatchPatientDto incompletePatient = TestDataUtil.createIncompletePatientDto();
 
         String jsonPatient = objectMapper.writeValueAsString(incompletePatient);
 
@@ -164,7 +164,7 @@ class PatientControllerIntegrationTests {
 
     @Test
     void testThatFullUpdatePatientReturnsHttpStatus400WhenPayloadIsIncomplete() throws Exception {
-        PatientDto incompletePatient = TestDataUtil.createIncompletePatientDto();
+        PatchPatientDto incompletePatient = TestDataUtil.createIncompletePatientDto();
         PatientEntity savedPatient = patientService.savePatient(TestDataUtil.createTestPatientA());
         String incompletePatientJson = objectMapper.writeValueAsString(incompletePatient);
 
@@ -223,7 +223,7 @@ class PatientControllerIntegrationTests {
         PatientEntity savedPatient = patientService.savePatient(testPatientB);
 //        PatientDto testPatientDtoA = TestDataUtil.createTestPatientDtoA();
 //        testPatientDtoA.setFirstNames("Pablis");
-        PatientDto testPatientDTo = TestDataUtil.createIncompletePatientDto();
+        PatchPatientDto testPatientDTo = TestDataUtil.createIncompletePatientDto();
 
         String patientJson = objectMapper.writeValueAsString(testPatientDTo);
         mockMvc.perform(
@@ -231,7 +231,7 @@ class PatientControllerIntegrationTests {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(patientJson)
                 ).andExpect(MockMvcResultMatchers.jsonPath("$.shortName").value("Pando America"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.sex").value("M"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.sex").value("MALE"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
