@@ -2,13 +2,12 @@ package com.pablogb.psychologger.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Set;
-
-
 
 
 @Data
@@ -22,32 +21,32 @@ public class PatientEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @NotBlank(message = "Name cannot be blank")
-//    @NonNull
+    @NotBlank(message = "First Name cannot be blank")
+    @NonNull
     @Column(name = "first_names")
     private String firstNames;
 
-//    @NotBlank(message = "Last Name cannot be blank")
-//    @NonNull
+    @NotBlank(message = "Last Name cannot be blank")
+    @NonNull
     @Column(name = "last_names")
     private String lastNames;
 
-//    @NotBlank(message = "Short name cannot be blank")
-//    @NonNull
+    @NotBlank(message = "Short name cannot be blank")
+    @NonNull
     @Column(name = "short_name")
     private String shortName;
 
- //   @Past(message = "The birth date must be in the past")
-//    @NonNull
+    @Past(message = "The birth date must be in the past")
+    @NonNull
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
-//    @NonNull
+    @NonNull
     @Column(name = "is_active")
     @Builder.Default
     private Boolean isActive = true;
 
-    //    @NonNull
+    @NonNull
     @Column(name = "sex")
     private Sex sex;
 

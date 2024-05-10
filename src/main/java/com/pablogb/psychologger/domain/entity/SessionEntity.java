@@ -41,6 +41,6 @@ public class SessionEntity {
     private String nextWeek;
 
     @NonNull
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "sessions")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "sessions")
     private Set<PatientEntity> patients;
 }

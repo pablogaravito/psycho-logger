@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Past;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -18,10 +19,14 @@ import java.time.LocalDate;
 public class PatientDto {
 
     private Long id;
+
+    @NotBlank(message = "First Name cannot be blank")
     private String firstNames;
+    @NotBlank(message = "Last Name cannot be blank")
     private String lastNames;
     private String shortName;
     private LocalDate birthDate;
     private Boolean isActive;
     private Sex sex;
+    private Set<SessionDto> sessions;
 }

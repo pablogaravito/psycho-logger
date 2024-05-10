@@ -8,7 +8,6 @@ import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.service.PatientService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,8 +17,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.time.LocalDate;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,7 +42,6 @@ class PatientControllerIntegrationTests {
         this.objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
     }
-
 
     @Test
     void publicEndPoint() throws Exception {
@@ -80,6 +76,19 @@ class PatientControllerIntegrationTests {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.shortName").value("Briseth Pérez"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.birthDate").value("2008-08-11")
                 );
+    }
+
+    @Test
+    void testThatCreateIncompletePatientReturnsHttpStatus400() throws Exception {
+        PatientDto incompletePatient = TestDataUtil.createIncompletePatientDto();
+
+        String jsonPatient = objectMapper.writeValueAsString(incompletePatient);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/patients")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonPatient)
+        ).andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
@@ -154,6 +163,20 @@ class PatientControllerIntegrationTests {
     }
 
     @Test
+    void testThatFullUpdatePatientReturnsHttpStatus400WhenPayloadIsIncomplete() throws Exception {
+        PatientDto incompletePatient = TestDataUtil.createIncompletePatientDto();
+        PatientEntity savedPatient = patientService.savePatient(TestDataUtil.createTestPatientA());
+        String incompletePatientJson = objectMapper.writeValueAsString(incompletePatient);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/patients/" + savedPatient.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(incompletePatientJson)
+        ).andExpect(MockMvcResultMatchers.status().isBadRequest()
+        );
+    }
+
+    @Test
     void testThatFullUpdateReturnsHttpStatus200WhenPatientExists() throws Exception {
         PatientEntity testPatientA = TestDataUtil.createTestPatientA();
         patientService.savePatient(testPatientA);
@@ -196,17 +219,19 @@ class PatientControllerIntegrationTests {
 
     @Test
     void testThatPartialUpdatePatientReturnsUpdatedPatientAndHttpStatus200() throws Exception {
-        PatientEntity testPatientA = TestDataUtil.createTestPatientA();
-        PatientEntity savedPatient = patientService.savePatient(testPatientA);
-        PatientDto testPatientDtoA = TestDataUtil.createTestPatientDtoA();
-        testPatientDtoA.setFirstNames("Pablis");
-        String patientJson = objectMapper.writeValueAsString(testPatientDtoA);
+        PatientEntity testPatientB = TestDataUtil.createTestPatientB();
+        PatientEntity savedPatient = patientService.savePatient(testPatientB);
+//        PatientDto testPatientDtoA = TestDataUtil.createTestPatientDtoA();
+//        testPatientDtoA.setFirstNames("Pablis");
+        PatientDto testPatientDTo = TestDataUtil.createIncompletePatientDto();
+
+        String patientJson = objectMapper.writeValueAsString(testPatientDTo);
         mockMvc.perform(
-                        MockMvcRequestBuilders.patch("/patients/1")
+                        MockMvcRequestBuilders.patch("/patients/" + savedPatient.getId())
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(patientJson)
-                ).andExpect(MockMvcResultMatchers.jsonPath("$.firstNames").value("Pablis"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.lastNames").value("Garavito Badaracco"))
+                ).andExpect(MockMvcResultMatchers.jsonPath("$.shortName").value("Pando America"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.sex").value("M"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
