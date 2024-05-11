@@ -2,6 +2,7 @@ package com.pablogb.psychologger.controller;
 
 import com.pablogb.psychologger.domain.dao.PatchPatientDto;
 import com.pablogb.psychologger.domain.dao.PatientDto;
+import com.pablogb.psychologger.domain.dao.SessionDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.mapper.Mapper;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -23,6 +25,7 @@ public class PatientController {
     private final PatientService patientService;
 
     private final Mapper<PatientEntity, PatientDto> patientMapper;
+    private final Mapper<SessionEntity, SessionDto> sessionMapper;
 
     @GetMapping("/greeting")
     public String testGreeting() {
@@ -39,8 +42,8 @@ public class PatientController {
     @PostMapping
     public ResponseEntity<PatientDto> createPatient(@Valid @RequestBody PatientDto patientDto) {
         PatientEntity patientEntity = patientMapper.mapFrom(patientDto);
-        PatientEntity savedPatientEntity = patientService.savePatient(patientEntity);
-        return new ResponseEntity<>(patientMapper.mapTo(savedPatientEntity) , HttpStatus.CREATED);
+        PatientEntity savedPatient = patientService.savePatient(patientEntity);
+        return new ResponseEntity<>(patientMapper.mapTo(savedPatient), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -53,8 +56,8 @@ public class PatientController {
 
         patientDto.setId(id);
         PatientEntity patientEntity = patientMapper.mapFrom(patientDto);
-        PatientEntity savedPatientEntity = patientService.savePatient(patientEntity);
-        return new ResponseEntity<>(patientMapper.mapTo(savedPatientEntity), HttpStatus.OK) ;
+        PatientEntity savedPatient = patientService.savePatient(patientEntity);
+        return new ResponseEntity<>(patientMapper.mapTo(savedPatient), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
@@ -79,12 +82,29 @@ public class PatientController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PatientEntity>> getPatients() {
-        return new ResponseEntity<>(patientService.getPatients(), HttpStatus.OK);
+    public ResponseEntity<Set<PatientDto>> getPatients() {
+        Set<PatientDto> patientDtoSet = patientService.getPatients().stream().map(patientMapper::mapTo).collect(Collectors.toSet());
+        return new ResponseEntity<>(patientDtoSet, HttpStatus.OK);
     }
 
     @GetMapping("/{id}/sessions")
     public ResponseEntity<Set<SessionEntity>> getPatientSessions(@PathVariable Long id) {
         return new ResponseEntity<>(patientService.getPatientSessions(id), HttpStatus.OK);
     }
+
+//    @GetMapping
+//    public ResponseEntity<Set<PatientDto>> getPatients() {
+//        Set<PatientDto> patientDtoSet = patientService.getPatients().stream().map(patientMapper::mapTo).collect(Collectors.toSet());
+//        return new ResponseEntity<>(patientDtoSet, HttpStatus.OK);
+//    }
+//
+//    @GetMapping("/{id}/sessions")
+//    public ResponseEntity<Set<SessionDto>> getPatientSessions(@PathVariable Long id) {
+//        Set<SessionEntity> patientSessions = patientService.getPatientSessions(id);
+//        Set<SessionDto> sessionDtoSet = patientService.getPatientSessions(id).stream().map(sessionMapper::mapTo).collect(Collectors.toSet());
+//        return new ResponseEntity<>(sessionDtoSet, HttpStatus.OK);
+//    }
+
+
+
 }

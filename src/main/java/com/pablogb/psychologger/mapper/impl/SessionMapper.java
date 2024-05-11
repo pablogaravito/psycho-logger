@@ -1,4 +1,24 @@
 package com.pablogb.psychologger.mapper.impl;
 
-public class SessionMapper {
+import com.pablogb.psychologger.domain.dao.SessionDto;
+import com.pablogb.psychologger.domain.entity.SessionEntity;
+import com.pablogb.psychologger.mapper.Mapper;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Component;
+
+@RequiredArgsConstructor
+@Component
+public class SessionMapper implements Mapper<SessionEntity, SessionDto> {
+
+    private final ModelMapper modelMapper;
+    @Override
+    public SessionDto mapTo(SessionEntity sessionEntity) {
+        return modelMapper.map(sessionEntity, SessionDto.class);
+    }
+
+    @Override
+    public SessionEntity mapFrom(SessionDto sessionDto) {
+        return modelMapper.map(sessionDto, SessionEntity.class);
+    }
 }

@@ -10,9 +10,7 @@ import com.pablogb.psychologger.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,8 +24,9 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<PatientEntity> getPatients() {
-        return (List<PatientEntity>) patientRepository.findAll();
+    public Set<PatientEntity> getPatients() {
+        Set<PatientEntity> patients = new HashSet<>((Collection) patientRepository.findAll());
+        return patients;
     }
 
     @Override
@@ -53,8 +52,6 @@ public class PatientServiceImpl implements PatientService {
             return patientRepository.save(existingPatient);
         }).orElseThrow(() -> new RuntimeException("Patient does not exist"));
     }
-
-
 
     @Override
     public void deletePatient(Long id) {

@@ -6,6 +6,7 @@ import com.pablogb.psychologger.TestDataUtil;
 import com.pablogb.psychologger.domain.dao.PatchPatientDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.service.PatientService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,9 +110,8 @@ class PatientControllerIntegrationTests {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/patients")
                         .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers.jsonPath("$[0].firstNames").value("Pablo")
-        ).andExpect(MockMvcResultMatchers.jsonPath("$[1].firstNames").value("Briseth Dayana")
-        ).andExpect(MockMvcResultMatchers.jsonPath("$[1].birthDate").value("2008-08-11")
+        ).andExpect(MockMvcResultMatchers.jsonPath("$[*].firstNames", Matchers.containsInAnyOrder("Pablo", "Briseth Dayana"))
+        ).andExpect(MockMvcResultMatchers.jsonPath("$[*].birthDate", Matchers.containsInAnyOrder("1987-05-12", "2008-08-11"))
         );
     }
 
@@ -221,8 +221,6 @@ class PatientControllerIntegrationTests {
     void testThatPartialUpdatePatientReturnsUpdatedPatientAndHttpStatus200() throws Exception {
         PatientEntity testPatientB = TestDataUtil.createTestPatientB();
         PatientEntity savedPatient = patientService.savePatient(testPatientB);
-//        PatientDto testPatientDtoA = TestDataUtil.createTestPatientDtoA();
-//        testPatientDtoA.setFirstNames("Pablis");
         PatchPatientDto testPatientDTo = TestDataUtil.createIncompletePatientDto();
 
         String patientJson = objectMapper.writeValueAsString(testPatientDTo);
