@@ -9,6 +9,8 @@ import com.pablogb.psychologger.service.SessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -26,12 +28,13 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public Set<SessionEntity> getSessions() {
-        return null;
+        return new HashSet<>((Collection) sessionRepository.findAll());
     }
 
     @Override
-    public Set<PatientEntity> getPatients() {
-        return null;
+    public Set<PatientEntity> getPatients(Long id) {
+        SessionEntity sessionEntity = getSession(id);
+        return sessionEntity.getPatients();
     }
 
     @Override

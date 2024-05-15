@@ -25,8 +25,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public Set<PatientEntity> getPatients() {
-        Set<PatientEntity> patients = new HashSet<>((Collection) patientRepository.findAll());
-        return patients;
+        return new HashSet<>((Collection) patientRepository.findAll());
     }
 
     @Override

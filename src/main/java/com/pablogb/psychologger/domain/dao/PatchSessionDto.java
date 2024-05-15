@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -14,6 +15,8 @@ import java.util.Set;
 @Builder
 public class PatchSessionDto {
     private Long id;
+
+    private LocalDate sessionDate;
     private String subject;
 
     private String content;

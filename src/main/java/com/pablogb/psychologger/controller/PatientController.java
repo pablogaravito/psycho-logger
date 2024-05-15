@@ -91,20 +91,4 @@ public class PatientController {
     public ResponseEntity<Set<SessionEntity>> getPatientSessions(@PathVariable Long id) {
         return new ResponseEntity<>(patientService.getPatientSessions(id), HttpStatus.OK);
     }
-
-//    @GetMapping
-//    public ResponseEntity<Set<PatientDto>> getPatients() {
-//        Set<PatientDto> patientDtoSet = patientService.getPatients().stream().map(patientMapper::mapTo).collect(Collectors.toSet());
-//        return new ResponseEntity<>(patientDtoSet, HttpStatus.OK);
-//    }
-//
-//    @GetMapping("/{id}/sessions")
-//    public ResponseEntity<Set<SessionDto>> getPatientSessions(@PathVariable Long id) {
-//        Set<SessionEntity> patientSessions = patientService.getPatientSessions(id);
-//        Set<SessionDto> sessionDtoSet = patientService.getPatientSessions(id).stream().map(sessionMapper::mapTo).collect(Collectors.toSet());
-//        return new ResponseEntity<>(sessionDtoSet, HttpStatus.OK);
-//    }
-
-
-
 }

@@ -10,7 +10,7 @@ public interface SessionService {
 
     SessionEntity getSession(Long id);
     Set<SessionEntity> getSessions();
-    Set<PatientEntity> getPatients();
+    Set<PatientEntity> getPatients(Long id);
     SessionEntity saveSession(SessionEntity sessionEntity);
     SessionEntity partialUpdateSession(PatchSessionDto patchSessionDto);
     void deleteSession(Long id);

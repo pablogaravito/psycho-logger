@@ -177,7 +177,7 @@ class PatientControllerIntegrationTests {
     }
 
     @Test
-    void testThatFullUpdateReturnsHttpStatus200WhenPatientExists() throws Exception {
+    void testThatFullUpdatePatientReturnsHttpStatus200WhenPatientExists() throws Exception {
         PatientEntity testPatientA = TestDataUtil.createTestPatientA();
         patientService.savePatient(testPatientA);
         PatientEntity testPatientB = TestDataUtil.createTestPatientB();
@@ -194,13 +194,13 @@ class PatientControllerIntegrationTests {
         PatientEntity testPatientB = TestDataUtil.createTestPatientB();
         PatientEntity savedPatient = patientService.savePatient(testPatientB);
         PatientEntity updatedPatient = TestDataUtil.createTestPatientA();
-        updatedPatient.setId(savedPatient.getId());
-        String patientJson = objectMapper.writeValueAsString(updatedPatient);
+        updatedPatient.setId(null);
+        String updatedPatientJson = objectMapper.writeValueAsString(updatedPatient);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/patients/1")
+                MockMvcRequestBuilders.put("/patients/" + savedPatient.getId())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(patientJson)
+                        .content(updatedPatientJson)
         ).andExpect(MockMvcResultMatchers.jsonPath("$.firstNames").value(updatedPatient.getFirstNames())
         ).andExpect(MockMvcResultMatchers.jsonPath("$.birthDate").value(updatedPatient.getBirthDate().toString())
         );

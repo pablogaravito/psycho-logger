@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -19,6 +20,10 @@ public class SessionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NonNull
+    @Column(name = "sessionDate", nullable = false)
+    private LocalDate sessionDate;
+
     @NotBlank(message = "Subject cannot be blank")
     @NonNull
     @Column(name = "subject", nullable = false)
@@ -26,6 +31,7 @@ public class SessionEntity {
 
     @NotBlank(message = "Session's content cannot be blank")
     @NonNull
+    @Lob
     @Column(name = "content", nullable = false)
     private String content;
 

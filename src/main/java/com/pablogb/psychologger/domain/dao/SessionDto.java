@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Data
@@ -13,6 +14,9 @@ import java.util.Set;
 @Builder
 public class SessionDto {
     private Long id;
+
+    @NonNull
+    private LocalDate sessionDate;
 
     @NotBlank(message = "Subject cannot be blank")
     @NonNull

@@ -11,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/sessions")
@@ -65,5 +68,12 @@ public class SessionController {
     public ResponseEntity<HttpStatus> deleteSession(@PathVariable Long id) {
         sessionService.deleteSession(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping
+    public ResponseEntity<Set<SessionDto>> getSessions() {
+        Set<SessionDto> sessionDtoSet = sessionService.getSessions()
+                .stream().map(sessionMapper::mapTo).collect(Collectors.toSet());
+        return new ResponseEntity<>(sessionDtoSet, HttpStatus.OK);
     }
 }
