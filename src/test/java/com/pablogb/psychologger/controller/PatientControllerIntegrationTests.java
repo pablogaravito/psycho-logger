@@ -5,7 +5,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pablogb.psychologger.TestDataUtil;
 import com.pablogb.psychologger.domain.dao.PatchPatientDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
+import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.service.PatientService;
+import jakarta.transaction.Transactional;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +20,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.Set;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,7 +49,7 @@ class PatientControllerIntegrationTests {
     }
 
     @Test
-    void publicEndPoint() throws Exception {
+    void greeting() throws Exception {
         mockMvc.perform(get("/patients/greeting"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsStringIgnoringCase("there")));
@@ -93,7 +97,7 @@ class PatientControllerIntegrationTests {
     }
 
     @Test
-    void testThatListPatientsReturnsHttpStatus200() throws Exception {
+    void testThatGetPatientsReturnsHttpStatus200() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/patients")
         ).andExpect(MockMvcResultMatchers.status().isOk()
@@ -101,7 +105,7 @@ class PatientControllerIntegrationTests {
     }
 
     @Test
-    void testThatListPatientsReturnsListOfPatients() throws Exception {
+    void testThatGetPatientsReturnsSetOfPatients() throws Exception {
         PatientEntity testPatientA = TestDataUtil.createTestPatientA();
         PatientEntity testPatientB = TestDataUtil.createTestPatientB();
         patientService.savePatient(testPatientA);
@@ -117,10 +121,9 @@ class PatientControllerIntegrationTests {
 
     @Test
     void testThatGetPatientReturnsHttpStatus200WhenPatientExists() throws Exception {
-        PatientEntity testPatientB = TestDataUtil.createTestPatientB();
-        patientService.savePatient(testPatientB);
+        PatientEntity savedPatient = patientService.savePatient(TestDataUtil.createTestPatientB());
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/patients/1")
+                MockMvcRequestBuilders.get("/patients/" + savedPatient.getId())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
                 MockMvcResultMatchers.status().isOk()
@@ -252,4 +255,45 @@ class PatientControllerIntegrationTests {
         ).andExpect(MockMvcResultMatchers.status().isNoContent()
         );
     }
+
+    @Test
+    void testThatGetPatientSessionsReturnsHttpStatus404WhenPatientDoesNotExist() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/patients/99/sessions")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    void testThatGetPatientSessionsReturnsHttpStatus200WhenPatientExists() throws Exception {
+        PatientEntity testPatientA = TestDataUtil.createTestPatientA();
+        PatientEntity savedPatient = patientService.savePatient(testPatientA);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/patients/" + savedPatient.getId() + "/sessions")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @Transactional
+    void testThatGetPatientSessionsReturnsListOfSessionsWhenSessionsExists() throws Exception {
+        PatientEntity testPatientA = TestDataUtil.createTestPatientA();
+        testPatientA.setId(null);
+        SessionEntity testSessionA = TestDataUtil.createTestSessionA();
+        SessionEntity testSessionB = TestDataUtil.createTestSessionB();
+
+        testPatientA.setSessions(Set.of(testSessionA, testSessionB));
+
+        PatientEntity savedPatient = patientService.savePatient(testPatientA);
+
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/patients/" + savedPatient.getId() + "/sessions")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers.content().string(containsStringIgnoringCase("interior"))
+        ).andExpect(MockMvcResultMatchers.content().string(containsStringIgnoringCase("carnaval"))
+        );
+    }
+
 }

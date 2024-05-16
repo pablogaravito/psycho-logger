@@ -23,6 +23,11 @@ public class SessionController {
 
     private final Mapper<SessionEntity, SessionDto> sessionMapper;
 
+    @GetMapping("/greeting")
+    public String testGreeting() {
+        return "hello there";
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<SessionDto> getSession(@PathVariable Long id) {
         SessionEntity foundSession = sessionService.getSession(id);

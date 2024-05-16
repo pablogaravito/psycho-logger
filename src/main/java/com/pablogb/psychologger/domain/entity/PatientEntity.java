@@ -51,7 +51,7 @@ public class PatientEntity {
     private Sex sex;
 
     @JsonIgnore
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(
             name = "patient_session",
             joinColumns = @JoinColumn(name = "patient_id", referencedColumnName = "id"),

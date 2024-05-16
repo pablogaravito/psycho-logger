@@ -23,6 +23,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Set;
 
+import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -41,6 +46,13 @@ class SessionControllerIntegrationTests {
     public SessionControllerIntegrationTests() {
         this.objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
+    }
+
+    @Test
+    void greeting() throws Exception {
+        mockMvc.perform(get("/sessions/greeting"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsStringIgnoringCase("there")));
     }
 
     @Test
@@ -83,7 +95,7 @@ class SessionControllerIntegrationTests {
     }
 
     @Test
-    void testThatListSessionsReturnsHttpStatus200() throws Exception {
+    void testThatGetSessionsReturnsHttpStatus200() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/sessions")
         ).andExpect(MockMvcResultMatchers.status().isOk()
@@ -91,7 +103,7 @@ class SessionControllerIntegrationTests {
     }
 
     @Test
-    void testThatListSessionsReturnsListOfSessions() throws Exception {
+    void testThatGetSessionsReturnsSetOfSessions() throws Exception {
         PatientEntity testPatientA = TestDataUtil.createTestPatientA();
         testPatientA.setId(null);
         PatientEntity testPatientB = TestDataUtil.createTestPatientB();
@@ -119,15 +131,34 @@ class SessionControllerIntegrationTests {
         SessionEntity testSessionB = TestDataUtil.createTestSessionB();
         testSessionB.setPatients(Set.of(testPatientB));
 
-        sessionService.saveSession(testSessionB);
+        SessionEntity savedSession = sessionService.saveSession(testSessionB);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/sessions/1")
+                MockMvcRequestBuilders.get("/sessions/" + savedSession.getId())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
                 MockMvcResultMatchers.status().isOk()
         );
     }
+
+    @Test
+    void testThatGetSessionReturnsSessionWhenSessionExists() throws Exception {
+        PatientEntity testPatientB = TestDataUtil.createTestPatientB();
+        testPatientB.setId(null);
+        SessionEntity testSession = TestDataUtil.createTestSessionB();
+        testSession.setPatients(Set.of(testPatientB));
+        SessionEntity savedSession = sessionService.saveSession(testSession);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/sessions/" + savedSession.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.content").value(savedSession.getContent())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.subject").value("trabajo emocional")
+        );
+    }
+
 
     @Test
     void testThatGetSessionReturnsHttpStatus404WhenSessionDoesNotExist() throws Exception {
