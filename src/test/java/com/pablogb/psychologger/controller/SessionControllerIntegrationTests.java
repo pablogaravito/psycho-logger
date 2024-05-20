@@ -3,7 +3,6 @@ package com.pablogb.psychologger.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pablogb.psychologger.TestDataUtil;
-import com.pablogb.psychologger.domain.dao.PatchPatientDto;
 import com.pablogb.psychologger.domain.dao.PatchSessionDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
@@ -58,7 +57,6 @@ class SessionControllerIntegrationTests {
     @Test
     void testThatCreatedSessionReturnsHttpStatus201() throws Exception {
         SessionEntity testSessionA = TestDataUtil.createTestSessionA();
-        testSessionA.setId(null);
         String sessionJson = objectMapper.writeValueAsString(testSessionA);
         mockMvc.perform(MockMvcRequestBuilders.post("/sessions")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -69,7 +67,6 @@ class SessionControllerIntegrationTests {
     @Test
     void testThatCreateSessionSuccessfullyReturnsSavedSession() throws Exception {
         SessionEntity testSessionB = TestDataUtil.createTestSessionB();
-        testSessionB.setId(null);
         String sessionJson = objectMapper.writeValueAsString(testSessionB);
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/sessions")
@@ -204,18 +201,16 @@ class SessionControllerIntegrationTests {
     void testThatFullUpdateSessionReturnsHttpStatus200WhenSessionExists() throws Exception {
         PatientEntity testPatientA = TestDataUtil.createTestPatientA();
         testPatientA.setId(null);
-        PatientEntity testPatientB = TestDataUtil.createTestPatientB();
-        testPatientB.setId(null);
         SessionEntity testSessionA = TestDataUtil.createTestSessionA();
         SessionEntity testSessionB = TestDataUtil.createTestSessionB();
         testSessionA.setPatients(Set.of(testPatientA));
-        testSessionB.setPatients(Set.of(testPatientB));
+        testSessionB.setPatients(Set.of(testPatientA));
 
-        sessionService.saveSession(testSessionA);
+        SessionEntity savedSession = sessionService.saveSession(testSessionA);
         String sessionJson = objectMapper.writeValueAsString(testSessionB);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/sessions/1")
+                MockMvcRequestBuilders.put("/sessions/" + savedSession.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(sessionJson)
         ).andExpect(MockMvcResultMatchers.status().isOk());

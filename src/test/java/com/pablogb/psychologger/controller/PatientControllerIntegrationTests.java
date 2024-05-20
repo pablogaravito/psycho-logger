@@ -77,9 +77,9 @@ class PatientControllerIntegrationTests {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(patientJson)
                 ).andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.firstNames").value("Briseth Dayana"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.shortName").value("Briseth Pérez"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.birthDate").value("2008-08-11")
+                .andExpect(MockMvcResultMatchers.jsonPath("$.firstNames").value("Puerca"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.shortName").value("Puerca Pérez"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.birthDate").value("1996-08-11")
                 );
     }
 
@@ -114,8 +114,8 @@ class PatientControllerIntegrationTests {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/patients")
                         .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers.jsonPath("$[*].firstNames", Matchers.containsInAnyOrder("Pablo", "Briseth Dayana"))
-        ).andExpect(MockMvcResultMatchers.jsonPath("$[*].birthDate", Matchers.containsInAnyOrder("1987-05-12", "2008-08-11"))
+        ).andExpect(MockMvcResultMatchers.jsonPath("$[*].firstNames", Matchers.containsInAnyOrder("Pablo", "Puerca"))
+        ).andExpect(MockMvcResultMatchers.jsonPath("$[*].birthDate", Matchers.containsInAnyOrder("1987-05-12", "1996-08-11"))
         );
     }
 
@@ -138,9 +138,9 @@ class PatientControllerIntegrationTests {
                 MockMvcRequestBuilders.get("/patients/1")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.firstNames").value("Briseth Dayana")
+                MockMvcResultMatchers.jsonPath("$.firstNames").value("Puerca")
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.birthDate").value("2008-08-11")
+                MockMvcResultMatchers.jsonPath("$.birthDate").value("1996-08-11")
         );
     }
 
