@@ -19,7 +19,6 @@ public final class TestDataUtil {
 
     public static PatientEntity createTestPatientA() {
         return PatientEntity.builder()
-//                .id(1L)
                 .firstNames("Pablo")
                 .lastNames("Garavito Badaracco")
                 .shortName("Pablo Garavito")
@@ -31,7 +30,6 @@ public final class TestDataUtil {
 
     public static PatientDto createTestPatientDtoA() {
         return PatientDto.builder()
-//                .id(1L)
                 .firstNames("Pablo")
                 .lastNames("Garavito Badaracco")
                 .shortName("Pablo Garavito")
@@ -43,7 +41,6 @@ public final class TestDataUtil {
 
     public static PatientEntity createTestPatientB() {
         return PatientEntity.builder()
-//                .id(2L)
                 .firstNames("Puerca")
                 .lastNames("Pérez Alcarraz")
                 .shortName("Puerca Pérez")

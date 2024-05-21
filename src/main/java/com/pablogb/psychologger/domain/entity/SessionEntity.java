@@ -1,5 +1,6 @@
 package com.pablogb.psychologger.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -47,6 +48,12 @@ public class SessionEntity {
     private String nextWeek;
 
     @NonNull
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "sessions")
+    @JsonIgnore
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "patient_session",
+            joinColumns = @JoinColumn(name = "patient_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "session_id", referencedColumnName = "id")
+    )
     private Set<PatientEntity> patients;
 }

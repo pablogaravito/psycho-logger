@@ -287,7 +287,6 @@ class PatientControllerIntegrationTests {
 
         PatientEntity savedPatient = patientService.savePatient(testPatientA);
 
-
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/patients/" + savedPatient.getId() + "/sessions")
                         .contentType(MediaType.APPLICATION_JSON)

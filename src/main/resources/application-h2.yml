@@ -1,0 +1,24 @@
+spring:
+  config:
+    activate:
+      on-profile: h2
+
+  datasource:
+    url: jdbc:h2:mem:psycho-logger
+
+  h2:
+    console:
+      path: /h2
+      enabled: true
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+hibernate:
+  dialect: org.hibernate.dialect.H2Dialect
+

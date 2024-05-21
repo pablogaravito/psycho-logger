@@ -19,7 +19,6 @@ public class PatchPatientDto {
     private String lastNames;
     private String shortName;
     private LocalDate birthDate;
-
     private Boolean isActive;
     private Sex sex;
     private Set<SessionDto> sessions;

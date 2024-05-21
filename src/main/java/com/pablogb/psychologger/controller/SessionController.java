@@ -1,9 +1,12 @@
 package com.pablogb.psychologger.controller;
 
 import com.pablogb.psychologger.domain.dao.PatchSessionDto;
+import com.pablogb.psychologger.domain.dao.SessionContextDto;
 import com.pablogb.psychologger.domain.dao.SessionDto;
+import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.mapper.Mapper;
+import com.pablogb.psychologger.service.PatientService;
 import com.pablogb.psychologger.service.SessionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 public class SessionController {
 
     private final SessionService sessionService;
+    private final PatientService patientService;
 
     private final Mapper<SessionEntity, SessionDto> sessionMapper;
 
@@ -35,9 +39,18 @@ public class SessionController {
         return new ResponseEntity<>(sessionDto, HttpStatus.OK);
     }
 
+    //    @PostMapping
+//    public ResponseEntity<SessionDto> saveSession(@Valid @RequestBody SessionDto sessionDto) {
+//        SessionEntity sessionEntity = sessionMapper.mapFrom(sessionDto);
+//        SessionEntity savedSession = sessionService.saveSession(sessionEntity);
+//        return new ResponseEntity<>(sessionMapper.mapTo(savedSession), HttpStatus.CREATED);
+//    }
     @PostMapping
-    public ResponseEntity<SessionDto> saveSession(@Valid @RequestBody SessionDto sessionDto) {
-        SessionEntity sessionEntity = sessionMapper.mapFrom(sessionDto);
+    public ResponseEntity<SessionDto> saveSession(@Valid @RequestBody SessionContextDto sessionContextDto) {
+        PatientEntity patientEntity = patientService.getPatient(sessionContextDto.getPatientId());
+
+        SessionEntity sessionEntity = sessionMapper.mapFrom(sessionContextDto.getSessionDto());
+        sessionEntity.setPatients(Set.of(patientEntity));
         SessionEntity savedSession = sessionService.saveSession(sessionEntity);
         return new ResponseEntity<>(sessionMapper.mapTo(savedSession), HttpStatus.CREATED);
     }
