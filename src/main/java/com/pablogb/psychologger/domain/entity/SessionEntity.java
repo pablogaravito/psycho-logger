@@ -47,13 +47,13 @@ public class SessionEntity {
     @Column(name = "next_week")
     private String nextWeek;
 
-    @NonNull
     @JsonIgnore
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @NonNull
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(
             name = "patient_session",
-            joinColumns = @JoinColumn(name = "patient_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "session_id", referencedColumnName = "id")
+            joinColumns = @JoinColumn(name = "session_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "patient_id", referencedColumnName = "id")
     )
     private Set<PatientEntity> patients;
 }

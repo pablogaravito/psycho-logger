@@ -30,10 +30,11 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public Set<SessionEntity> getPatientSessions(Long id) {
-        PatientEntity patientEntity = getPatient(id);
-        System.out.println(patientEntity);
-        System.out.println(patientEntity.getSessions());
-        return patientEntity.getSessions();
+//        PatientEntity patientEntity = getPatient(id);
+//        System.out.println(patientEntity);
+//        System.out.println(patientEntity.getSessions());
+//        return patientEntity.getSessions();
+        return patientRepository.getSessionsFromPatient(id);
     }
 
     @Override

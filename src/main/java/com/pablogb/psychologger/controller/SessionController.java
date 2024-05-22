@@ -1,5 +1,6 @@
 package com.pablogb.psychologger.controller;
 
+import com.pablogb.psychologger.domain.dao.PatchPatientDto;
 import com.pablogb.psychologger.domain.dao.PatchSessionDto;
 import com.pablogb.psychologger.domain.dao.SessionContextDto;
 import com.pablogb.psychologger.domain.dao.SessionDto;

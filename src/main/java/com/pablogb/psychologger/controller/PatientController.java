@@ -25,7 +25,6 @@ public class PatientController {
     private final PatientService patientService;
 
     private final Mapper<PatientEntity, PatientDto> patientMapper;
-    private final Mapper<SessionEntity, SessionDto> sessionMapper;
 
     @GetMapping("/greeting")
     public String testGreeting() {
