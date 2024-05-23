@@ -1,4 +1,4 @@
-package com.pablogb.psychologger.domain.dao;
+package com.pablogb.psychologger.domain.dto;
 
 import lombok.*;
 

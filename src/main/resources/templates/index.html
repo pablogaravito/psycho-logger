@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Psycho-Logger 1.0</title>
+    <link th:href="@{/addPatient-stylesheet.css}" rel="stylesheet">
+</head>
+<body>
+<div class="topnav">
+    <a th:href="@{/}">Inicio</a>
+    <a th:href="@{/view/patients}">Nuevo Paciente</a>
+    <a th:href="@{/view/sessions}">Nueva Sesión</a>
+    <a th:href="@{/view/search}">Buscar Paciente</a>
+</div>
+<div class="container">
+    <h2> Elige la acción a realizar: </h2>
+    <a class="btn btn-warning" th:href="@{/view/patients}">Nuevo Paciente</a>
+    <a class="btn btn-warning" th:href="@{/view/sessions}">Nueva Sesión</a>
+    <a class="btn btn-warning" th:href="@{/view/search}">Buscar Paciente</a>
+</div>
+</body>
+</html>

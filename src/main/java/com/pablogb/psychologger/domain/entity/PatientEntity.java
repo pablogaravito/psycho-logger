@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -36,6 +37,7 @@ public class PatientEntity {
     @Column(name = "short_name", nullable = false)
     private String shortName;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Past(message = "The birth date must be in the past")
     @NonNull
     @Column(name = "birth_date", nullable = false)
@@ -49,7 +51,6 @@ public class PatientEntity {
     @NonNull
     @Column(name = "sex", nullable = false)
     private Sex sex;
-
 
     @JsonIgnore
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

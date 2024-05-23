@@ -1,6 +1,6 @@
 package com.pablogb.psychologger.mapper.impl;
 
-import com.pablogb.psychologger.domain.dao.SessionDto;
+import com.pablogb.psychologger.domain.dto.SessionDto;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.mapper.Mapper;
 import lombok.RequiredArgsConstructor;

@@ -3,7 +3,7 @@ package com.pablogb.psychologger.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pablogb.psychologger.TestDataUtil;
-import com.pablogb.psychologger.domain.dao.PatchSessionDto;
+import com.pablogb.psychologger.domain.dto.PatchSessionDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.service.SessionService;

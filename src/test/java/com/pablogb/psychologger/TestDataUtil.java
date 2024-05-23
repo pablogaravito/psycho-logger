@@ -1,13 +1,11 @@
 package com.pablogb.psychologger;
 
-import com.pablogb.psychologger.domain.dao.PatchPatientDto;
-import com.pablogb.psychologger.domain.dao.PatchSessionDto;
-import com.pablogb.psychologger.domain.dao.PatientDto;
-import com.pablogb.psychologger.domain.dao.SessionDto;
+import com.pablogb.psychologger.domain.dto.PatchPatientDto;
+import com.pablogb.psychologger.domain.dto.PatchSessionDto;
+import com.pablogb.psychologger.domain.dto.PatientDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.domain.entity.Sex;
-import net.bytebuddy.asm.Advice;
 
 import java.time.LocalDate;
 import java.util.Set;

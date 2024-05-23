@@ -1,6 +1,6 @@
 package com.pablogb.psychologger.service.impl;
 
-import com.pablogb.psychologger.domain.dao.PatchSessionDto;
+import com.pablogb.psychologger.domain.dto.PatchSessionDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.exception.EntityNotFoundException;

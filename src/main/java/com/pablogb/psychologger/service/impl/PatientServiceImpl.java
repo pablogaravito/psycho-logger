@@ -1,7 +1,6 @@
 package com.pablogb.psychologger.service.impl;
 
-import com.pablogb.psychologger.domain.dao.PatchPatientDto;
-import com.pablogb.psychologger.domain.dao.PatientDto;
+import com.pablogb.psychologger.domain.dto.PatchPatientDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.exception.EntityNotFoundException;
@@ -30,10 +29,6 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public Set<SessionEntity> getPatientSessions(Long id) {
-//        PatientEntity patientEntity = getPatient(id);
-//        System.out.println(patientEntity);
-//        System.out.println(patientEntity.getSessions());
-//        return patientEntity.getSessions();
         return patientRepository.getSessionsFromPatient(id);
     }
 

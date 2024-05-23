@@ -1,10 +1,6 @@
-package com.pablogb.psychologger.domain.dao;
+package com.pablogb.psychologger.domain.dto;
 
 import com.pablogb.psychologger.domain.entity.Sex;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import lombok.*;

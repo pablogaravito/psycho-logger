@@ -8,8 +8,6 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Set;
 
 public interface PatientRepository extends CrudRepository<PatientEntity, Long> {
-    @Query("select sessionEntity " +
-            "from SessionEntity sessionEntity join sessionEntity.patients patient " +
-            "where patient.id = :patientId")
+    @Query("select s from SessionEntity s join s.patients p where p.id = :patientId")
     Set<SessionEntity> getSessionsFromPatient(Long patientId);
 }

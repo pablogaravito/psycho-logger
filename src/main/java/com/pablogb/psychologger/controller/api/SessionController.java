@@ -1,9 +1,8 @@
-package com.pablogb.psychologger.controller;
+package com.pablogb.psychologger.controller.api;
 
-import com.pablogb.psychologger.domain.dao.PatchPatientDto;
-import com.pablogb.psychologger.domain.dao.PatchSessionDto;
-import com.pablogb.psychologger.domain.dao.SessionContextDto;
-import com.pablogb.psychologger.domain.dao.SessionDto;
+import com.pablogb.psychologger.domain.dto.PatchSessionDto;
+import com.pablogb.psychologger.domain.dto.SessionContextDto;
+import com.pablogb.psychologger.domain.dto.SessionDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.mapper.Mapper;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/sessions")
+@RequestMapping("/api/sessions")
 public class SessionController {
 
     private final SessionService sessionService;
@@ -39,13 +38,6 @@ public class SessionController {
         SessionDto sessionDto = sessionMapper.mapTo(foundSession);
         return new ResponseEntity<>(sessionDto, HttpStatus.OK);
     }
-
-    //    @PostMapping
-//    public ResponseEntity<SessionDto> saveSession(@Valid @RequestBody SessionDto sessionDto) {
-//        SessionEntity sessionEntity = sessionMapper.mapFrom(sessionDto);
-//        SessionEntity savedSession = sessionService.saveSession(sessionEntity);
-//        return new ResponseEntity<>(sessionMapper.mapTo(savedSession), HttpStatus.CREATED);
-//    }
     @PostMapping
     public ResponseEntity<SessionDto> saveSession(@Valid @RequestBody SessionContextDto sessionContextDto) {
         PatientEntity patientEntity = patientService.getPatient(sessionContextDto.getPatientId());

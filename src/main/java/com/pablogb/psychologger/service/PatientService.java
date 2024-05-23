@@ -1,10 +1,9 @@
 package com.pablogb.psychologger.service;
 
-import com.pablogb.psychologger.domain.dao.PatchPatientDto;
+import com.pablogb.psychologger.domain.dto.PatchPatientDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 
-import java.util.List;
 import java.util.Set;
 
 

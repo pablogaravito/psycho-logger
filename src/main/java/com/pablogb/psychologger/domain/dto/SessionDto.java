@@ -1,4 +1,4 @@
-package com.pablogb.psychologger.domain.dao;
+package com.pablogb.psychologger.domain.dto;
 
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import jakarta.persistence.*;

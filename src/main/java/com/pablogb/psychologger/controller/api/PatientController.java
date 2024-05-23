@@ -1,8 +1,7 @@
-package com.pablogb.psychologger.controller;
+package com.pablogb.psychologger.controller.api;
 
-import com.pablogb.psychologger.domain.dao.PatchPatientDto;
-import com.pablogb.psychologger.domain.dao.PatientDto;
-import com.pablogb.psychologger.domain.dao.SessionDto;
+import com.pablogb.psychologger.domain.dto.PatchPatientDto;
+import com.pablogb.psychologger.domain.dto.PatientDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.mapper.Mapper;
@@ -13,13 +12,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/patients")
+@RequestMapping("/api/patients")
 public class PatientController {
 
     private final PatientService patientService;
