@@ -22,33 +22,23 @@ public class PatientEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "First Name cannot be blank")
-    @NonNull
     @Column(name = "first_names", nullable = false)
     private String firstNames;
 
-    @NotBlank(message = "Last Name cannot be blank")
-    @NonNull
     @Column(name = "last_names", nullable = false)
     private String lastNames;
 
-    @NotBlank(message = "Short name cannot be blank")
-    @NonNull
     @Column(name = "short_name", nullable = false)
     private String shortName;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Past(message = "The birth date must be in the past")
-    @NonNull
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
-    @NonNull
     @Column(name = "is_active", nullable = false)
     @Builder.Default
     private Boolean isActive = true;
 
-    @NonNull
     @Column(name = "sex", nullable = false)
     private Sex sex;
 

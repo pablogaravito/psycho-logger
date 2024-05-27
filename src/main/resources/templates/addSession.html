@@ -1,18 +1,20 @@
 <!DOCTYPE>
 <html xmlns:th="http://www.thymeleaf.org">
   <head> 
-    <title>Grades</title>
-    <link th:href="@{/grades-stylesheet.css}" rel="stylesheet">
+    <title>Registrar Sesión:</title>
+    <link th:href="@{/addSession-stylesheet.css}" rel="stylesheet">
   </head>
   <body>
 
-    <div class="topnav">
-      <a th:href="@{/}">Form</a>
-      <a th:href="@{/grades}">Grades</a>
-    </div>
+  <div class="topnav">
+    <a th:href="@{/}">Inicio</a>
+    <a th:href="@{/view/patients}">Registrar Paciente</a>
+    <a th:href="@{/view/sessions}">Registrar Sesión</a>
+    <a th:href="@{/view/search}">Buscar Paciente</a>
+  </div>
 
-    <div class= "container">
-      <h2 > Grades </h2>
+  <div class= "container">
+      <h2 > Guardar Sesión </h2>
       <table id="table"> 
         <tr>
           <th>Student</th>
