@@ -39,11 +39,12 @@ public class ViewController {
     }
 
     @PostMapping("/view/patients")
-    public String createPatient(@Valid @ModelAttribute("patient") PatientEntity patient, BindingResult result, Model model) {
-        model.addAttribute("patient", patient);
+    public String createPatient(@Valid @ModelAttribute("patient") PatientView patientView, BindingResult result, Model model) {
+        model.addAttribute("patient", patientView);
         if (result.hasErrors()) {
             return "addPatient";
         }
+        PatientEntity patient = patientViewMapper.mapFrom(patientView);
         patientService.savePatient(patient);
 //        return "redirect:/view/patients/list";
         return "redirect:/";

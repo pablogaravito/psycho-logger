@@ -1,6 +1,7 @@
 body {
-    background: #1D1E22;
-  color: #eee;
+    /* background: #1D1E22; */
+    background-color: #2B2B2B;
+    color: #eee;
 }
 
 .container-form {
@@ -12,6 +13,7 @@ body {
     transform: translate(-50%, -50%);
     border-radius: 1rem;
     padding: 1.5rem;
+    /*background-color: #1D1E22;*/
 }
 
 .form-check-input:checked{

@@ -77,7 +77,8 @@ public class MapperConfig {
             @Override
             protected String convert(LocalDate source) {
                 DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                return Optional.ofNullable(source).isPresent() ? source.format(format) : "26/05/2023";
+
+                return Optional.ofNullable(source).isPresent() ? source.format(format) : LocalDate.now().format(format);
             }
         };
 
