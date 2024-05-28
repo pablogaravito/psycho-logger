@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Lista Pacientes</title>
+        <title>Lista Sesiones</title>
         <link
                 href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
                 rel="stylesheet"
@@ -97,22 +97,22 @@
             <h2 class="title">Pacientes</h2>
             <table class="table table-dark table-striped">
                 <thead>
-                    <tr>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Fecha de Nacimiento</th>
-                        <th scope="col">Sexo</th>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                    </tr>
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Fecha de Nacimiento</th>
+                    <th scope="col">Sexo</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="patient: ${patients}">
-                        <td th:text="${patient.shortName}"></td>
-                        <td th:text="${patient.birthDate}"></td>
-                        <td th:text="${patient.sex}"></td>
-                        <td> <a role="button" class="update" th:href="@{/view/patients(id = ${patient.id})}">Actualizar</a> </td>
-                        <td> <a role="button" class="update" th:href="@{/view/patients(id = ${patient.id})}">Actualizar</a> </td>
-                    </tr>
+                <tr th:each="patient: ${patients}">
+                    <td th:text="${patient.shortName}"></td>
+                    <td th:text="${patient.birthDate}"></td>
+                    <td th:text="${patient.sex}"></td>
+                    <td> <a role="button" class="update" th:href="@{/view/patients(id = ${patient.id})}">Actualizar</a> </td>
+                    <td> <a role="button" class="update" th:href="@{/view/patients(id = ${patient.id})}">Actualizar</a> </td>
+                </tr>
             </table>
         </div>
         <script

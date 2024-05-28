@@ -23,26 +23,19 @@ public class SessionEntity {
     private Long id;
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    @NonNull
     @Column(name = "sessionDate", nullable = false)
     private LocalDate sessionDate;
 
-    @NotBlank(message = "Subject cannot be blank")
-    @NonNull
     @Column(name = "subject", nullable = false)
     private String subject;
 
-    @NotBlank(message = "Session's content cannot be blank")
-    @NonNull
     @Lob
     @Column(name = "content", nullable = false)
     private String content;
 
-    @NonNull
     @Column(name = "is_important", nullable = false)
     private Boolean isImportant = false;
 
-    @NonNull
     @Column(name = "is_paid", nullable = false)
     private Boolean isPaid = false;
 

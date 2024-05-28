@@ -14,11 +14,12 @@ public class PatientView {
     @NotBlank(message = "First Name cannot be blank")
     @NonNull
     private String firstNames;
+
     @NotBlank(message = "Last Name cannot be blank")
     @NonNull
     private String lastNames;
 
-    @NotBlank(message = "short Name cannot be blank")
+    @NotBlank(message = "Short Name cannot be blank")
     @NonNull
     private String shortName;
 

@@ -1,34 +1,139 @@
-<!DOCTYPE>
-<html xmlns:th="http://www.thymeleaf.org">
-  <head> 
-    <title>Registrar Sesión:</title>
-    <link th:href="@{/addSession-stylesheet.css}" rel="stylesheet">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registrar Paciente</title>
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous"
+    />
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"
+    />
+    <link th:href="@{/styles.css}" rel="stylesheet">
   </head>
   <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}">
+          <img
+                  th:src="@{/logo.png}"
+                  alt=""
+                  width="80"
+                  height="40"
+                  class="d-inline-block align-text-top"
+          />
+        </a>
+        <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" th:href="@{/}">Inicio</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                      class="nav-link dropdown-toggle"
+                      href="#"
+                      id="createDropdown"
+                      role="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+              >
+                Crear
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="createDropdown">
+                <li><a class="dropdown-item" th:href="@{/view/sessions}">Nueva Sesión</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item" th:href="@{/view/patients}">Nuevo Paciente</a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                      class="nav-link dropdown-toggle"
+                      href="#"
+                      id="listDropdown"
+                      role="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+              >
+                Listas
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="listDropdown">
+                <li><a class="dropdown-item" th:href="@{/view/patients/list}">Pacientes</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item" th:href="@{/view/sessions/list}">Sesiones</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <form class="d-flex">
+            <input
+                    class="form-control me-2"
+                    type="search"
+                    placeholder="Nombre Paciente"
+                    aria-label="Search"
+            />
+            <button class="btn btn-outline-success" type="submit">
+              Buscar
+            </button>
+          </form>
+        </div>
+      </div>
+    </nav>
+    <script
+            type="text/javascript"
+            src="https://code.jquery.com/jquery-1.11.3.min.js">
+    </script>
 
-  <div class="topnav">
-    <a th:href="@{/}">Inicio</a>
-    <a th:href="@{/view/patients}">Registrar Paciente</a>
-    <a th:href="@{/view/sessions}">Registrar Sesión</a>
-    <a th:href="@{/view/search}">Buscar Paciente</a>
-  </div>
+    <!-- Include Date Range Picker -->
+    <script
+            type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js">
+    </script>
+    <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous">
+    </script>
+    <script>
+      $(document).ready(function () {
+        var date_input = $('input[name="date"]'); //our date input has the name "date"
+        var container =
+          $(".bootstrap-iso form").length > 0
+            ? $(".bootstrap-iso form").parent()
+            : "body";
+        date_input.datepicker({
+          format: "dd/mm/yyyy",
+          container: container,
+          todayHighlight: true,
+          autoclose: true,
+        });
 
-  <div class= "container">
-      <h2 > Guardar Sesión </h2>
-      <table id="table"> 
-        <tr>
-          <th>Student</th>
-          <th>Subject</th>
-          <th>Score</th>
-        </tr>
-        <tr th:each="grade: ${grades}">
-          <td th:text="${grade.name}"></td>
-          <td th:text="${grade.subject}"></td>
-          <td th:text="${grade.score}"></td>
-          <td> <a role="button" class="update" th:href="@{/(id = ${grade.id})}">Update</a> </td>
-        </tr>
-      </table>
-    </div>
-    
+         if ( $('#hId').val() ) {
+          $('#date').val( $('#hBirthDay').val());
+        }
+
+      });
+      $('#date').on('change', function() {
+          $('#hBirthDay').val( $('#date').val());
+       });
+    </script>
   </body>
 </html>
