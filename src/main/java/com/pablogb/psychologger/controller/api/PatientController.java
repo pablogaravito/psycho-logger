@@ -78,9 +78,15 @@ public class PatientController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<Set<PatientDto>> getPatients() {
         Set<PatientDto> patientDtoSet = patientService.getPatients().stream().map(patientMapper::mapTo).collect(Collectors.toSet());
+        return new ResponseEntity<>(patientDtoSet, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<Set<PatientDto>> getActivePatients() {
+        Set<PatientDto> patientDtoSet = patientService.getActivePatients().stream().map(patientMapper::mapTo).collect(Collectors.toSet());
         return new ResponseEntity<>(patientDtoSet, HttpStatus.OK);
     }
 

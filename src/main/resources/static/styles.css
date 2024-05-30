@@ -53,4 +53,22 @@ body {
      background-color: #04AA6D;
      border-radius: 5px;
      border: solid white 2px;
-  }
+ }
+
+.btn-outline-success {
+    color: #7E8EF1 !important;
+    border-color: #7E8EF1 !important;
+}
+
+.btn-outline-success:hover {
+    background-color: #7E8EF1 !important;
+    color: #fff !important;
+}
+
+.btn-outline-success:active, .btn-outline-success:focus {
+    background-color: #7E8EF1 !important;
+    color: #fff !important;
+    box-shadow: 0 0 0 0.1rem #7E8EF1 !important;
+}
+
+

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +26,11 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Set<PatientEntity> getPatients() {
         return new HashSet<>((Collection) patientRepository.findAll());
+    }
+
+    @Override
+    public Set<PatientEntity> getActivePatients() {
+        return patientRepository.findByIsActiveTrue();
     }
 
     @Override

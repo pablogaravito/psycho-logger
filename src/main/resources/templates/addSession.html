@@ -97,6 +97,89 @@
         </div>
       </div>
     </nav>
+    <div class="main-container">
+      <h2 class="title">Registrar Sesión</h2>
+      <form method="post" th:object="${session}" th:action="@{/view/sessions}" autocomplete="off">
+        <div class="form-row mb-3">
+          <label for="subject">Tema</label>
+          <input type="text" class="form-control" id="subject" th:field="*{subject}" required/>
+          <p class="error-msg" th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}"></p>
+        </div>
+        <div class="form-row mb-3">
+          <label for="subject">Tema</label>
+          <input type="text" class="form-control" id="subject" th:field="*{subject}" required/>
+          <p class="error-msg" th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}"></p>
+        </div>
+        <div class="form-row mb-3">
+          <label for="subject">Tema</label>
+          <input type="text" class="form-control" id="subject" th:field="*{subject}" required/>
+          <p class="error-msg" th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}"></p>
+        </div>
+        <div class="form-row mb-3">
+          <label for="last-names">Apellidos</label>
+          <input type="text" class="form-control" id="last-names" th:field="*{lastNames}" required/>
+          <p class="error-msg" th:if="${#fields.hasErrors('lastNames')}" th:errors="*{lastNames}"></p>
+        </div>
+        <div class="row mb-3">
+          <div class="col">
+            <label for="short-name">ShortName</label>
+            <input type="text" class="form-control" id="short-name" th:field="*{shortName}" required/>
+            <p class="error-msg" th:if="${#fields.hasErrors('shortName')}" th:errors="*{shortName}"></p>
+          </div>
+          <div class="col">
+            <label class="control-label" for="date">
+              Fecha de Nacimiento
+            </label>
+            <input class="form-control" id="date" name="date" type="text" required/>
+            <input type="hidden" id="hBirthDay" name="hBirthDay" th:field="*{birthDate}">
+            <p class="error-msg" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></p>
+          </div>
+        </div>
+        <div class="form-group mb-3">
+          <div class="col-sm-10">
+            <div class="form-check">
+              <input
+                      class="form-check-input"
+                      type="radio"
+                      name="gridRadios"
+                      id="hombre-radio"
+                      value="MALE"
+                      th:field="*{sex}"
+              />
+              <label class="form-check-label" for="hombre-radio">
+                Hombre
+              </label>
+            </div>
+            <div class="form-check">
+              <input
+                      class="form-check-input"
+                      type="radio"
+                      name="gridRadios"
+                      id="mujer-radio"
+                      value="FEMALE"
+                      th:field="*{sex}"
+                      checked
+              />
+              <label class="form-check-label" for="mujer-radio"> Mujer </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group form-check mb-3">
+          <input type="checkbox" class="form-check-input" id="is-active" th:field="*{isActive}"/>
+          <label class="form-check-label" for="is-active">Activo</label>
+        </div>
+        <input type="hidden" id="hId" th:field="*{id}">
+        <div class="text-center">
+          <button id="submit-btn" type="submit" class="btn btn-primary">
+            Guardar
+          </button>
+        </div>
+      </form>
+    </div>
+
+
+
     <script
             type="text/javascript"
             src="https://code.jquery.com/jquery-1.11.3.min.js">

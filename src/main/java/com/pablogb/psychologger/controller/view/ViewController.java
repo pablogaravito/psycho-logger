@@ -71,7 +71,8 @@ public class ViewController {
     public String getSessionForm(Model model,
                                  @RequestParam(required = false) Long id) {
         SessionEntity session = (id == null) ? new SessionEntity() : sessionService.getSession(id);
-        model.addAttribute("session", session);
+        SessionView sessionView = sessionViewMapper.mapTo(session);
+        model.addAttribute("session", sessionView);
         return "addSession";
     }
 

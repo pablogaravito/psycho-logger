@@ -10,6 +10,7 @@ import java.util.Set;
 public interface PatientService {
     PatientEntity getPatient(Long id);
     Set<PatientEntity> getPatients();
+    Set<PatientEntity> getActivePatients();
     Set<SessionEntity> getPatientSessions(Long id);
     PatientEntity savePatient(PatientEntity patientEntity);
     PatientEntity partialUpdatePatient(PatchPatientDto patchPatientDto);
