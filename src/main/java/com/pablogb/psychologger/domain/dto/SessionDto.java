@@ -37,6 +37,5 @@ public class SessionDto {
     private String nextWeek;
 
     @NonNull
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "sessions")
     private Set<PatientEntity> patients;
 }

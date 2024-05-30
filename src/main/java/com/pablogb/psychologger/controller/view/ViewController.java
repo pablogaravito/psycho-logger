@@ -72,17 +72,22 @@ public class ViewController {
                                  @RequestParam(required = false) Long id) {
         SessionEntity session = (id == null) ? new SessionEntity() : sessionService.getSession(id);
         SessionView sessionView = sessionViewMapper.mapTo(session);
+        Set<PatientView> activePatients = patientService.getActivePatients().stream().map(patientViewMapper::mapTo).collect(Collectors.toSet());
         model.addAttribute("session", sessionView);
+        model.addAttribute("patients", activePatients);
         return "addSession";
     }
 
     @PostMapping("/view/sessions")
-    public String createSession(@Valid @ModelAttribute("session") SessionView sessionView, BindingResult result, Model model) {
-        model.addAttribute("session", sessionView);
+    public String createSession(@Valid @ModelAttribute("session") SessionContextView sessionContextView, BindingResult result, Model model) {
+        model.addAttribute("session", sessionContextView);
         if (result.hasErrors()) {
             return "addSession";
         }
+        PatientEntity patient = patientService.getPatient(sessionContextView.getPatientId());
+        SessionView sessionView = sessionContextView.getSessionView();
         SessionEntity session = sessionViewMapper.mapFrom(sessionView);
+        session.setPatients(Set.of(patient));
         sessionService.saveSession(session);
         return "redirect:/view/sessions/list";
     }
