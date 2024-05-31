@@ -2,6 +2,7 @@ package com.pablogb.psychologger.controller.view;
 
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
+import com.pablogb.psychologger.domain.entity.Sex;
 import com.pablogb.psychologger.mapper.Mapper;
 import com.pablogb.psychologger.service.PatientService;
 import com.pablogb.psychologger.service.SessionService;
@@ -12,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -72,9 +74,20 @@ public class ViewController {
                                  @RequestParam(required = false) Long id) {
         SessionEntity session = (id == null) ? new SessionEntity() : sessionService.getSession(id);
         SessionView sessionView = sessionViewMapper.mapTo(session);
+        sessionView.setPatients(new HashSet<>());
+        PatientView patientView = PatientView.builder()
+                .id(1L)
+                .firstNames("pando")
+                .lastNames("america")
+                .shortName("pando america")
+                .sex("MALE")
+                .birthDate("1987-05-12")
+                .isActive(true)
+                .build();
+        sessionView.addPatient(patientView);
         Set<PatientView> activePatients = patientService.getActivePatients().stream().map(patientViewMapper::mapTo).collect(Collectors.toSet());
         model.addAttribute("session", sessionView);
-        model.addAttribute("patients", activePatients);
+        model.addAttribute("activePatients", activePatients);
         return "addSession";
     }
 

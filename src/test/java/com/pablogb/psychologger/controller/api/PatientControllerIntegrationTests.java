@@ -1,4 +1,4 @@
-package com.pablogb.psychologger.controller;
+package com.pablogb.psychologger.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

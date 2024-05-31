@@ -16,5 +16,4 @@ public interface PatientService {
     PatientEntity partialUpdatePatient(PatchPatientDto patchPatientDto);
     void deletePatient(Long id);
     boolean patientExists(Long id);
-
 }

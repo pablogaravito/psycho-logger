@@ -35,6 +35,10 @@ public class SessionView {
 
     private String nextWeek;
 
-    @NonNull
+
     private Set<PatientView> patients;
+
+    public void addPatient(PatientView patientView) {
+        patients.add(patientView);
+    }
 }
