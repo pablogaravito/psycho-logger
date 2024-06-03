@@ -89,24 +89,24 @@
             </div>
         </nav>
         <div class="main-container">
-            <h2 class="title">Pacientes</h2>
+            <h2 class="title">Sesiones</h2>
             <table class="table table-dark table-striped">
                 <thead>
                 <tr>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Fecha de Nacimiento</th>
-                    <th scope="col">Sexo</th>
+                    <th scope="col">Tema</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Paciente(s)</th>
                     <th scope="col"></th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="patient: ${patients}">
-                    <td th:text="${patient.shortName}"></td>
-                    <td th:text="${patient.birthDate}"></td>
-                    <td th:text="${patient.sex}"></td>
-                    <td> <a role="button" class="update" th:href="@{/view/patients(id = ${patient.id})}">Actualizar</a> </td>
-                    <td> <a role="button" class="update" th:href="@{/view/patients(id = ${patient.id})}">Actualizar</a> </td>
+                <tr th:each="sessioon: ${sessions}">
+                    <td th:text="${sessioon.subject}"></td>
+                    <td th:text="${sessioon.sessionDate}"></td>
+                    <td th:text="${sessioon.patients}"></td>
+                    <td> <a role="button" class="update" th:href="@{/view/patients(id = ${sessioon.id})}">Actualizar</a> </td>
+                    <td> <a role="button" class="update" th:href="@{/view/patients(id = ${sessioon.id})}">Actualizar</a> </td>
                 </tr>
             </table>
         </div>

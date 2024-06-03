@@ -1,12 +1,7 @@
 package com.pablogb.psychologger.controller.view;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.time.LocalDate;
-import java.util.Set;
 
 @Builder
 @Data

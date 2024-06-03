@@ -1,6 +1,5 @@
 package com.pablogb.psychologger.controller.view;
 
-import com.pablogb.psychologger.domain.entity.Sex;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 

@@ -116,8 +116,7 @@
                             Fecha de Nacimiento
                         </label>
                         <input class="form-control" id="date" name="date" type="text" required/>
-                        <input type="text" id="hBirthDay" name="hBirthDay" th:field="*{birthDate}">
-                        <p class="error-msg" th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}"></p>
+                        <input type="hidden" id="hBirthDay" name="hBirthDay" th:field="*{birthDate}">
                     </div>
                 </div>
                 <div class="form-group mb-3">

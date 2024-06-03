@@ -2,7 +2,6 @@ package com.pablogb.psychologger.controller.view;
 
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
-import com.pablogb.psychologger.domain.entity.Sex;
 import com.pablogb.psychologger.mapper.Mapper;
 import com.pablogb.psychologger.service.PatientService;
 import com.pablogb.psychologger.service.SessionService;
@@ -13,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -92,17 +90,13 @@ public class ViewController {
         }
         List<Long> patientIds = getPatientIds(sessionView.getPatients());
         Set<PatientEntity> patients = new HashSet<>();
-        for (Long id: patientIds) {
+        for (Long id : patientIds) {
             PatientEntity patient = patientService.getPatient(id);
             patients.add(patient);
         }
 
-
-//        PatientEntity patient = patientService.getPatient(sessionContextView.getPatientId());
-//        SessionView sessionView = sessionContextView.getSessionView();
         SessionEntity session = sessionViewMapper.mapFrom(sessionView);
         session.setPatients(patients);
-
 
         sessionService.saveSession(session);
         return "redirect:/view/sessions/list";
