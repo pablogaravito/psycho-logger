@@ -97,19 +97,30 @@
 
 
       <form method="post" th:object="${session}" th:action="@{/view/sessions}" autocomplete="off">
+        <div class="row mb-0">
+          <div class="col">
+            <label for="selPatient">Pacientes Activos:</label>
+          </div>
+          <div class="col">
+            <label>Pacientes Seleccionados:</label>
+          </div>
+        </div>
         <div class="row mb-3">
           <div class="col">
-            <div class="form-group">
-              <select class="form-select" id="selPatient" aria-label="Patient Select">
-                <option selected>Elige un Paciente</option>
-                <option th:each="patient : ${activePatients}" th:value="${patient.id}" th:text="${patient.shortName}"></option>
-              </select>
-              <button type="button" id="add-patient" class="btn btn-success">+</button>
+            <div class="row mb-0">
+              <div class="col-9">
+                <select class="form-select" id="selPatient" aria-label="Patient Select">
+                  <option selected>Elige un Paciente</option>
+                  <option th:each="patient : ${activePatients}" th:value="${patient.id}" th:text="${patient.shortName}"></option>
+                </select>
+              </div>
+              <div class="col-2">
+                <button type="button" id="add-patient" class="btn btn-success m-0">+</button>
+              </div>
+              <div class="col-1"></div>
             </div>
           </div>
           <div class="col">
-            <div class="form-group">
-
               <table
                       id="selected-patients-table"
                       class="table table-sm table-dark"
@@ -117,7 +128,6 @@
                 <thead></thead>
                 <tbody></tbody>
               </table>
-            </div>
           </div>
         </div>
 
@@ -137,12 +147,11 @@
             <input type="text" class="form-control" id="nextWeek" th:field="*{nextWeek}" />
           </div>
           <div class="col">
-            <label class="control-label" for="sessionDate">
+            <label class="control-label" for="date">
               Fecha de la Sesión
             </label>
-            <input class="form-control" id="sessionDate" name="sessionDate" type="text" required/>
-            <input type="hidden" id="hSessionDate" name="hSessionDate" th:field="*{sessionDate}">
-            <p class="error-msg" th:if="${#fields.hasErrors('sessionDate')}" th:errors="*{sessionDate}"></p>
+            <input class="form-control" id="date" name="date" type="text" required/>
+            <input type="text" id="sessionDate" name="sessionDate" th:field="*{sessionDate}">
           </div>
         </div>
         <div class="row mb-3">
@@ -177,7 +186,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script>
       $(document).ready(function () {
-        var date_input = $('input[name="sessionDate"]'); //our date input has the name "sessionDate"
+        var date_input = $('input[name="date"]'); //our date input has the name "date"
         var container =
           $(".bootstrap-iso form").length > 0
             ? $(".bootstrap-iso form").parent()
@@ -190,12 +199,12 @@
         });
 
          if ( $('#hId').val() ) {
-          $('#sessionDate').val( $('#hSessionDate').val());
+          $('#date').val( $('#sessionDate').val());
         }
 
       });
-      $('#sessionDate').on('change', function() {
-          $('#hSessionDate').val( $('#sessionDate').val());
+      $('#date').on('change', function() {
+          $('#sessionDate').val( $('#date').val());
        });
     </script>
     <script th:src="@{/app.js}"></script>

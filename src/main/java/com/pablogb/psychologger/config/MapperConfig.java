@@ -80,6 +80,8 @@ public class MapperConfig {
             @Override
             protected LocalDate convert(String source) {
                 DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                System.out.println("string");
+                System.out.println(source);
                 return Optional.ofNullable(source).isPresent() ? LocalDate.parse(source, format) : LocalDate.now();
             }
         };
@@ -88,7 +90,8 @@ public class MapperConfig {
             @Override
             protected String convert(LocalDate source) {
                 DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
+                System.out.println("local date:");
+                System.out.println(source);
                 return Optional.ofNullable(source).isPresent() ? source.format(format) : LocalDate.now().format(format);
             }
         };
