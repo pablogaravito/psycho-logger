@@ -11,7 +11,6 @@ import java.util.Set;
 
 @Data
 @AllArgsConstructor
-@RequiredArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
@@ -34,16 +33,17 @@ public class SessionEntity {
     private String content;
 
     @Column(name = "is_important", nullable = false)
+    @Builder.Default
     private Boolean isImportant = false;
 
     @Column(name = "is_paid", nullable = false)
+    @Builder.Default
     private Boolean isPaid = false;
 
     @Column(name = "next_week")
     private String nextWeek;
 
     @JsonIgnore
-    @NonNull
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(
             name = "patient_session",

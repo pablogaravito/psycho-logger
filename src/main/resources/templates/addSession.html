@@ -95,19 +95,32 @@
     <div class="main-container">
       <h2 class="title">Registrar Sesión</h2>
 
-      <div class="form-group">
-        <select class="form-select" aria-label="Patient Select">
-          <option selected>Elige un Paciente</option>
-          <option th:each="patient : ${activePatients}" th:value="${patient.id}" th:text="${patient.shortName}"></option>
-        </select>
-      </div>
-      <form method="post" th:object="${session}" th:action="@{/view/sessions}" autocomplete="off">
-        <div class="form-group">
-            <ul> <!-- REPLACE THE LI ELEMENTS BELOW -->
-                <li th:each="patient:${session.patients}" th:text="${patient.firstName}"></li>
-            </ul>
 
+      <form method="post" th:object="${session}" th:action="@{/view/sessions}" autocomplete="off">
+        <div class="row mb-3">
+          <div class="col">
+            <div class="form-group">
+              <select class="form-select" id="selPatient" aria-label="Patient Select">
+                <option selected>Elige un Paciente</option>
+                <option th:each="patient : ${activePatients}" th:value="${patient.id}" th:text="${patient.shortName}"></option>
+              </select>
+              <button type="button" id="add-patient" class="btn btn-success">+</button>
+            </div>
+          </div>
+          <div class="col">
+            <div class="form-group">
+
+              <table
+                      id="selected-patients-table"
+                      class="table table-sm table-dark"
+              >
+                <thead></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
         </div>
+
         <div class="form-row mb-3">
           <label for="subject">Tema</label>
           <input type="text" class="form-control" id="subject" th:field="*{subject}" required/>
@@ -118,29 +131,32 @@
           <textarea class="form-control" th:field="*{content}" placeholder="Escribe el contenido de la sesión" id="sessionTextArea" style="height: 100px" required></textarea>
           <p class="error-msg" th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></p>
         </div>
-        <div class="form-row mb-3">
-          <label for="subject">Next Week</label>
-          <input type="text" class="form-control" id="nextWeek" th:field="*{nextWeek}" required/>
-          <p class="error-msg" th:if="${#fields.hasErrors('nextWeek')}" th:errors="*{nextWeek}"></p>
+        <div class="row mb-3">
+          <div class="col">
+            <label for="subject">Next Week</label>
+            <input type="text" class="form-control" id="nextWeek" th:field="*{nextWeek}" />
+          </div>
+          <div class="col">
+            <label class="control-label" for="sessionDate">
+              Fecha de la Sesión
+            </label>
+            <input class="form-control" id="sessionDate" name="sessionDate" type="text" required/>
+            <input type="hidden" id="hSessionDate" name="hSessionDate" th:field="*{sessionDate}">
+            <p class="error-msg" th:if="${#fields.hasErrors('sessionDate')}" th:errors="*{sessionDate}"></p>
+          </div>
         </div>
-        <div class="form-row mb-3">
-          <label class="control-label" for="sessionDate">
-            Fecha de la Sesión
-          </label>
-          <input class="form-control" id="sessionDate" name="sessionDate" type="text" required/>
-          <input type="hidden" id="hSessionDate" name="hSessionDate" th:field="*{sessionDate}">
-          <p class="error-msg" th:if="${#fields.hasErrors('sessionDate')}" th:errors="*{sessionDate}"></p>
+        <div class="row mb-3">
+          <div class="col">
+            <input type="checkbox" class="form-check-input" id="is-important" th:field="*{isImportant}"/>
+            <label class="form-check-label" for="is-important">Importante</label>
+          </div>
+          <div class="col">
+            <input type="checkbox" class="form-check-input" id="is-paid" th:field="*{isPaid}"/>
+            <label class="form-check-label" for="is-paid">Pagado</label>
+          </div>
         </div>
-        <div class="form-group form-check mb-3">
-          <input type="checkbox" class="form-check-input" id="is-important" th:field="*{isImportant}"/>
-          <label class="form-check-label" for="is-important">Importante</label>
-        </div>
-        <div class="form-group form-check mb-3">
-          <input type="checkbox" class="form-check-input" id="is-paid" th:field="*{isPaid}"/>
-          <label class="form-check-label" for="is-paid">Pagado</label>
-        </div>
-        <input type="hidden" id="hId" th:field="*{id}">
-
+        <input type="hidden" id="hId" th:field="*{id}" />
+        <input type="hidden" id="patientIds" th:field="*{patients}" />
         <div class="text-center">
           <button id="submit-btn" type="submit" class="btn btn-primary">
             Guardar
@@ -161,7 +177,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script>
       $(document).ready(function () {
-        var date_input = $('input[name="date"]'); //our date input has the name "date"
+        var date_input = $('input[name="sessionDate"]'); //our date input has the name "sessionDate"
         var container =
           $(".bootstrap-iso form").length > 0
             ? $(".bootstrap-iso form").parent()
@@ -174,13 +190,14 @@
         });
 
          if ( $('#hId').val() ) {
-          $('#date').val( $('#hSessionDate').val());
+          $('#sessionDate').val( $('#hSessionDate').val());
         }
 
       });
-      $('#date').on('change', function() {
-          $('#hSessionDate').val( $('#date').val());
+      $('#sessionDate').on('change', function() {
+          $('#hSessionDate').val( $('#sessionDate').val());
        });
     </script>
+    <script th:src="@{/app.js}"></script>
   </body>
 </html>

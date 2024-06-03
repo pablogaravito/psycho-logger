@@ -28,17 +28,16 @@ public class SessionView {
     private String content;
 
     @NonNull
+    @Builder.Default
     private Boolean isImportant = false;
 
     @NonNull
+    @Builder.Default
     private Boolean isPaid = false;
 
     private String nextWeek;
 
+    @NonNull
+    private String patients;
 
-    private Set<PatientView> patients;
-
-    public void addPatient(PatientView patientView) {
-        patients.add(patientView);
-    }
 }

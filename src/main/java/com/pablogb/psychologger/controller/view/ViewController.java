@@ -13,9 +13,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Controller
@@ -72,35 +75,35 @@ public class ViewController {
     @GetMapping("/view/sessions")
     public String getSessionForm(Model model,
                                  @RequestParam(required = false) Long id) {
-        SessionEntity session = (id == null) ? new SessionEntity() : sessionService.getSession(id);
-        SessionView sessionView = sessionViewMapper.mapTo(session);
-        sessionView.setPatients(new HashSet<>());
-        PatientView patientView = PatientView.builder()
-                .id(1L)
-                .firstNames("pando")
-                .lastNames("america")
-                .shortName("pando america")
-                .sex("MALE")
-                .birthDate("1987-05-12")
-                .isActive(true)
-                .build();
-        sessionView.addPatient(patientView);
+//        SessionEntity session = (id == null) ? new SessionEntity() : sessionService.getSession(id);
+//        SessionView sessionView = sessionViewMapper.mapTo(session);
+
         Set<PatientView> activePatients = patientService.getActivePatients().stream().map(patientViewMapper::mapTo).collect(Collectors.toSet());
-        model.addAttribute("session", sessionView);
+        model.addAttribute("session", new SessionView());
         model.addAttribute("activePatients", activePatients);
         return "addSession";
     }
 
     @PostMapping("/view/sessions")
-    public String createSession(@Valid @ModelAttribute("session") SessionContextView sessionContextView, BindingResult result, Model model) {
-        model.addAttribute("session", sessionContextView);
+    public String createSession(@Valid @ModelAttribute("session") SessionView sessionView, BindingResult result, Model model) {
+        model.addAttribute("session", sessionView);
         if (result.hasErrors()) {
             return "addSession";
         }
-        PatientEntity patient = patientService.getPatient(sessionContextView.getPatientId());
-        SessionView sessionView = sessionContextView.getSessionView();
+        List<Long> patientIds = getPatientIds(sessionView.getPatients());
+        Set<PatientEntity> patients = new HashSet<>();
+        for (Long id: patientIds) {
+            PatientEntity patient = patientService.getPatient(id);
+            patients.add(patient);
+        }
+
+
+//        PatientEntity patient = patientService.getPatient(sessionContextView.getPatientId());
+//        SessionView sessionView = sessionContextView.getSessionView();
         SessionEntity session = sessionViewMapper.mapFrom(sessionView);
-        session.setPatients(Set.of(patient));
+        session.setPatients(patients);
+
+
         sessionService.saveSession(session);
         return "redirect:/view/sessions/list";
     }
@@ -114,5 +117,10 @@ public class ViewController {
         return "sessions";
     }
 
-
+    private List<Long> getPatientIds(String csvInput) {
+        return Stream.of(csvInput.split(","))
+                .map(String::trim)
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+    }
 }
