@@ -1,6 +1,6 @@
 package com.pablogb.psychologger.config;
 
-import com.pablogb.psychologger.controller.view.PatientView;
+import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.Sex;
 import org.modelmapper.*;
 import org.modelmapper.convention.MatchingStrategies;
@@ -9,9 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 @Configuration
 public class MapperConfig {
@@ -46,14 +44,6 @@ public class MapperConfig {
                 return "";
             }
         };
-
-//        Provider<Set<PatientView>> defaultPatientSet = new AbstractProvider<>() {
-//            @Override
-//            protected Set<PatientView> get() {
-//                return new HashSet<>();
-//            }
-//        };
-
 
         Converter<String, String> fromStringToString = new AbstractConverter<>() {
             @Override
@@ -92,6 +82,13 @@ public class MapperConfig {
             }
         };
 
+        Converter<PatientEntity, String> patientEntToStr = new AbstractConverter<>() {
+            @Override
+            protected String convert(PatientEntity source) {
+                return source.getId().toString();
+            }
+        };
+
         modelMapper.createTypeMap(String.class, LocalDate.class);
         modelMapper.addConverter(toStringDate);
         modelMapper.getTypeMap(String.class, LocalDate.class).setProvider(localDateProvider);
@@ -111,6 +108,10 @@ public class MapperConfig {
         modelMapper.createTypeMap(String.class, Sex.class);
         modelMapper.addConverter(fromStringToSex);
         modelMapper.getTypeMap(String.class, Sex.class).setProvider(sexStringProvider);
+
+        modelMapper.createTypeMap(PatientEntity.class, String.class);
+        modelMapper.addConverter(patientEntToStr);
+        modelMapper.getTypeMap(PatientEntity.class, String.class);
 
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
         return modelMapper;

@@ -4,6 +4,7 @@ import com.pablogb.psychologger.domain.dto.PatchSessionDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.exception.EntityNotFoundException;
+import com.pablogb.psychologger.repository.PatientRepository;
 import com.pablogb.psychologger.repository.SessionRepository;
 import com.pablogb.psychologger.service.SessionService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class SessionServiceImpl implements SessionService {
     private final SessionRepository sessionRepository;
+    private final PatientRepository patientRepository;
 
 
     @Override
@@ -28,7 +30,11 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public Set<SessionEntity> getSessions() {
-        return new HashSet<>((Collection) sessionRepository.findAll());
+        Set<SessionEntity> sessions = new HashSet<>();
+        Iterable<SessionEntity> sessionEntities = sessionRepository.findAll();
+        sessionEntities.forEach(e -> e.setPatients(patientRepository.getPatientsFromSession(e.getId())));
+        sessionEntities.forEach(sessions::add);
+        return sessions;
     }
 
     @Override

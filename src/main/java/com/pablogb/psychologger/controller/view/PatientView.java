@@ -30,4 +30,6 @@ public class PatientView {
 
     @NonNull
     private String sex;
+
+
 }

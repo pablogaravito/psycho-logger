@@ -51,4 +51,5 @@ public class PatientEntity {
             inverseJoinColumns = @JoinColumn(name = "session_id", referencedColumnName = "id")
     )
     private Set<SessionEntity> sessions;
+
 }

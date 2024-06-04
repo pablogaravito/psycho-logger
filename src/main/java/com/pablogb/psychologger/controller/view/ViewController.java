@@ -77,18 +77,19 @@ public class ViewController {
 //        SessionView sessionView = sessionViewMapper.mapTo(session);
 
         Set<PatientView> activePatients = patientService.getActivePatients().stream().map(patientViewMapper::mapTo).collect(Collectors.toSet());
-        model.addAttribute("session", new SessionView());
+        model.addAttribute("sessionView", new SessionView());
         model.addAttribute("activePatients", activePatients);
         return "addSession";
     }
 
     @PostMapping("/view/sessions")
-    public String createSession(@Valid @ModelAttribute("session") SessionView sessionView, BindingResult result, Model model) {
-        model.addAttribute("session", sessionView);
+    public String createSession(@Valid @ModelAttribute("sessionView") SessionView sessionView, BindingResult result, Model model) {
+        model.addAttribute("sessionView", sessionView);
         if (result.hasErrors()) {
             return "addSession";
         }
         List<Long> patientIds = getPatientIds(sessionView.getPatients());
+
         Set<PatientEntity> patients = new HashSet<>();
         for (Long id : patientIds) {
             PatientEntity patient = patientService.getPatient(id);
@@ -104,10 +105,13 @@ public class ViewController {
 
     @GetMapping("/view/sessions/list")
     public String getSessionsList(Model model) {
-        Set<SessionView> sessions = sessionService.getSessions().stream()
-                .map(sessionViewMapper::mapTo)
-                .collect(Collectors.toSet());
-        model.addAttribute("sessions", sessions);
+//        Set<SessionView> sessionViews = sessionService.getSessions().stream()
+//                .map(sessionViewMapper::mapTo)
+//                .collect(Collectors.toSet());
+        Set<SessionEntity> sessions = sessionService.getSessions();
+
+        Set<SessionListView> sessionListViews = sessions.stream().map(s -> SessionListView.create(s, patientService::retrievePatients)).collect(Collectors.toSet());
+        model.addAttribute("sessionViews", sessionListViews);
         return "sessions";
     }
 
@@ -115,6 +119,6 @@ public class ViewController {
         return Stream.of(csvInput.split(","))
                 .map(String::trim)
                 .map(Long::parseLong)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

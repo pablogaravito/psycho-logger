@@ -5,18 +5,24 @@ import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.exception.EntityNotFoundException;
 import com.pablogb.psychologger.repository.PatientRepository;
+import com.pablogb.psychologger.repository.SessionRepository;
 import com.pablogb.psychologger.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository patientRepository;
+    private final SessionRepository sessionRepository;
+
     @Override
     public PatientEntity getPatient(Long id) {
         Optional<PatientEntity> patient = patientRepository.findById(id);
@@ -25,7 +31,10 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public Set<PatientEntity> getPatients() {
-        return new HashSet<>((Collection) patientRepository.findAll());
+        Set<PatientEntity> patients = new HashSet<>();
+        Iterable<PatientEntity> patientEntities = patientRepository.findAll();
+        patientEntities.forEach(patients::add);
+        return patients;
     }
 
     @Override
@@ -35,7 +44,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public Set<SessionEntity> getPatientSessions(Long id) {
-        return patientRepository.getSessionsFromPatient(id);
+        return sessionRepository.getSessionsFromPatient(id);
     }
 
     @Override
@@ -64,6 +73,18 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public boolean patientExists(Long id) {
         return patientRepository.existsById(id);
+    }
+
+    @Override
+    public String retrievePatients(Set<PatientEntity> patients) {
+        return patients.stream().map(PatientEntity::getShortName).collect(Collectors.joining(", "));
+    }
+
+    private List<Long> getPatientIds(String csvInput) {
+        return Stream.of(csvInput.split(","))
+                .map(String::trim)
+                .map(Long::parseLong)
+                .toList();
     }
 
     static PatientEntity unwrapPatient(Optional<PatientEntity> entity, Long id) {
