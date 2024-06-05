@@ -2,6 +2,7 @@ package com.pablogb.psychologger.config;
 
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.Sex;
+import com.pablogb.psychologger.utils.DateUtils;
 import org.modelmapper.*;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
@@ -77,8 +78,7 @@ public class MapperConfig {
         Converter<LocalDate, String> toDateString = new AbstractConverter<>() {
             @Override
             protected String convert(LocalDate source) {
-                DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                return Optional.ofNullable(source).isPresent() ? source.format(format) : LocalDate.now().format(format);
+                return Optional.ofNullable(source).isPresent() ? DateUtils.formatDate(source) : DateUtils.formatDate(LocalDate.now());
             }
         };
 

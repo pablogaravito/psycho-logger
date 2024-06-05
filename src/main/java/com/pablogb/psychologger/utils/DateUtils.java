@@ -1,0 +1,16 @@
+package com.pablogb.psychologger.utils;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
+public class DateUtils {
+    private DateUtils() {
+    }
+
+    public static String formatDate(LocalDate input) {
+        Locale spanishLocale = new Locale("es", "PE");
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("EEEE, dd 'de' MMMM 'de' yyyy",spanishLocale);
+        return input.format(format);
+    }
+}

@@ -97,7 +97,6 @@
                     <th scope="col">Fecha</th>
                     <th scope="col">Paciente(s)</th>
                     <th scope="col"></th>
-                    <th scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -105,8 +104,7 @@
                     <td th:text="${sessionView.subject}"></td>
                     <td th:text="${sessionView.sessionDate}"></td>
                     <td th:text="${sessionView.patients}"></td>
-                    <td> <a role="button" class="update" th:href="@{/view/patients(id = ${sessionView.id})}">Actualizar</a> </td>
-                    <td> <a role="button" class="update" th:href="@{/view/patients(id = ${sessionView.id})}">Actualizar</a> </td>
+                    <td> <a role="button" class="update" th:href="@{/view/sessions(id = ${sessionView.id})}">Editar</a> </td>
                 </tr>
             </table>
         </div>

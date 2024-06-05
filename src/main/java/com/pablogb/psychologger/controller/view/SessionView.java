@@ -35,7 +35,4 @@ public class SessionView {
 
     @NonNull
     private String patients;
-
-
-
 }
