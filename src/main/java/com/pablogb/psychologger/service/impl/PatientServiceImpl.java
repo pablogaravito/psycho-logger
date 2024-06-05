@@ -10,11 +10,9 @@ import com.pablogb.psychologger.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -78,13 +76,6 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public String retrievePatients(Set<PatientEntity> patients) {
         return patients.stream().map(PatientEntity::getShortName).collect(Collectors.joining(", "));
-    }
-
-    private List<Long> getPatientIds(String csvInput) {
-        return Stream.of(csvInput.split(","))
-                .map(String::trim)
-                .map(Long::parseLong)
-                .toList();
     }
 
     static PatientEntity unwrapPatient(Optional<PatientEntity> entity, Long id) {

@@ -1,15 +1,13 @@
 package com.pablogb.psychologger.domain.dto;
 
 import com.pablogb.psychologger.domain.entity.Sex;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

@@ -4,7 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Builder
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class SessionView {

@@ -26,17 +26,6 @@ public final class TestDataUtil {
                 .build();
     }
 
-    public static PatientDto createTestPatientDtoA() {
-        return PatientDto.builder()
-                .firstNames("Pablo")
-                .lastNames("Garavito Badaracco")
-                .shortName("Pablo Garavito")
-                .birthDate(LocalDate.parse("1987-05-12"))
-                .sex(Sex.MALE)
-                .isActive(true)
-                .build();
-    }
-
     public static PatientEntity createTestPatientB() {
         return PatientEntity.builder()
                 .firstNames("Juanita")
@@ -50,7 +39,6 @@ public final class TestDataUtil {
 
     public static PatchPatientDto createIncompletePatientDto() {
         return PatchPatientDto.builder()
-//                .id(1L)
                 .shortName("Pando America")
                 .sex(Sex.MALE)
                 .isActive(true)

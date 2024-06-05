@@ -98,16 +98,12 @@ public class ViewController {
 
         SessionEntity session = sessionViewMapper.mapFrom(sessionView);
         session.setPatients(patients);
-
         sessionService.saveSession(session);
         return "redirect:/view/sessions/list";
     }
 
     @GetMapping("/view/sessions/list")
     public String getSessionsList(Model model) {
-//        Set<SessionView> sessionViews = sessionService.getSessions().stream()
-//                .map(sessionViewMapper::mapTo)
-//                .collect(Collectors.toSet());
         Set<SessionEntity> sessions = sessionService.getSessions();
 
         Set<SessionListView> sessionListViews = sessions.stream().map(s -> SessionListView.create(s, patientService::retrievePatients)).collect(Collectors.toSet());

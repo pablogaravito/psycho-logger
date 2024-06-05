@@ -4,6 +4,8 @@ import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -22,9 +24,12 @@ public class SessionListView {
     private String patients;
 
     public static SessionListView create(SessionEntity sessionEntity, Function<Set<PatientEntity>, String> patientNameRetriever) {
+
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
         return SessionListView.builder()
                 .id(sessionEntity.getId())
-                .sessionDate(String.valueOf(sessionEntity.getSessionDate()))
+                .sessionDate(sessionEntity.getSessionDate().format(format))
                 .subject(sessionEntity.getSubject())
                 .patients(patientNameRetriever.apply(sessionEntity.getPatients()))
                 .build();

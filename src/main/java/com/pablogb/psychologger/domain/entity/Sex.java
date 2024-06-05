@@ -1,16 +1,14 @@
 package com.pablogb.psychologger.domain.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum Sex {
 
     MALE("M"),
     FEMALE("F");
-    private String code;
+    private final String code;
 
-    private Sex(String code) {
-        this.code = code;
-    }
-
-    public String getCode() {
-        return code;
-    }
 }

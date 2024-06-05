@@ -38,7 +38,7 @@ const addPatient = () => {
     row.appendChild(cellButton);
     idArray.push(patientId);
     hIds.value = idArray.join();
-    console.log(hIds.value);   
+    selectPatients.selectedIndex = 0;
 }
 
 addPatientBtn.addEventListener('click', addPatient);
