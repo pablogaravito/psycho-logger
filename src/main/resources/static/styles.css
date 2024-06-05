@@ -16,6 +16,10 @@ body {
     /*background-color: #1D1E22;*/
 }
 
+.container-sessions {
+    width: 65%;
+}
+
 .form-check-input:checked{
     background-color: #7E8EF1 !important;
     border: 0;
