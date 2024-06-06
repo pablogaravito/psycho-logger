@@ -7,7 +7,6 @@ import com.pablogb.psychologger.service.PatientService;
 import com.pablogb.psychologger.service.SessionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.sql.ast.tree.expression.Collation;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -53,8 +52,8 @@ public class ViewController {
 
     @GetMapping("/view/patients/list")
     public String getPatientsList(Model model) {
-        Set<PatientView> patients = patientService.getPatients().stream()
-                .map(patientViewMapper::mapTo)
+        Set<PatientListView> patients = patientService.getPatients().stream()
+                .map(PatientListView::create)
                 .collect(Collectors.toSet());
         model.addAttribute("patients", patients);
         return "patients";
@@ -73,20 +72,18 @@ public class ViewController {
     public String getSessionForm(Model model,
                                  @RequestParam(required = false) Long id) {
         SessionView sessionView;
-        if(Objects.isNull(id)) {
+        if (Objects.isNull(id)) {
             sessionView = new SessionView();
             Set<PatientView> activePatients = patientService.getActivePatients().stream().map(patientViewMapper::mapTo).collect(Collectors.toSet());
             model.addAttribute("activePatients", activePatients);
             model.addAttribute("currentPatient", "");
-        }
-        else {
-            SessionEntity session =  sessionService.getSession(id);
+        } else {
+            SessionEntity session = sessionService.getSession(id);
             String patientsNames = session.getPatients().stream().map(PatientEntity::getShortName).collect(Collectors.joining(", "));
             sessionView = sessionViewMapper.mapTo(session);
             model.addAttribute("currentPatient", patientsNames);
             model.addAttribute("activePatients", Collections.emptySet());
         }
-
 
 
         model.addAttribute("sessionView", sessionView);
