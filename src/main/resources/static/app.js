@@ -40,5 +40,6 @@ const addPatient = () => {
     hIds.value = idArray.join();
     selectPatients.selectedIndex = 0;
 }
-
-addPatientBtn.addEventListener('click', addPatient);
+if (addPatientBtn) {
+    addPatientBtn.addEventListener('click', addPatient);
+}

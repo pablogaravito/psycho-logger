@@ -111,7 +111,7 @@ public class MapperConfig {
 
         modelMapper.createTypeMap(PatientEntity.class, String.class);
         modelMapper.addConverter(patientEntToStr);
-        modelMapper.getTypeMap(PatientEntity.class, String.class);
+        modelMapper.getTypeMap(PatientEntity.class, String.class).setProvider(defaultStringProvider);
 
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
         return modelMapper;

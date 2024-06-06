@@ -7,14 +7,13 @@ import com.pablogb.psychologger.service.PatientService;
 import com.pablogb.psychologger.service.SessionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.sql.ast.tree.expression.Collation;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -73,12 +72,24 @@ public class ViewController {
     @GetMapping("/view/sessions")
     public String getSessionForm(Model model,
                                  @RequestParam(required = false) Long id) {
-//        SessionEntity session = (id == null) ? new SessionEntity() : sessionService.getSession(id);
-//        SessionView sessionView = sessionViewMapper.mapTo(session);
+        SessionView sessionView;
+        if(Objects.isNull(id)) {
+            sessionView = new SessionView();
+            Set<PatientView> activePatients = patientService.getActivePatients().stream().map(patientViewMapper::mapTo).collect(Collectors.toSet());
+            model.addAttribute("activePatients", activePatients);
+            model.addAttribute("currentPatient", "");
+        }
+        else {
+            SessionEntity session =  sessionService.getSession(id);
+            String patientsNames = session.getPatients().stream().map(PatientEntity::getShortName).collect(Collectors.joining(", "));
+            sessionView = sessionViewMapper.mapTo(session);
+            model.addAttribute("currentPatient", patientsNames);
+            model.addAttribute("activePatients", Collections.emptySet());
+        }
 
-        Set<PatientView> activePatients = patientService.getActivePatients().stream().map(patientViewMapper::mapTo).collect(Collectors.toSet());
-        model.addAttribute("sessionView", new SessionView());
-        model.addAttribute("activePatients", activePatients);
+
+
+        model.addAttribute("sessionView", sessionView);
         return "addSession";
     }
 

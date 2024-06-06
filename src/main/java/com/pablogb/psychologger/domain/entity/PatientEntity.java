@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.Set;
 
 @Getter
@@ -49,4 +50,8 @@ public class PatientEntity {
     )
     private Set<SessionEntity> sessions;
 
+    @Override
+    public String toString() {
+        return Optional.ofNullable(id).orElse(0L).toString();
+    }
 }

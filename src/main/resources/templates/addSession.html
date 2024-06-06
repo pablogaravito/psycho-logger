@@ -104,7 +104,7 @@
           </div>
         </div>
         <div class="row mb-3">
-          <div class="col">
+          <div th:if="${currentPatient == ''}" class="col">
             <div class="row mb-0">
               <div class="col-9">
                 <select class="form-select" id="selPatient" aria-label="Patient Select">

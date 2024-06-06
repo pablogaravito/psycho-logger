@@ -93,18 +93,16 @@
     <table class="table table-dark table-striped">
         <thead>
         <tr>
-            <th scope="col">Tema</th>
-            <th scope="col">Fecha</th>
-            <th scope="col">Paciente(s)</th>
-            <th scope="col"></th>
+            <th style="width:33%" scope="col">Fecha</th>
+            <th style="width:65%" scope="col">Temas</th>
+            <th style="width:22%" scope="col"></th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="sessionView: ${sessionViews}">
             <td th:text="${sessionView.subject}"></td>
             <td th:text="${sessionView.sessionDate}"></td>
-            <td th:text="${sessionView.patients}"></td>
-            <td> <a role="button" class="update" th:href="@{/view/sessions(id = ${sessionView.id})}">Editar</a> </td>
+            <td> <a role="button" class="update" th:href="@{/view/sessions(id = ${sessionView.id})}">Ver/Editar</a> </td>
         </tr>
     </table>
 </div>
