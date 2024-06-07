@@ -6,17 +6,12 @@ const hIds = document.querySelector('#patientIds');
 var idArray = [];
 
 const removePatient = (patientId) => {
-    console.log(idArray);
     const index = idArray.indexOf(patientId + '');
-    console.log(patientId);
-    console.log(index);
     if (index > -1) {
         document.querySelector('[rowId="'+patientId+'"]').remove();
         idArray.splice(index, 1);
     }
-    
     hIds.value = idArray.join();
-    console.log(hIds.value);
 }
 
 const addPatient = () => {

@@ -25,7 +25,7 @@ public class SessionListView {
     public static SessionListView create(SessionEntity sessionEntity, Function<Set<PatientEntity>, String> patientNameRetriever) {
         return SessionListView.builder()
                 .id(sessionEntity.getId())
-                .sessionDate(DateUtils.formatVerboseDate(sessionEntity.getSessionDate()))
+                .sessionDate(DateUtils.formatLongDate(sessionEntity.getSessionDate()))
                 .subject(sessionEntity.getSubject())
                 .patients(patientNameRetriever.apply(sessionEntity.getPatients()))
                 .build();

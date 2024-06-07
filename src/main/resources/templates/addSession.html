@@ -95,7 +95,7 @@
     <div class="main-container">
       <h2 class="title">Registrar Sesión</h2>
       <form method="post" th:object="${sessionView}" th:action="@{/view/sessions}" autocomplete="off">
-        <div class="row mb-0">
+        <div th:if="${currentPatient == ''}" class="row mb-0">
           <div class="col">
             <label for="selPatient">Pacientes Activos:</label>
           </div>
@@ -103,8 +103,8 @@
             <label>Pacientes Seleccionados:</label>
           </div>
         </div>
-        <div class="row mb-3">
-          <div th:if="${currentPatient == ''}" class="col">
+        <div th:if="${currentPatient == ''}" class="row mb-3">
+          <div class="col">
             <div class="row mb-0">
               <div class="col-9">
                 <select class="form-select" id="selPatient" aria-label="Patient Select">
@@ -127,6 +127,20 @@
                 <tbody></tbody>
               </table>
           </div>
+        </div>
+        <div th:unless="${currentPatient == ''}" class="row mb-3">
+          <label>Paciente(s):</label>
+          <table
+                  id="current-patients-table"
+                  class="table table-sm table-dark"
+          >
+            <thead></thead>
+            <tbody>
+              <tr>
+                <td th:text="${currentPatient}"></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <div class="form-row mb-3">

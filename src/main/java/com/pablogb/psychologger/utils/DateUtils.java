@@ -8,7 +8,7 @@ public class DateUtils {
     private DateUtils() {
     }
 
-    public static String formatVerboseDate(LocalDate input) {
+    public static String formatLongDate(LocalDate input) {
         Locale spanishLocale = new Locale("es", "PE");
         DateTimeFormatter format = DateTimeFormatter.ofPattern("EEEE, dd 'de' MMMM 'de' yyyy",spanishLocale);
         return input.format(format);
