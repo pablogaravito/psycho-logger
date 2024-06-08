@@ -12,86 +12,7 @@
         <link th:href="@{/styles.css}" rel="stylesheet">
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" th:href="@{/}">
-                    <img
-                            th:src="@{/logo.png}"
-                            alt=""
-                            width="80"
-                            height="40"
-                            class="d-inline-block align-text-top"
-                    />
-                </a>
-                <button
-                        class="navbar-toggler"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation"
-                >
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" th:href="@{/}">Inicio</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a
-                                    class="nav-link dropdown-toggle"
-                                    href="#"
-                                    id="createDropdown"
-                                    role="button"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                            >
-                                Crear
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="createDropdown">
-                                <li><a class="dropdown-item" th:href="@{/view/sessions}">Nueva Sesión</a></li>
-                                <li><hr class="dropdown-divider" /></li>
-                                <li>
-                                    <a class="dropdown-item" th:href="@{/view/patients}">Nuevo Paciente</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a
-                                    class="nav-link dropdown-toggle"
-                                    href="#"
-                                    id="listDropdown"
-                                    role="button"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                            >
-                                Listas
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="listDropdown">
-                                <li><a class="dropdown-item" th:href="@{/view/patients/list}">Pacientes</a></li>
-                                <li><hr class="dropdown-divider" /></li>
-                                <li>
-                                    <a class="dropdown-item" th:href="@{/view/sessions/list}">Sesiones</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <form class="d-flex">
-                        <input
-                                class="form-control me-2"
-                                type="search"
-                                placeholder="Nombre Paciente"
-                                aria-label="Search"
-                        />
-                        <button class="btn btn-outline-success" type="submit">
-                            Buscar
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </nav>
+        <div th:replace="fragments/general.html :: navbar"></div>
         <div class="main-container">
             <h2 class="title">Registrar Paciente</h2>
             <form method="post" th:object="${patient}" th:action="@{/view/patients}" autocomplete="off">
@@ -129,6 +50,7 @@
                                     id="hombre-radio"
                                     value="MALE"
                                     th:field="*{sex}"
+                                    th:checked="${patient.firstNames eq 'Pablo'}"
                             />
                             <label class="form-check-label" for="hombre-radio">
                                 Hombre
@@ -142,7 +64,7 @@
                                     id="mujer-radio"
                                     value="FEMALE"
                                     th:field="*{sex}"
-                                    checked
+                                    checked="checked"
                             />
                             <label class="form-check-label" for="mujer-radio"> Mujer </label>
                         </div>
