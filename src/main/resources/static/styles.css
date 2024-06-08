@@ -75,4 +75,9 @@ body {
     box-shadow: 0 0 0 0.1rem #7E8EF1 !important;
 }
 
+.patient-lbl {
+    font-style: italic;
+    padding-left: 1.5rem;
+}
+
 

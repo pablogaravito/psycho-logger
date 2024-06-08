@@ -1,4 +1,4 @@
-package com.pablogb.psychologger.controller.view;
+package com.pablogb.psychologger.controller.view.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;

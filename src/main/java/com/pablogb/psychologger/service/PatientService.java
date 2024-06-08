@@ -1,9 +1,11 @@
 package com.pablogb.psychologger.service;
 
+import com.pablogb.psychologger.controller.view.dto.SessionListView;
 import com.pablogb.psychologger.domain.dto.PatchPatientDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 
+import java.util.List;
 import java.util.Set;
 
 
@@ -16,6 +18,5 @@ public interface PatientService {
     PatientEntity partialUpdatePatient(PatchPatientDto patchPatientDto);
     void deletePatient(Long id);
     boolean patientExists(Long id);
-
-    String retrievePatients(Set<PatientEntity> patients);
+    List<SessionListView.PatientShort> retrievePatients(Set<PatientEntity> patients);
 }

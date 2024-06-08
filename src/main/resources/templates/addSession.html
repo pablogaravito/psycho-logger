@@ -130,19 +130,8 @@
         </div>
         <div th:unless="${currentPatient == ''}" class="row mb-3">
           <label>Paciente(s):</label>
-          <table
-                  id="current-patients-table"
-                  class="table table-sm table-dark"
-          >
-            <thead></thead>
-            <tbody>
-              <tr>
-                <td th:text="${currentPatient}"></td>
-              </tr>
-            </tbody>
-          </table>
+          <label class="patient-lbl" th:text="${currentPatient}"></label>
         </div>
-
         <div class="form-row mb-3">
           <label for="subject">Tema</label>
           <input type="text" class="form-control" id="subject" th:field="*{subject}" required/>

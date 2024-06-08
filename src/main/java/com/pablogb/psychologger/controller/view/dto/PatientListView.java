@@ -1,4 +1,4 @@
-package com.pablogb.psychologger.controller.view;
+package com.pablogb.psychologger.controller.view.dto;
 
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.utils.DateUtils;

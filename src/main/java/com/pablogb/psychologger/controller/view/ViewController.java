@@ -1,5 +1,10 @@
 package com.pablogb.psychologger.controller.view;
 
+import com.pablogb.psychologger.controller.view.dto.PatientListView;
+import com.pablogb.psychologger.controller.view.dto.PatientView;
+import com.pablogb.psychologger.controller.view.dto.SessionListView;
+import com.pablogb.psychologger.controller.view.dto.SessionView;
+import com.pablogb.psychologger.domain.dto.PatchSessionDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.mapper.Mapper;
@@ -12,6 +17,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -84,8 +91,6 @@ public class ViewController {
             model.addAttribute("currentPatient", patientsNames);
             model.addAttribute("activePatients", Collections.emptySet());
         }
-
-
         model.addAttribute("sessionView", sessionView);
         return "addSession";
     }
@@ -96,17 +101,30 @@ public class ViewController {
         if (result.hasErrors()) {
             return "addSession";
         }
-        List<Long> patientIds = getPatientIds(sessionView.getPatients());
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        if (Objects.nonNull(sessionView.getId())) {
+            sessionService.partialUpdateSession(PatchSessionDto.builder()
+                    .id(sessionView.getId())
+                    .nextWeek(sessionView.getNextWeek())
+                    .content(sessionView.getContent())
+                    .isPaid(sessionView.getIsPaid())
+                    .isImportant(sessionView.getIsImportant())
+                    .subject(sessionView.getSubject())
+                    .sessionDate(LocalDate.parse(sessionView.getSessionDate(), format))
+                    .build());
+        } else {
+            List<Long> patientIds = getPatientIds(sessionView.getPatients());
 
-        Set<PatientEntity> patients = new HashSet<>();
-        for (Long id : patientIds) {
-            PatientEntity patient = patientService.getPatient(id);
-            patients.add(patient);
+            Set<PatientEntity> patients = new HashSet<>();
+            for (Long id : patientIds) {
+                PatientEntity patient = patientService.getPatient(id);
+                patients.add(patient);
+            }
+
+            SessionEntity session = sessionViewMapper.mapFrom(sessionView);
+            session.setPatients(patients);
+            sessionService.saveSession(session);
         }
-
-        SessionEntity session = sessionViewMapper.mapFrom(sessionView);
-        session.setPatients(patients);
-        sessionService.saveSession(session);
         return "redirect:/view/sessions/list";
     }
 

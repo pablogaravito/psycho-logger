@@ -1,10 +1,11 @@
-package com.pablogb.psychologger.controller.view;
+package com.pablogb.psychologger.controller.view.dto;
 
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.utils.DateUtils;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -20,14 +21,25 @@ public class SessionListView {
 
     private String subject;
 
-    private String patients;
+    private List<PatientShort> patients;
 
-    public static SessionListView create(SessionEntity sessionEntity, Function<Set<PatientEntity>, String> patientNameRetriever) {
+    public static SessionListView create(SessionEntity sessionEntity, Function<Set<PatientEntity>, List<PatientShort>> patientNameRetriever) {
         return SessionListView.builder()
                 .id(sessionEntity.getId())
                 .sessionDate(DateUtils.formatLongDate(sessionEntity.getSessionDate()))
                 .subject(sessionEntity.getSubject())
                 .patients(patientNameRetriever.apply(sessionEntity.getPatients()))
                 .build();
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public static class PatientShort {
+        private final Long id;
+        private final String name;
+
+        public static PatientShort create(PatientEntity patientEntity) {
+            return new PatientShort(patientEntity.getId(), patientEntity.getShortName());
+        }
     }
 }

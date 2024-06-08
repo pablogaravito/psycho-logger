@@ -103,7 +103,11 @@
                 <tr th:each="sessionView: ${sessionViews}">
                     <td th:text="${sessionView.sessionDate}"></td>
                     <td th:text="${sessionView.subject}"></td>
-                    <td th:text="${sessionView.patients}"></td>
+                    <td>
+                        <div th:each="patient: ${sessionView.patients}">
+                            <p><a th:href="@{/view/patients(id = ${patient.id})}" th:text="${patient.name}"> </a></p>
+                        </div>
+                    </td>
                     <td> <a role="button" class="update" th:href="@{/view/sessions(id = ${sessionView.id})}">Editar</a> </td>
                 </tr>
             </table>
