@@ -63,7 +63,7 @@ public class MapperConfig {
         Converter<String, Sex> fromStringToSex = new AbstractConverter<>() {
             @Override
             protected Sex convert(String s) {
-                return Sex.valueOf(Optional.ofNullable(s).orElse("FEMALE"));
+                return Sex.getSexFromCode(s);
             }
         };
 

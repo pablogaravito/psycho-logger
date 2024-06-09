@@ -48,9 +48,9 @@
                                     type="radio"
                                     name="gridRadios"
                                     id="hombre-radio"
-                                    value="MALE"
+                                    value="M"
                                     th:field="*{sex}"
-                                    th:checked="${patient.firstNames eq 'Pablo'}"
+                                    th:checked="${patient.sex eq 'M'}"
                             />
                             <label class="form-check-label" for="hombre-radio">
                                 Hombre
@@ -62,9 +62,9 @@
                                     type="radio"
                                     name="gridRadios"
                                     id="mujer-radio"
-                                    value="FEMALE"
+                                    value="F"
                                     th:field="*{sex}"
-                                    checked="checked"
+                                    th:checked="${patient.sex eq 'F'}"
                             />
                             <label class="form-check-label" for="mujer-radio"> Mujer </label>
                         </div>
@@ -110,13 +110,13 @@
               });
 
                if ( $('#hId').val() ) {
-                $('#date').val( $('#hBirthDay').val());
+                $("#date").datepicker('update', $('#hBirthDay').val());
               }
-
             });
+
             $('#date').on('change', function() {
                 $('#hBirthDay').val( $('#date').val());
-             });
+            });
         </script>
     </body>
 </html>

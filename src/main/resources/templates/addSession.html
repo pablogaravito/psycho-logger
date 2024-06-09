@@ -122,14 +122,13 @@
           autoclose: true,
         });
 
-         if ( $('#hId').val() ) {
-          $('#date').val( $('#sessionDate').val());
+        if ( $('#hId').val() ) {
+                $("#date").datepicker('update', $('#sessionDate').val());
         }
-
       });
       $('#date').on('change', function() {
           $('#sessionDate').val( $('#date').val());
-       });
+      });
     </script>
     <script th:src="@{/app.js}"></script>
   </body>
