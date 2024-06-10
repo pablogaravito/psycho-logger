@@ -45,6 +45,7 @@ public class BootstrapData implements CommandLineRunner {
                 .content("el paciente habló de muchas cosas muy interesantes, ha sufrido mucho en la vida. Le recordé que la vida es un carnaval y que mañana el sol volverá a brillar!!! Así es, amigos, así que ya está en camino a la sanación definitiva de su alma, Dios mediante, claro está =)")
                 .isImportant(true)
                 .isPaid(true)
+                .nextWeek("situación traumática cuando se le cayó su helado de niño")
                 .patients(Set.of(patientA))
                 .build();
 
@@ -54,7 +55,6 @@ public class BootstrapData implements CommandLineRunner {
                 .content("la paciente habló de muchas cosas muito interesantes... su situación es complicada, ya que están ocurriendo muchas cosas en su vida. Le recordé que aunque las cosas parezcan muy oscuras, siempre habrá una luz al final del túnel!!! Y al final el verdadero tesoro son los amigos que hicimos en el camion =)")
                 .isImportant(true)
                 .isPaid(false)
-                .nextWeek("situación traumática cuando se le cayó su helado de niño")
                 .patients(Set.of(patientB))
                 .build();
 
