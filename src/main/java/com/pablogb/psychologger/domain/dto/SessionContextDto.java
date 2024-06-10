@@ -2,6 +2,8 @@ package com.pablogb.psychologger.domain.dto;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -10,7 +12,7 @@ import lombok.*;
 public class SessionContextDto {
 
     @NonNull
-    private Long patientId;
+    private List<Long> patientId;
     @NonNull
     private SessionDto sessionDto;
 }

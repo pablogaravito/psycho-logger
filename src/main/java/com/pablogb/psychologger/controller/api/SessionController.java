@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,10 +42,15 @@ public class SessionController {
     }
     @PostMapping
     public ResponseEntity<SessionDto> saveSession(@Valid @RequestBody SessionContextDto sessionContextDto) {
-        PatientEntity patientEntity = patientService.getPatient(sessionContextDto.getPatientId());
+        List<Long> patientIds = sessionContextDto.getPatientId();
 
+        Set<PatientEntity> patients = new HashSet<>();
+        for (Long id : patientIds) {
+            PatientEntity patient = patientService.getPatient(id);
+            patients.add(patient);
+        }
         SessionEntity sessionEntity = sessionMapper.mapFrom(sessionContextDto.getSessionDto());
-        sessionEntity.setPatients(Set.of(patientEntity));
+        sessionEntity.setPatients(patients);
         SessionEntity savedSession = sessionService.saveSession(sessionEntity);
         return new ResponseEntity<>(sessionMapper.mapTo(savedSession), HttpStatus.CREATED);
     }
