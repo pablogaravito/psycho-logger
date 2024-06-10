@@ -1,6 +1,6 @@
 package com.pablogb.psychologger.service.impl;
 
-import com.pablogb.psychologger.controller.view.dto.SessionListView;
+import com.pablogb.psychologger.controller.view.dto.PatientShort;
 import com.pablogb.psychologger.domain.dto.PatchPatientDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -77,10 +76,9 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<SessionListView.PatientShort> retrievePatients(Set<PatientEntity> patients) {
-        return patients.stream().map(SessionListView.PatientShort::create).collect(Collectors.toList());
+    public List<PatientShort> retrievePatients(Set<PatientEntity> patients) {
+        return patients.stream().map(PatientShort::create).toList();
     }
-
 
     static PatientEntity unwrapPatient(Optional<PatientEntity> entity, Long id) {
         if (entity.isPresent()) return entity.get();

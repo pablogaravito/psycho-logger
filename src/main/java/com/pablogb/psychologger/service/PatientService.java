@@ -1,5 +1,6 @@
 package com.pablogb.psychologger.service;
 
+import com.pablogb.psychologger.controller.view.dto.PatientShort;
 import com.pablogb.psychologger.controller.view.dto.SessionListView;
 import com.pablogb.psychologger.domain.dto.PatchPatientDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
@@ -18,5 +19,5 @@ public interface PatientService {
     PatientEntity partialUpdatePatient(PatchPatientDto patchPatientDto);
     void deletePatient(Long id);
     boolean patientExists(Long id);
-    List<SessionListView.PatientShort> retrievePatients(Set<PatientEntity> patients);
+    List<PatientShort> retrievePatients(Set<PatientEntity> patients);
 }

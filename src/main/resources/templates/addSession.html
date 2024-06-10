@@ -14,9 +14,9 @@
   <body>
     <div th:replace="~{fragments/general.html :: navbar}"></div>
     <div class="main-container">
-      <h2 class="title" th:text="${currentPatient == ''} ? 'Registrar Sesión' : 'Editar Sesión'"></h2>
-      <form method="post" th:object="${sessionView}" th:action="@{/view/sessions}" autocomplete="off">
-        <div th:if="${currentPatient == ''}" class="row mb-0">
+      <h2 class="title" th:text="${formMethod == 'post'} ? 'Registrar Sesión' : 'Editar Sesión'"></h2>
+      <form th:method="${formMethod}" th:object="${sessionView}" th:action="@{/view/sessions}" autocomplete="off">
+        <div th:if="${formMethod == 'post'}" class="row mb-0">
           <div class="col">
             <label for="selPatient">Pacientes Activos:</label>
           </div>
@@ -24,7 +24,7 @@
             <label>Pacientes Seleccionados:</label>
           </div>
         </div>
-        <div th:if="${currentPatient == ''}" class="row mb-3">
+        <div th:if="${formMethod == 'post'}" class="row mb-3">
           <div class="col">
             <div class="row mb-0">
               <div class="col-9">
@@ -49,9 +49,11 @@
               </table>
           </div>
         </div>
-        <div th:unless="${currentPatient == ''}" class="row mb-3">
+        <div th:unless="${formMethod == 'post'}" class="row mb-3">
           <label>Paciente(s):</label>
-          <label class="patient-lbl" th:text="${currentPatient}"></label>
+            <div th:each="patient: ${sessionView.patients}">
+              <p><a th:href="@{/view/patients(id = ${patient.id})}" th:text="${patient.name}"></a></p>
+            </div>
         </div>
         <div class="form-row mb-3">
           <label for="subject">Tema</label>
@@ -92,7 +94,7 @@
           <button id="submit-btn"
                   type="submit"
                   class="btn btn-primary"
-                  th:text="${currentPatient == ''} ? 'Guardar' : 'Actualizar'">
+                  th:text="${formMethod == 'post'} ? 'Guardar' : 'Actualizar'">
           </button>
         </div>
       </form>

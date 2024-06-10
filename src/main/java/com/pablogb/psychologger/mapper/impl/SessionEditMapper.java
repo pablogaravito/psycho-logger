@@ -1,6 +1,7 @@
 package com.pablogb.psychologger.mapper.impl;
 
 import com.pablogb.psychologger.controller.view.dto.SessionCreateView;
+import com.pablogb.psychologger.controller.view.dto.SessionEditView;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.mapper.Mapper;
 import lombok.RequiredArgsConstructor;
@@ -9,16 +10,17 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class SessionViewMapper implements Mapper<SessionEntity, SessionCreateView> {
+public class SessionEditMapper implements Mapper<SessionEntity, SessionEditView> {
     private final ModelMapper modelMapper;
 
+
     @Override
-    public SessionCreateView mapTo(SessionEntity sessionEntity) {
-        return modelMapper.map(sessionEntity, SessionCreateView.class);
+    public SessionEditView mapTo(SessionEntity sessionEntity) {
+        return modelMapper.map(sessionEntity, SessionEditView.class);
     }
 
     @Override
-    public SessionEntity mapFrom(SessionCreateView sessionCreateView) {
-        return modelMapper.map(sessionCreateView, SessionEntity.class);
+    public SessionEntity mapFrom(SessionEditView sessionEditView) {
+        return modelMapper.map(sessionEditView, SessionEntity.class);
     }
 }

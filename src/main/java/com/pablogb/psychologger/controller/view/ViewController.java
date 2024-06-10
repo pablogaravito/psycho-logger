@@ -1,9 +1,6 @@
 package com.pablogb.psychologger.controller.view;
 
-import com.pablogb.psychologger.controller.view.dto.PatientListView;
-import com.pablogb.psychologger.controller.view.dto.PatientView;
-import com.pablogb.psychologger.controller.view.dto.SessionListView;
-import com.pablogb.psychologger.controller.view.dto.SessionView;
+import com.pablogb.psychologger.controller.view.dto.*;
 import com.pablogb.psychologger.domain.dto.PatchSessionDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
@@ -30,7 +27,8 @@ public class ViewController {
     private final PatientService patientService;
     private final SessionService sessionService;
     private final Mapper<PatientEntity, PatientView> patientViewMapper;
-    private final Mapper<SessionEntity, SessionView> sessionViewMapper;
+    private final Mapper<SessionEntity, SessionCreateView> sessionViewMapper;
+    private final Mapper<SessionEntity, SessionEditView> sessionEditViewMapper;
 
     @GetMapping("/")
     public String startPage() {
@@ -68,7 +66,7 @@ public class ViewController {
 
     @GetMapping("/view/patients/{id}/sessions")
     public String getPatientSessions(@PathVariable Long id, Model model) {
-        Set<SessionView> patientSessions = patientService.getPatientSessions(id)
+        Set<SessionCreateView> patientSessions = patientService.getPatientSessions(id)
                 .stream().map(sessionViewMapper::mapTo)
                 .collect(Collectors.toSet());
         model.addAttribute("patientSessions", patientSessions);
@@ -78,53 +76,60 @@ public class ViewController {
     @GetMapping("/view/sessions")
     public String getSessionForm(Model model,
                                  @RequestParam(required = false) Long id) {
-        SessionView sessionView;
         if (Objects.isNull(id)) {
-            sessionView = new SessionView();
+            SessionCreateView sessionCreateView = new SessionCreateView();
             Set<PatientView> activePatients = patientService.getActivePatients().stream().map(patientViewMapper::mapTo).collect(Collectors.toSet());
             model.addAttribute("activePatients", activePatients);
-            model.addAttribute("currentPatient", "");
+            model.addAttribute("formMethod", "post");
+            model.addAttribute("sessionView", sessionCreateView);
         } else {
             SessionEntity session = sessionService.getSession(id);
-            String patientsNames = session.getPatients().stream().map(PatientEntity::getShortName).collect(Collectors.joining(", "));
-            sessionView = sessionViewMapper.mapTo(session);
-            model.addAttribute("currentPatient", patientsNames);
+            List<PatientShort> patients = session.getPatients().stream().map(PatientShort::create).toList();
+            SessionEditView sessionEditView = sessionEditViewMapper.mapTo(session);
+            sessionEditView.setPatients(patients);
             model.addAttribute("activePatients", Collections.emptySet());
+            model.addAttribute("formMethod", "put");
+            model.addAttribute("sessionView", sessionEditView);
         }
-        model.addAttribute("sessionView", sessionView);
         return "addSession";
     }
 
+    @PutMapping("/view/sessions")
+    public String updateSession(@Valid @ModelAttribute("sessionView") SessionCreateView sessionCreateView,
+                                Model model) {
+        model.addAttribute("sessionView", sessionCreateView);
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        sessionService.partialUpdateSession(PatchSessionDto.builder()
+                .id(sessionCreateView.getId())
+                .nextWeek(sessionCreateView.getNextWeek())
+                .content(sessionCreateView.getContent())
+                .isPaid(sessionCreateView.getIsPaid())
+                .isImportant(sessionCreateView.getIsImportant())
+                .subject(sessionCreateView.getSubject())
+                .sessionDate(LocalDate.parse(sessionCreateView.getSessionDate(), format))
+                .build());
+        return "redirect:/view/sessions/list";
+    }
+
     @PostMapping("/view/sessions")
-    public String createSession(@Valid @ModelAttribute("sessionView") SessionView sessionView, BindingResult result, Model model) {
-        model.addAttribute("sessionView", sessionView);
+    public String createSession(@Valid @ModelAttribute("sessionView") SessionCreateView sessionCreateView, BindingResult result, Model model) {
+        model.addAttribute("sessionView", sessionCreateView);
         if (result.hasErrors()) {
             return "addSession";
         }
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        if (Objects.nonNull(sessionView.getId())) {
-            sessionService.partialUpdateSession(PatchSessionDto.builder()
-                    .id(sessionView.getId())
-                    .nextWeek(sessionView.getNextWeek())
-                    .content(sessionView.getContent())
-                    .isPaid(sessionView.getIsPaid())
-                    .isImportant(sessionView.getIsImportant())
-                    .subject(sessionView.getSubject())
-                    .sessionDate(LocalDate.parse(sessionView.getSessionDate(), format))
-                    .build());
-        } else {
-            List<Long> patientIds = getPatientIds(sessionView.getPatients());
 
-            Set<PatientEntity> patients = new HashSet<>();
-            for (Long id : patientIds) {
-                PatientEntity patient = patientService.getPatient(id);
-                patients.add(patient);
-            }
+        List<Long> patientIds = getPatientIds(sessionCreateView.getPatients());
 
-            SessionEntity session = sessionViewMapper.mapFrom(sessionView);
-            session.setPatients(patients);
-            sessionService.saveSession(session);
+        Set<PatientEntity> patients = new HashSet<>();
+        for (Long id : patientIds) {
+            PatientEntity patient = patientService.getPatient(id);
+            patients.add(patient);
         }
+
+        SessionEntity session = sessionViewMapper.mapFrom(sessionCreateView);
+        session.setPatients(patients);
+        sessionService.saveSession(session);
+
         return "redirect:/view/sessions/list";
     }
 

@@ -31,15 +31,4 @@ public class SessionListView {
                 .patients(patientNameRetriever.apply(sessionEntity.getPatients()))
                 .build();
     }
-
-    @Getter
-    @RequiredArgsConstructor
-    public static class PatientShort {
-        private final Long id;
-        private final String name;
-
-        public static PatientShort create(PatientEntity patientEntity) {
-            return new PatientShort(patientEntity.getId(), patientEntity.getShortName());
-        }
-    }
 }
