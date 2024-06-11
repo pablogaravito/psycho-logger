@@ -13,6 +13,4 @@ public class ViewController {
     public String startPage() {
         return "start";
     }
-
-
 }

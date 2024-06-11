@@ -1,6 +1,7 @@
 package com.pablogb.psychologger.controller.view;
 
 import com.pablogb.psychologger.controller.view.dto.PatientListView;
+import com.pablogb.psychologger.controller.view.dto.PatientShort;
 import com.pablogb.psychologger.controller.view.dto.PatientView;
 import com.pablogb.psychologger.controller.view.dto.SessionCreateView;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
@@ -59,6 +60,8 @@ public class PatientViewController {
         Set<SessionCreateView> patientSessions = patientService.getPatientSessions(id)
                 .stream().map(sessionViewMapper::mapTo)
                 .collect(Collectors.toSet());
+        PatientShort patient = PatientShort.create(patientService.getPatient(id));
+        model.addAttribute("patient", patient);
         model.addAttribute("patientSessions", patientSessions);
         return "patientSessions";
     }

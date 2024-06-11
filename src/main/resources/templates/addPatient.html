@@ -14,7 +14,7 @@
     <body>
         <div th:replace="~{fragments/general.html :: navbar}"></div>
         <div class="main-container">
-            <h2 class="title" th:text="${patient.id != null} ? 'Editar Paciente' : 'Registrar Paciente'"></h2>
+            <h2 class="title mb-3" th:text="${patient.id != null} ? 'Editar Paciente' : 'Registrar Paciente'"></h2>
             <form method="post" th:object="${patient}" th:action="@{/view/patients}" autocomplete="off">
                 <div class="form-row mb-3">
                     <label for="first-names">Nombres</label>

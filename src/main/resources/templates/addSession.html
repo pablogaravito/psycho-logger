@@ -14,7 +14,7 @@
   <body>
     <div th:replace="~{fragments/general.html :: navbar}"></div>
     <div class="main-container">
-      <h2 class="title" th:text="${formMethod == 'post'} ? 'Registrar Sesión' : 'Editar Sesión'"></h2>
+      <h2 class="title mb-3" th:text="${formMethod == 'post'} ? 'Registrar Sesión' : 'Editar Sesión'"></h2>
       <form th:method="${formMethod}" th:object="${sessionView}" th:action="@{/view/sessions}" autocomplete="off">
         <div th:if="${formMethod == 'post'}" class="row mb-0">
           <div class="col">

@@ -9,8 +9,8 @@
 </head>
 <body>
     <div th:replace="~{fragments/general.html :: navbar}"></div>
-    <div class="main-container container-sessions">
-        <h2 class="title">Sesiones</h2>
+    <div class="main-container">
+        <h2 class="title mb-3">Sesiones de: <a th:href="@{/view/patients(id = ${patient.id})}" th:text="${patient.name}"></a></h2>
         <table class="table table-dark table-striped">
             <thead>
             <tr>
@@ -20,10 +20,10 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="sessionCreateView: ${sessionViews}">
-                <td th:text="${sessionCreateView.subject}"></td>
-                <td th:text="${sessionCreateView.sessionDate}"></td>
-                <td> <a role="button" class="update" th:href="@{/view/sessions(id = ${sessionCreateView.id})}">Ver/Editar</a> </td>
+            <tr th:each="patientSession: ${patientSessions}">
+                <td th:text="${patientSession.sessionDate}"></td>
+                <td th:text="${patientSession.subject}"></td>
+                <td> <a role="button" class="update" th:href="@{/view/sessions(id = ${patientSession.id})}">Editar</a> </td>
             </tr>
         </table>
     </div>
