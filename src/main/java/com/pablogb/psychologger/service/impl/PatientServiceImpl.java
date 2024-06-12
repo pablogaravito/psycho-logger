@@ -1,6 +1,6 @@
 package com.pablogb.psychologger.service.impl;
 
-import com.pablogb.psychologger.controller.view.dto.PatientShort;
+import com.pablogb.psychologger.controller.gui.view.PatientShort;
 import com.pablogb.psychologger.domain.dto.PatchPatientDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
@@ -79,6 +79,12 @@ public class PatientServiceImpl implements PatientService {
     public List<PatientShort> retrievePatients(Set<PatientEntity> patients) {
         return patients.stream().map(PatientShort::create).toList();
     }
+
+    @Override
+    public List<PatientEntity> searchByName(String name) {
+        return patientRepository.findByShortNameContainingIgnoreCase(name);
+    }
+
 
     static PatientEntity unwrapPatient(Optional<PatientEntity> entity, Long id) {
         if (entity.isPresent()) return entity.get();

@@ -97,9 +97,10 @@
                     </ul>
                 </li>
             </ul>
-            <form class="d-flex">
+            <form class="d-flex" method="get" th:action="@{/search}" autocomplete="off">
                 <input
                         class="form-control me-2"
+                        name="keyword"
                         type="search"
                         placeholder="Nombre Paciente"
                         aria-label="Search"

@@ -1,9 +1,9 @@
-package com.pablogb.psychologger.controller.view;
+package com.pablogb.psychologger.controller.gui;
 
-import com.pablogb.psychologger.controller.view.dto.PatientListView;
-import com.pablogb.psychologger.controller.view.dto.PatientShort;
-import com.pablogb.psychologger.controller.view.dto.PatientView;
-import com.pablogb.psychologger.controller.view.dto.SessionCreateView;
+import com.pablogb.psychologger.controller.gui.view.PatientListView;
+import com.pablogb.psychologger.controller.gui.view.PatientShort;
+import com.pablogb.psychologger.controller.gui.view.PatientView;
+import com.pablogb.psychologger.controller.gui.view.SessionCreateView;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.mapper.Mapper;

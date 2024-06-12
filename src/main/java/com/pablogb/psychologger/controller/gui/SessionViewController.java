@@ -1,6 +1,6 @@
-package com.pablogb.psychologger.controller.view;
+package com.pablogb.psychologger.controller.gui;
 
-import com.pablogb.psychologger.controller.view.dto.*;
+import com.pablogb.psychologger.controller.gui.view.*;
 import com.pablogb.psychologger.domain.dto.PatchSessionDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;

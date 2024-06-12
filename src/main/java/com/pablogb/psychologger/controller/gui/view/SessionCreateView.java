@@ -1,14 +1,7 @@
-package com.pablogb.psychologger.controller.view.dto;
+package com.pablogb.psychologger.controller.gui.view;
 
-import com.pablogb.psychologger.domain.entity.PatientEntity;
-import com.pablogb.psychologger.domain.entity.SessionEntity;
-import com.pablogb.psychologger.utils.DateUtils;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-
-import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
 
 @Builder
 @Getter

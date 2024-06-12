@@ -1,4 +1,4 @@
-package com.pablogb.psychologger.controller.view.dto;
+package com.pablogb.psychologger.controller.gui.view;
 
 import lombok.*;
 

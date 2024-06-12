@@ -4,6 +4,7 @@ import com.pablogb.psychologger.domain.entity.PatientEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
 import java.util.Set;
 
 public interface PatientRepository extends CrudRepository<PatientEntity, Long> {
@@ -12,4 +13,6 @@ public interface PatientRepository extends CrudRepository<PatientEntity, Long> {
     Set<PatientEntity> getPatientsFromSession(Long sessionId);
 
     Set<PatientEntity> findByIsActiveTrue();
+
+    List<PatientEntity> findByShortNameContainingIgnoreCase(String shortName);
 }

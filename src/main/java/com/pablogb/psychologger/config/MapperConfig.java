@@ -1,6 +1,5 @@
 package com.pablogb.psychologger.config;
 
-import com.pablogb.psychologger.controller.view.dto.PatientShort;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.Sex;
 import com.pablogb.psychologger.utils.DateUtils;
