@@ -2,6 +2,7 @@ package com.pablogb.psychologger.service.impl;
 
 import com.pablogb.psychologger.controller.gui.view.PatientShort;
 import com.pablogb.psychologger.domain.dto.PatchPatientDto;
+import com.pablogb.psychologger.domain.dto.PatientWithDebtContextDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.exception.EntityNotFoundException;
@@ -82,9 +83,13 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public List<PatientEntity> searchByName(String name) {
-        return patientRepository.findByShortNameContainingIgnoreCase(name);
+        return patientRepository.findByShortNameContainingIgnoreCaseOrFirstNamesContainingIgnoreCaseOrLastNamesContainingIgnoreCase(name, name, name);
     }
 
+    @Override
+    public List<PatientWithDebtContextDto> getPatientsWithDebt() {
+        return patientRepository.getPatientsWithDebt();
+    }
 
     static PatientEntity unwrapPatient(Optional<PatientEntity> entity, Long id) {
         if (entity.isPresent()) return entity.get();

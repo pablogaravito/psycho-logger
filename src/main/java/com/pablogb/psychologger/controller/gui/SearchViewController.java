@@ -1,5 +1,6 @@
 package com.pablogb.psychologger.controller.gui;
 
+import com.pablogb.psychologger.domain.dto.PatientWithDebtContextDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.service.PatientService;
 import lombok.RequiredArgsConstructor;
@@ -36,8 +37,9 @@ public class SearchViewController {
 
     @GetMapping("/debt")
     public String getDebtPeople(Model model) {
-//      findTop5ByIsPaidFalseOrderByIsPaid
-        return "debt";
+        List<PatientWithDebtContextDto> patientsWithDebt = patientService.getPatientsWithDebt();
+        System.out.println(patientsWithDebt);
+        return "start";
     }
 
 }
