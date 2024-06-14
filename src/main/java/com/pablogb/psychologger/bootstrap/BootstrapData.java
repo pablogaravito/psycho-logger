@@ -39,6 +39,15 @@ public class BootstrapData implements CommandLineRunner {
                 .isActive(true)
                 .build();
 
+        PatientEntity patientC = PatientEntity.builder()
+                .firstNames("Tzuyu")
+                .lastNames("Chou")
+                .shortName("Tzu")
+                .sex(Sex.FEMALE)
+                .birthDate(LocalDate.parse("1999-06-14"))
+                .isActive(true)
+                .build();
+
         SessionEntity sessionA = SessionEntity.builder()
                 .sessionDate(LocalDate.parse("2019-05-12"))
                 .subject("trabajo niño interior")
@@ -70,6 +79,7 @@ public class BootstrapData implements CommandLineRunner {
 
         patientRepository.save(patientA);
         patientRepository.save(patientB);
+        patientRepository.save(patientC);
         sessionRepository.save(sessionA);
         sessionRepository.save(sessionB);
         sessionRepository.save(sessionAB);

@@ -1,5 +1,6 @@
 package com.pablogb.psychologger.controller.gui;
 
+import com.pablogb.psychologger.domain.dto.PatientWithBirthdayContextDto;
 import com.pablogb.psychologger.domain.dto.PatientWithDebtContextDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.service.PatientService;
@@ -31,15 +32,16 @@ public class SearchViewController {
 
     @GetMapping("/birthday")
     public String getBirthdayPeople(Model model) {
-
-        return "birthday";
+        List<PatientEntity> cumpleaneros = patientService.getPatientsWithIncomingBirthdays();
+        System.out.println(cumpleaneros);
+        return "start";
     }
 
     @GetMapping("/debt")
     public String getDebtPeople(Model model) {
         List<PatientWithDebtContextDto> patientsWithDebt = patientService.getPatientsWithDebt();
-        System.out.println(patientsWithDebt);
-        return "start";
+        model.addAttribute("patients", patientsWithDebt);
+        return "debt";
     }
 
 }

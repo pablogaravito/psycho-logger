@@ -1,6 +1,5 @@
 package com.pablogb.psychologger.domain.dto;
 
-import com.pablogb.psychologger.domain.entity.PatientEntity;
 import lombok.*;
 
 @Getter
@@ -11,18 +10,9 @@ import lombok.*;
 public class PatientWithDebtContextDto {
 
     @NonNull
-    private Long patientId;
+    private Long id;
     @NonNull
-    private String patientShortName;
+    private String shortName;
     @NonNull
     private Long debtCount;
-
-    @Override
-    public String toString() {
-        return "PatientWithDebtContextDto{" +
-                "patientId=" + patientId +
-                ", patientShortName='" + patientShortName + '\'' +
-                ", debtCount=" + debtCount +
-                '}';
-    }
 }

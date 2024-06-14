@@ -50,8 +50,8 @@ public class PatientEntity {
     )
     private Set<SessionEntity> sessions;
 
-    @Override
-    public String toString() {
-        return Optional.ofNullable(id).orElse(0L).toString();
-    }
+//    @Override
+//    public String toString() {
+//        return Optional.ofNullable(id).orElse(0L).toString();
+//    }
 }

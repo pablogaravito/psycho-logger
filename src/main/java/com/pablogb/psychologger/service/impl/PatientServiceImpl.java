@@ -2,6 +2,7 @@ package com.pablogb.psychologger.service.impl;
 
 import com.pablogb.psychologger.controller.gui.view.PatientShort;
 import com.pablogb.psychologger.domain.dto.PatchPatientDto;
+import com.pablogb.psychologger.domain.dto.PatientWithBirthdayContextDto;
 import com.pablogb.psychologger.domain.dto.PatientWithDebtContextDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
@@ -89,6 +90,11 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public List<PatientWithDebtContextDto> getPatientsWithDebt() {
         return patientRepository.getPatientsWithDebt();
+    }
+
+    @Override
+    public List<PatientEntity> getPatientsWithIncomingBirthdays() {
+        return patientRepository.getPatientsWithUpcomingBirthdays();
     }
 
     static PatientEntity unwrapPatient(Optional<PatientEntity> entity, Long id) {
