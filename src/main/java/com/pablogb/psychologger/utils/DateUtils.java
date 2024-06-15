@@ -14,8 +14,20 @@ public final class DateUtils {
         return input.format(format);
     }
 
+    public static String formatIntermediateDate(LocalDate input) {
+        Locale spanishLocale = new Locale("es", "PE");
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("EEEE, dd/MM/yyyy",spanishLocale);
+        return input.format(format);
+    }
+
     public static String formatShortDate(LocalDate input) {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        return input.format(format);
+    }
+
+    public static String formatShortBirthdayDate(LocalDate input) {
+        Locale spanishLocale = new Locale("es", "PE");
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd 'de' MMMM", spanishLocale);
         return input.format(format);
     }
 }

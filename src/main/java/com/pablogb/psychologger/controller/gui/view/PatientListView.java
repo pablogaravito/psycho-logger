@@ -22,7 +22,7 @@ public class PatientListView {
         return PatientListView.builder()
                 .id(patientEntity.getId())
                 .sex(patientEntity.getSex().getCode())
-                .birthDate(DateUtils.formatLongDate(patientEntity.getBirthDate()))
+                .birthDate(DateUtils.formatShortDate(patientEntity.getBirthDate()))
                 .shortName(patientEntity.getShortName())
                 .build();
     }

@@ -1,15 +1,13 @@
 package com.pablogb.psychologger.controller.gui;
 
+import com.pablogb.psychologger.controller.gui.view.PatientListView;
 import com.pablogb.psychologger.domain.dto.PatientWithBirthdayContextDto;
 import com.pablogb.psychologger.domain.dto.PatientWithDebtContextDto;
-import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.service.PatientService;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.BoundedReferenceType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -24,7 +22,9 @@ public class SearchViewController {
 
     @GetMapping
     public String searchPatient(@RequestParam(name = "keyword") String keyword, Model model) {
-        List<PatientEntity> patients = patientService.searchByName(keyword);
+        List<PatientListView> patients = patientService.searchByName(keyword).stream()
+                .map(PatientListView::create)
+                .toList();
         model.addAttribute("keyword", keyword);
         model.addAttribute("patients", patients);
         return "patientSearch";
@@ -32,9 +32,9 @@ public class SearchViewController {
 
     @GetMapping("/birthday")
     public String getBirthdayPeople(Model model) {
-        List<PatientEntity> cumpleaneros = patientService.getPatientsWithIncomingBirthdays();
-        System.out.println(cumpleaneros);
-        return "start";
+        List<PatientWithBirthdayContextDto> birthdayBoys = patientService.getPatientsWithIncomingBirthdays();
+        model.addAttribute("birthdayBoys", birthdayBoys);
+        return "birthday";
     }
 
     @GetMapping("/debt")
@@ -43,5 +43,4 @@ public class SearchViewController {
         model.addAttribute("patients", patientsWithDebt);
         return "debt";
     }
-
 }

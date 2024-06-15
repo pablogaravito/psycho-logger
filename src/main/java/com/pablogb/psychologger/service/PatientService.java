@@ -23,5 +23,5 @@ public interface PatientService {
     List<PatientShort> retrievePatients(Set<PatientEntity> patients);
     List<PatientEntity> searchByName(String name);
     List<PatientWithDebtContextDto> getPatientsWithDebt();
-    List<PatientEntity> getPatientsWithIncomingBirthdays();
+    List<PatientWithBirthdayContextDto> getPatientsWithIncomingBirthdays();
 }
