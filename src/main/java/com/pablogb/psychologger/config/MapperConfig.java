@@ -78,7 +78,7 @@ public class MapperConfig {
         Converter<LocalDate, String> toDateString = new AbstractConverter<>() {
             @Override
             protected String convert(LocalDate source) {
-                return Optional.ofNullable(source).isPresent() ? DateUtils.formatIntermediateDate(source) : DateUtils.formatShortDate(LocalDate.now());
+                return Optional.ofNullable(source).isPresent() ? DateUtils.formatShortDate(source) : DateUtils.formatShortDate(LocalDate.now());
             }
         };
 

@@ -27,15 +27,6 @@ public interface PatientRepository extends CrudRepository<PatientEntity, Long> {
             "ORDER BY COUNT(s) DESC")
     List<PatientWithDebtContextDto> getPatientsWithDebt();
 
-//    @Query("SELECT new com.pablogb.psychologger.domain.dto.PatientWithBirthdayContextDto(p.id, p.shortName, p.birthDate) " +
-//            "FROM PatientEntity p WHERE " +
-//            "MONTH(p.birthDate) = MONTH(CURRENT_DATE) AND " +
-//            "DAY(p.birthDate) >= DAY(CURRENT_DATE) " +
-//            "OR (MONTH(p.birthDate) = MONTH(CURRENT_DATE + INTERVAL 1 MONTH) AND " +
-//            "DAY(p.birthDate) <= DAY(CURRENT_DATE + INTERVAL 1 MONTH)) " +
-//            "ORDER BY MONTH(p.birthDate), DAY(p.birthDate)")
-//    List<PatientWithBirthdayContextDto> getPersonsWithUpcomingBirthdays2();
-
     @Query(value = "SELECT * FROM PATIENT p WHERE " +
             "((MONTH(p.birth_date) = MONTH(CURDATE()) AND DAY(p.birth_date) >= DAY(CURDATE())) OR " +
             "(MONTH(p.birth_date) = MONTH(DATEADD('DAY', 30, CURDATE())) AND DAY(p.birth_date) <= DAY(DATEADD('DAY', 30, CURDATE())))) " +

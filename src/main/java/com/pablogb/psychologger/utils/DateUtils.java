@@ -27,7 +27,7 @@ public final class DateUtils {
 
     public static String formatShortBirthdayDate(LocalDate input) {
         Locale spanishLocale = new Locale("es", "PE");
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd 'de' MMMM", spanishLocale);
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("EEEE, dd 'de' MMMM", spanishLocale);
         return input.format(format);
     }
 }
