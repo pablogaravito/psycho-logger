@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
-import java.util.Optional;
 import java.util.Set;
 
 @Getter
@@ -14,6 +14,39 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Entity
+@NamedNativeQuery(
+        name = "PatientEntity.findPersonsWithUpcomingAndRecentBirthdays",
+        query = "SELECT p.id, p.short_name AS shortName, FORMATDATETIME(p.birth_date, 'yyyy-MM-dd') AS birthDate " +
+                "FROM PATIENT p " +
+                "WHERE DAYOFYEAR(p.birth_date) - DAYOFYEAR(CURDATE()) BETWEEN 0 AND 14 " +
+                "OR " +
+                "DAYOFYEAR( CONCAT(YEAR(CURDATE()),'-12-31') ) - ( DAYOFYEAR(CURDATE()) - DAYOFYEAR(p.birth_date) ) BETWEEN 0 AND 14 " +
+                "OR " +
+                "DAYOFYEAR(CURDATE()) - DAYOFYEAR(p.birth_date) BETWEEN 0 AND 7 " +
+                "OR " +
+                "(DAYOFYEAR(CURDATE()) - DAYOFYEAR(p.birth_date) ) - DAYOFYEAR( CONCAT(YEAR(CURDATE()), '-12-31')) BETWEEN 0 AND 7 " +
+                "ORDER BY " +
+                "CASE " +
+                "WHEN DAYOFYEAR(CURDATE()) - DAYOFYEAR(p.birth_date) BETWEEN 0 AND 7 THEN 1 " +
+                "WHEN (DAYOFYEAR(CURDATE()) - DAYOFYEAR(p.birth_date) ) - DAYOFYEAR( CONCAT(YEAR(CURDATE()), '-12-31')) BETWEEN 0 AND 7 THEN 2 " +
+                "WHEN DAYOFYEAR(p.birth_date) - DAYOFYEAR(CURDATE()) BETWEEN 0 AND 14 THEN 2 " +
+                "WHEN DAYOFYEAR( CONCAT(YEAR(CURDATE()),'-12-31') ) - ( DAYOFYEAR(CURDATE()) - DAYOFYEAR(p.birth_date) ) BETWEEN 0 AND 14 THEN 2 " +
+                "END, " +
+                "DAYOFYEAR(p.birth_date)",
+        resultSetMapping = "Mapping.PatientWithBirthdayContextDto"
+)
+@SqlResultSetMapping(
+        name = "Mapping.PatientWithBirthdayContextDto",
+        classes = @ConstructorResult(
+                targetClass = com.pablogb.psychologger.domain.dto.PatientWithBirthdayContextDto.class,
+                columns = {
+                        @ColumnResult(name = "id", type = Long.class),
+                        @ColumnResult(name = "shortName", type = String.class),
+                        @ColumnResult(name = "birthDate", type = String.class)
+                }
+        )
+)
+
 @Table(name = "patient")
 public class PatientEntity {
 
@@ -49,9 +82,4 @@ public class PatientEntity {
             inverseJoinColumns = @JoinColumn(name = "session_id", referencedColumnName = "id")
     )
     private Set<SessionEntity> sessions;
-
-//    @Override
-//    public String toString() {
-//        return Optional.ofNullable(id).orElse(0L).toString();
-//    }
 }

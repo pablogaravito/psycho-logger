@@ -19,7 +19,6 @@ public interface PatientRepository extends CrudRepository<PatientEntity, Long> {
 
     List<PatientEntity> findByShortNameContainingIgnoreCaseOrFirstNamesContainingIgnoreCaseOrLastNamesContainingIgnoreCase(String shortName, String firstNames, String lastNames);
 
-
     @Query("SELECT new com.pablogb.psychologger.domain.dto.PatientWithDebtContextDto(p.id, p.shortName, COUNT(s)) " +
             "FROM SessionEntity s JOIN s.patients p " +
             "WHERE s.isPaid = false " +
@@ -27,22 +26,6 @@ public interface PatientRepository extends CrudRepository<PatientEntity, Long> {
             "ORDER BY COUNT(s) DESC")
     List<PatientWithDebtContextDto> getPatientsWithDebt();
 
-    @Query(value = "SELECT * FROM PATIENT p " +
-            "WHERE DAYOFYEAR(p.birth_date) - DAYOFYEAR(CURDATE()) BETWEEN 0 AND 14 " +
-            "OR " +
-            "DAYOFYEAR( CONCAT(YEAR(CURDATE()),'-12-31') ) - ( DAYOFYEAR(CURDATE()) - DAYOFYEAR(p.birth_date) ) BETWEEN 0 AND 14 " +
-            "OR " +
-            "DAYOFYEAR(CURDATE()) - DAYOFYEAR(p.birth_date) BETWEEN 0 AND 7 " +
-            "OR " +
-            "(DAYOFYEAR(CURDATE()) - DAYOFYEAR(p.birth_date) ) - DAYOFYEAR( CONCAT(YEAR(CURDATE()), '-12-31')) BETWEEN 0 AND 7 " +
-            "ORDER BY " +
-            "CASE " +
-            "WHEN DAYOFYEAR(CURDATE()) - DAYOFYEAR(p.birth_date) BETWEEN 0 AND 7 THEN 1 " +
-            "WHEN (DAYOFYEAR(CURDATE()) - DAYOFYEAR(p.birth_date) ) - DAYOFYEAR( CONCAT(YEAR(CURDATE()), '-12-31')) BETWEEN 0 AND 7 THEN 2 " +
-            "WHEN DAYOFYEAR(p.birth_date) - DAYOFYEAR(CURDATE()) BETWEEN 0 AND 14 THEN 2 " +
-            "WHEN DAYOFYEAR( CONCAT(YEAR(CURDATE()),'-12-31') ) - ( DAYOFYEAR(CURDATE()) - DAYOFYEAR(p.birth_date) ) BETWEEN 0 AND 14 THEN 2 " +
-            "END, " +
-            "DAYOFYEAR(p.birth_date)", nativeQuery = true)
-    List<PatientEntity> findPersonsWithUpcomingAndRecentBirthdays();
-
+    @Query(name = "PatientEntity.findPersonsWithUpcomingAndRecentBirthdays", nativeQuery = true)
+    List<PatientWithBirthdayContextDto> findPersonsWithUpcomingAndRecentBirthdays();
 }
