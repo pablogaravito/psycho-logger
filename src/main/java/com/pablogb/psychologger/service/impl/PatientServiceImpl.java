@@ -94,7 +94,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public List<PatientWithBirthdayContextDto> getPatientsWithIncomingBirthdays() {
-        return patientRepository.getPatientsWithUpcomingBirthdays().stream().map(PatientWithBirthdayContextDto::create).toList();
+        return patientRepository.findPersonsWithUpcomingAndRecentBirthdays().stream().map(PatientWithBirthdayContextDto::create).toList();
     }
 
     static PatientEntity unwrapPatient(Optional<PatientEntity> entity, Long id) {

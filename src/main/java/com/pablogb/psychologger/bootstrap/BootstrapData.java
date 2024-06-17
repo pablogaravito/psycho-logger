@@ -21,7 +21,7 @@ public class BootstrapData implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        PatientEntity patientA = PatientEntity.builder()
+        PatientEntity patientPablo = PatientEntity.builder()
                 .firstNames("Pablo")
                 .lastNames("Garavito Badaracco")
                 .shortName("Pablo Garavito")
@@ -30,7 +30,7 @@ public class BootstrapData implements CommandLineRunner {
                 .isActive(true)
                 .build();
 
-        PatientEntity patientB = PatientEntity.builder()
+        PatientEntity patientSana = PatientEntity.builder()
                 .firstNames("Sana")
                 .lastNames("Minatozaki")
                 .shortName("Sana")
@@ -39,12 +39,48 @@ public class BootstrapData implements CommandLineRunner {
                 .isActive(true)
                 .build();
 
-        PatientEntity patientC = PatientEntity.builder()
+        PatientEntity patientTzu = PatientEntity.builder()
                 .firstNames("Tzuyu")
                 .lastNames("Chou")
                 .shortName("Tzu")
                 .sex(Sex.FEMALE)
                 .birthDate(LocalDate.parse("1999-06-14"))
+                .isActive(true)
+                .build();
+
+        PatientEntity patientAiri = PatientEntity.builder()
+                .firstNames("Airi")
+                .lastNames("Suzuki")
+                .shortName("Airi")
+                .sex(Sex.FEMALE)
+                .birthDate(LocalDate.parse("1994-04-12"))
+                .isActive(true)
+                .build();
+
+        PatientEntity patientChisato = PatientEntity.builder()
+                .firstNames("Chisato")
+                .lastNames("Okai")
+                .shortName("Chissaaa")
+                .sex(Sex.FEMALE)
+                .birthDate(LocalDate.parse("1994-06-21"))
+                .isActive(true)
+                .build();
+
+        PatientEntity patientMina = PatientEntity.builder()
+                .firstNames("Mina")
+                .lastNames("Myoui")
+                .shortName("Minita")
+                .sex(Sex.FEMALE)
+                .birthDate(LocalDate.parse("1997-03-24"))
+                .isActive(true)
+                .build();
+
+        PatientEntity patientNayeon = PatientEntity.builder()
+                .firstNames("Nayeon")
+                .lastNames("Im")
+                .shortName("Nayeon")
+                .sex(Sex.FEMALE)
+                .birthDate(LocalDate.parse("1995-09-22"))
                 .isActive(true)
                 .build();
 
@@ -55,7 +91,7 @@ public class BootstrapData implements CommandLineRunner {
                 .isImportant(true)
                 .isPaid(true)
                 .nextWeek("situación traumática cuando se le cayó su helado de niño")
-                .patients(Set.of(patientA))
+                .patients(Set.of(patientPablo))
                 .build();
 
         SessionEntity sessionB = SessionEntity.builder()
@@ -64,7 +100,7 @@ public class BootstrapData implements CommandLineRunner {
                 .content("la paciente habló de muchas cosas muito interesantes... su situación es complicada, ya que están ocurriendo muchas cosas en su vida. Le recordé que aunque las cosas parezcan muy oscuras, siempre habrá una luz al final del túnel!!! Y al final el verdadero tesoro son los amigos que hicimos en el camion =)")
                 .isImportant(true)
                 .isPaid(false)
-                .patients(Set.of(patientB))
+                .patients(Set.of(patientSana))
                 .build();
 
         SessionEntity sessionAB = SessionEntity.builder()
@@ -74,12 +110,43 @@ public class BootstrapData implements CommandLineRunner {
                 .isImportant(true)
                 .isPaid(false)
                 .nextWeek("matrimonio y 9 hijos")
-                .patients(Set.of(patientB, patientA))
+                .patients(Set.of(patientSana, patientPablo))
                 .build();
 
-        patientRepository.save(patientA);
-        patientRepository.save(patientB);
-        patientRepository.save(patientC);
+        for (int i = 0; i < 6; i++) {
+            String day = Integer.toString(25 + i);
+            PatientEntity loopPatient = PatientEntity.builder()
+                    .firstNames("ABCD")
+                    .lastNames("ABCD")
+                    .shortName("ABCD - " + day)
+                    .sex(Sex.FEMALE)
+                    .birthDate(LocalDate.parse("1998-12-" + day))
+                    .isActive(true)
+                    .build();
+            patientRepository.save(loopPatient);
+        }
+
+        for (int i = 0; i < 9; i++) {
+            String day = Integer.toString(1 + i);
+            PatientEntity loopPatient = PatientEntity.builder()
+                    .firstNames("ABCD")
+                    .lastNames("ABCD")
+                    .shortName("ABCD - " + day)
+                    .sex(Sex.FEMALE)
+                    .birthDate(LocalDate.parse("1992-01-0" + day))
+                    .isActive(true)
+                    .build();
+            patientRepository.save(loopPatient);
+        }
+
+        patientRepository.save(patientPablo);
+        patientRepository.save(patientSana);
+        patientRepository.save(patientMina);
+        patientRepository.save(patientNayeon);
+        patientRepository.save(patientTzu);
+        patientRepository.save(patientAiri);
+        patientRepository.save(patientChisato);
+
         sessionRepository.save(sessionA);
         sessionRepository.save(sessionB);
         sessionRepository.save(sessionAB);
