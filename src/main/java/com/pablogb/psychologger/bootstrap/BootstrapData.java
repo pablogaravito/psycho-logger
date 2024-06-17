@@ -1,6 +1,5 @@
 package com.pablogb.psychologger.bootstrap;
 
-
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.domain.entity.Sex;
@@ -112,32 +111,6 @@ public class BootstrapData implements CommandLineRunner {
                 .nextWeek("matrimonio y 9 hijos")
                 .patients(Set.of(patientSana, patientPablo))
                 .build();
-
-        for (int i = 0; i < 6; i++) {
-            String day = Integer.toString(25 + i);
-            PatientEntity loopPatient = PatientEntity.builder()
-                    .firstNames("ABCD")
-                    .lastNames("ABCD")
-                    .shortName("ABCD - " + day)
-                    .sex(Sex.FEMALE)
-                    .birthDate(LocalDate.parse("1998-12-" + day))
-                    .isActive(true)
-                    .build();
-            patientRepository.save(loopPatient);
-        }
-
-        for (int i = 0; i < 9; i++) {
-            String day = Integer.toString(1 + i);
-            PatientEntity loopPatient = PatientEntity.builder()
-                    .firstNames("ABCD")
-                    .lastNames("ABCD")
-                    .shortName("ABCD - " + day)
-                    .sex(Sex.FEMALE)
-                    .birthDate(LocalDate.parse("1992-01-0" + day))
-                    .isActive(true)
-                    .build();
-            patientRepository.save(loopPatient);
-        }
 
         patientRepository.save(patientPablo);
         patientRepository.save(patientSana);
