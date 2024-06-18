@@ -28,7 +28,7 @@ import java.util.Set;
                 "ORDER BY " +
                 "CASE " +
                 "WHEN DAYOFYEAR(CURDATE()) - DAYOFYEAR(p.birth_date) BETWEEN 0 AND 7 THEN 1 " +
-                "WHEN (DAYOFYEAR(CURDATE()) - DAYOFYEAR(p.birth_date) ) - DAYOFYEAR( CONCAT(YEAR(CURDATE()), '-12-31')) BETWEEN 0 AND 7 THEN 2 " +
+                "WHEN (DAYOFYEAR(CURDATE()) - DAYOFYEAR(p.birth_date) ) - DAYOFYEAR( CONCAT(YEAR(CURDATE()), '-12-31')) BETWEEN 0 AND 7 THEN 1 " +
                 "WHEN DAYOFYEAR(p.birth_date) - DAYOFYEAR(CURDATE()) BETWEEN 0 AND 14 THEN 2 " +
                 "WHEN DAYOFYEAR( CONCAT(YEAR(CURDATE()),'-12-31') ) - ( DAYOFYEAR(CURDATE()) - DAYOFYEAR(p.birth_date) ) BETWEEN 0 AND 14 THEN 2 " +
                 "END, " +

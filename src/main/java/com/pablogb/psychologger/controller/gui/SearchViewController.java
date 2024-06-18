@@ -15,7 +15,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/search")
+@RequestMapping("/view/search")
 public class SearchViewController {
 
     private final PatientService patientService;

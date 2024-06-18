@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
   <head>
-    <div th:replace="~{fragments/general.html :: headerWithDatePicker}"></div>
-    <title>Registrar Sesión</title>
+    <div th:replace="~{fragments/general.html :: header}"></div>
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"
+    />
+    <title>Registro de Nueva Sesión</title>
   </head>
   <body>
     <div th:replace="~{fragments/general.html :: navbar}"></div>
