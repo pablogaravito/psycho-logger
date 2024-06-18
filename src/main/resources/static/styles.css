@@ -41,6 +41,7 @@ body {
 #submit-btn {
     padding: 0.6rem 2rem;
     background-color: #7E8EF1 !important;
+    font-size: 18px;
 }
 .error-msg {
     color: #FF204E;
@@ -81,6 +82,12 @@ body {
 
 .sessions {
     background-color: #E2BBE9;
+}
+
+.box-img {
+    padding: 0;
+    vertical-align: middle;
+    font-size: x-large;
 }
 
 .btn-outline-success {

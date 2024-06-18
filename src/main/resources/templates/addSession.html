@@ -91,7 +91,10 @@
           <button id="submit-btn"
                   type="submit"
                   class="btn btn-primary"
-                  th:text="${formMethod == 'post'} ? 'Guardar' : 'Actualizar'">
+          >
+              <i class="bx bx-save box-img"></i>
+              <span th:if="${formMethod == 'post'}">Guardar</span>
+              <span th:unless="${formMethod == 'post'}">Actualizar</span>
           </button>
         </div>
       </form>
