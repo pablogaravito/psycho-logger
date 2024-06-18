@@ -50,21 +50,38 @@ body {
     text-align: center;
 }
 
-.update {
+.box-btn {
      display: inline-block;
-     width: 100%;
-     height: 100%;
-     margin-bottom: 0.5em;
+     /*width: 100%;
+     height: 100%;*/
+
+     /*margin-bottom: 0.5em;
      padding-top: .6em;
-     padding-bottom: .6em;
+     padding-bottom: .6em;*/
+     padding: 1.7px 6.5px 0;
      text-align: center;
-     font-size: 16px;
+     font-size: 24px;
      text-decoration: none;
-     color: #fff;
-     background-color: #04AA6D;
-     border-radius: 5px;
-     border: solid white 2px;
- }
+     color: #100c08;
+     border-radius: 8px;
+     filter: brightness(1);
+}
+
+.box-btn:hover {
+    filter: brightness(0.90);
+}
+
+.box-btn:active {
+    transform: scale(0.95);
+}
+
+.edit {
+    background-color: #F9D689;
+}
+
+.sessions {
+    background-color: #E2BBE9;
+}
 
 .btn-outline-success {
     color: #7E8EF1 !important;
