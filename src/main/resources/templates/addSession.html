@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
   <head>
-    <div th:replace="~{fragments/general.html :: header}"></div>
+    <div th:replace="~{fragments/general :: header}"></div>
     <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"
@@ -9,7 +9,7 @@
     <title>Registro de Nueva Sesión</title>
   </head>
   <body>
-    <div th:replace="~{fragments/general.html :: navbar}"></div>
+    <div th:replace="~{fragments/general :: navbar('sessions')}"></div>
     <div class="main-container">
       <h2 class="title mb-3" th:text="${formMethod == 'post'} ? 'Registrar Sesión' : 'Editar Sesión'"></h2>
       <form th:method="${formMethod}" th:object="${sessionView}" th:action="@{/view/sessions}" autocomplete="off">

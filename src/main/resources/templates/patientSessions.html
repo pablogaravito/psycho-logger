@@ -1,29 +1,29 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head>
-    <div th:replace="~{fragments/general.html :: header}"></div>
-    <title>Sesiones por Paciente</title>
-</head>
-<body>
-    <div th:replace="~{fragments/general.html :: navbar}"></div>
-    <div class="main-container">
-        <h2 class="title mb-3">Sesiones de: <a th:href="@{/view/patients(id = ${patient.id})}" th:text="${patient.name}"></a></h2>
-        <table class="table table-dark table-striped">
-            <thead>
-            <tr>
-                <th style="width:33%" scope="col">Fecha</th>
-                <th style="width:65%" scope="col">Temas</th>
-                <th style="width:22%" scope="col"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="patientSession: ${patientSessions}">
-                <td th:text="${patientSession.sessionDate}"></td>
-                <td th:text="${patientSession.subject}"></td>
-                <td> <a role="button" class="update" th:href="@{/view/sessions(id = ${patientSession.id})}">Editar</a> </td>
-            </tr>
-        </table>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-</body>
+    <head>
+        <div th:replace="~{fragments/general :: header}"></div>
+        <title>Sesiones por Paciente</title>
+    </head>
+    <body>
+        <div th:replace="~{fragments/general :: navbar('sessions')}"></div>
+        <div class="main-container">
+            <h2 class="title mb-3">Sesiones de: <a th:href="@{/view/patients(id = ${patient.id})}" th:text="${patient.name}"></a></h2>
+            <table class="table table-dark table-striped">
+                <thead>
+                <tr>
+                    <th style="width:33%" scope="col">Fecha</th>
+                    <th style="width:65%" scope="col">Temas</th>
+                    <th style="width:22%" scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="patientSession: ${patientSessions}">
+                    <td th:text="${patientSession.sessionDate}"></td>
+                    <td th:text="${patientSession.subject}"></td>
+                    <td> <a role="button" class="update" th:href="@{/view/sessions(id = ${patientSession.id})}">Editar</a> </td>
+                </tr>
+            </table>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    </body>
 </html>
