@@ -19,7 +19,7 @@
                 <tbody>
                 <tr th:each="patientSession: ${patientSessions}">
                     <td th:text="${patientSession.sessionDate}"></td>
-                    <td th:text="${patientSession.subject}"></td>
+                    <td th:text="${patientSession.themes}"></td>
                     <td> <a role="button" th:href="@{/view/sessions(id = ${patientSession.id})}">Editar</a> </td>
                 </tr>
             </table>

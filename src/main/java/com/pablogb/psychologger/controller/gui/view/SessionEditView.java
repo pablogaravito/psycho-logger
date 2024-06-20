@@ -12,7 +12,7 @@ import java.util.List;
 public class SessionEditView {
     private Long id;
     private String sessionDate;
-    private String subject;
+    private String themes;
     private String content;
     private Boolean isImportant;
 

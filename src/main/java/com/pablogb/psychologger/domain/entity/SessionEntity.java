@@ -24,8 +24,8 @@ public class SessionEntity {
     @Column(name = "sessionDate", nullable = false)
     private LocalDate sessionDate;
 
-    @Column(name = "subject", nullable = false)
-    private String subject;
+    @Column(name = "themes", nullable = false)
+    private String themes;
 
     @Lob
     @Column(name = "content", nullable = false)

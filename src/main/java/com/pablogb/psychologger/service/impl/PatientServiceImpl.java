@@ -83,8 +83,8 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<PatientEntity> searchByName(String name) {
-        return patientRepository.findByShortNameContainingIgnoreCaseOrFirstNamesContainingIgnoreCaseOrLastNamesContainingIgnoreCase(name, name, name);
+    public List<PatientEntity> searchPatientByName(String name) {
+        return patientRepository.searchPatientByName(name);
     }
 
     @Override

@@ -234,7 +234,7 @@ class SessionControllerIntegrationTests {
                 MockMvcRequestBuilders.put("/sessions/" + savedSession.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updatedSessionJson)
-        ).andExpect(MockMvcResultMatchers.jsonPath("$.subject").value(updatedSession.getSubject())
+        ).andExpect(MockMvcResultMatchers.jsonPath("$.subject").value(updatedSession.getThemes())
         ).andExpect(MockMvcResultMatchers.jsonPath("$.content").value(updatedSession.getContent())
         );
     }

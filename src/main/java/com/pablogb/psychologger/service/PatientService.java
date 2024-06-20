@@ -21,7 +21,7 @@ public interface PatientService {
     void deletePatient(Long id);
     boolean patientExists(Long id);
     List<PatientShort> retrievePatients(Set<PatientEntity> patients);
-    List<PatientEntity> searchByName(String name);
+    List<PatientEntity> searchPatientByName(String name);
     List<PatientWithDebtContextDto> getPatientsWithDebt();
     List<PatientWithBirthdayContextDto> getPatientsWithIncomingBirthdays();
 }

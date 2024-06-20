@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SessionShort {
     private Long id;
-    private String subject;
+    private String themes;
     private String sessionDate;
 
     public static SessionShort create(SessionEntity sessionEntity) {
-        return new SessionShort(sessionEntity.getId(), sessionEntity.getSubject(), DateUtils.formatShortDate(sessionEntity.getSessionDate()));
+        return new SessionShort(sessionEntity.getId(), sessionEntity.getThemes(), DateUtils.formatShortDate(sessionEntity.getSessionDate()));
     }
 }

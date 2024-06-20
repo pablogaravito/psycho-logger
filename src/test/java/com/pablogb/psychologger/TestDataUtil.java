@@ -2,7 +2,6 @@ package com.pablogb.psychologger;
 
 import com.pablogb.psychologger.domain.dto.PatchPatientDto;
 import com.pablogb.psychologger.domain.dto.PatchSessionDto;
-import com.pablogb.psychologger.domain.dto.PatientDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.domain.entity.Sex;
@@ -51,7 +50,7 @@ public final class TestDataUtil {
         Set<PatientEntity> patients = Set.of(patient);
         return SessionEntity.builder()
                 .sessionDate(LocalDate.parse("2019-05-12"))
-                .subject("trabajo niño interior")
+                .themes("trabajo niño interior")
                 .content("el paciente habló de muchas cosas muy interesantes, ha sufrido mucho en la vida. Le recordé que la vida es un carnaval y que mañana el sol volverá a brillar!!! Así es, amigos, así que ya está en camino a la sanación definitiva de su alma, Dios mediante, claro está")
                 .isImportant(true)
                 .isPaid(true)
@@ -64,7 +63,7 @@ public final class TestDataUtil {
         Set<PatientEntity> patients = Set.of(patient);
         return SessionEntity.builder()
                 .sessionDate(LocalDate.parse("2018-08-11"))
-                .subject("trabajo emocional")
+                .themes("trabajo emocional")
                 .content("la paciente habló de muchas cosas muito interesantes... su situación es complicada, ya que hay mucho desorden en su familia de origen, le recordé que aunque las cosas parezcan muy oscuras, siempre habrá una luz al final del túnel!!! y esa luz pueden ser las personas que nos aman, así es!")
                 .isImportant(true)
                 .isPaid(false)

@@ -19,7 +19,7 @@ public class SessionListView {
 
     private String sessionDate;
 
-    private String subject;
+    private String themes;
 
     private List<PatientShort> patients;
 
@@ -27,7 +27,7 @@ public class SessionListView {
         return SessionListView.builder()
                 .id(sessionEntity.getId())
                 .sessionDate(DateUtils.formatIntermediateDate(sessionEntity.getSessionDate()))
-                .subject(sessionEntity.getSubject())
+                .themes(sessionEntity.getThemes())
                 .patients(patientNameRetriever.apply(sessionEntity.getPatients()))
                 .build();
     }

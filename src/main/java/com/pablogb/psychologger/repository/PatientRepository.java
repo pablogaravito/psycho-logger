@@ -17,7 +17,8 @@ public interface PatientRepository extends JpaRepository<PatientEntity, Long> {
 
     Set<PatientEntity> findByIsActiveTrue();
 
-    List<PatientEntity> findByShortNameContainingIgnoreCaseOrFirstNamesContainingIgnoreCaseOrLastNamesContainingIgnoreCase(String shortName, String firstNames, String lastNames);
+    @Query("SELECT p FROM PatientEntity p WHERE p.shortName LIKE %:name% OR p.firstNames LIKE %:name% OR p.lastNames LIKE %:name%")
+    List<PatientEntity> searchPatientByName(@Param("name") String name);
 
     @Query("SELECT new com.pablogb.psychologger.domain.dto.PatientWithDebtContextDto(p.id, p.shortName, COUNT(s)) " +
             "FROM SessionEntity s JOIN s.patients p " +
@@ -25,7 +26,7 @@ public interface PatientRepository extends JpaRepository<PatientEntity, Long> {
             "GROUP BY p.id, p.shortName " +
             "ORDER BY COUNT(s) DESC")
     List<PatientWithDebtContextDto> getPatientsWithDebt();
-
+    
     @Query(name = "PatientEntity.findPersonsWithUpcomingAndRecentBirthdays", nativeQuery = true)
     List<PatientWithBirthdayContextDto> findPersonsWithUpcomingAndRecentBirthdays();
 }

@@ -63,7 +63,7 @@ public class SessionViewController {
                 .content(sessionCreateView.getContent())
                 .isPaid(sessionCreateView.getIsPaid())
                 .isImportant(sessionCreateView.getIsImportant())
-                .subject(sessionCreateView.getSubject())
+                .themes(sessionCreateView.getThemes())
                 .sessionDate(LocalDate.parse(sessionCreateView.getSessionDate(), format))
                 .build());
         return "redirect:/view/sessions/list";

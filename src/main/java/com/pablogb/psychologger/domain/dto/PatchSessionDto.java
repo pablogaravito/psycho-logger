@@ -14,7 +14,7 @@ import java.util.Set;
 public class PatchSessionDto {
     private Long id;
     private LocalDate sessionDate;
-    private String subject;
+    private String themes;
     private String content;
     private Boolean isImportant;
     private Boolean isPaid;

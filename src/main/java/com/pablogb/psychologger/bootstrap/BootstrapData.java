@@ -85,7 +85,7 @@ public class BootstrapData implements CommandLineRunner {
 
         SessionEntity sessionA = SessionEntity.builder()
                 .sessionDate(LocalDate.parse("2019-05-12"))
-                .subject("trabajo niño interior")
+                .themes("trabajo niño interior")
                 .content("el paciente habló de muchas cosas muy interesantes, ha sufrido mucho en la vida. Le recordé que la vida es un carnaval y que mañana el sol volverá a brillar!!! Así es, amigos, así que ya está en camino a la sanación definitiva de su alma, Dios mediante, claro está =)")
                 .isImportant(true)
                 .isPaid(true)
@@ -95,7 +95,7 @@ public class BootstrapData implements CommandLineRunner {
 
         SessionEntity sessionB = SessionEntity.builder()
                 .sessionDate(LocalDate.parse("2018-08-11"))
-                .subject("trabajo emocional")
+                .themes("trabajo emocional")
                 .content("la paciente habló de muchas cosas muito interesantes... su situación es complicada, ya que están ocurriendo muchas cosas en su vida. Le recordé que aunque las cosas parezcan muy oscuras, siempre habrá una luz al final del túnel!!! Y al final el verdadero tesoro son los amigos que hicimos en el camion =)")
                 .isImportant(true)
                 .isPaid(false)
@@ -104,7 +104,7 @@ public class BootstrapData implements CommandLineRunner {
 
         SessionEntity sessionAB = SessionEntity.builder()
                 .sessionDate(LocalDate.parse("2024-06-03"))
-                .subject("sesión pareja")
+                .themes("sesión pareja")
                 .content("se aman mucho, y así será por siempre, al resto de mortales solo nos queda ver y atestiguar quizá el más grande amor nunca antes visto en el mundo moderno, y, tal vez, de todos los tiempos...")
                 .isImportant(true)
                 .isPaid(false)

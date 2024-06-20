@@ -53,9 +53,9 @@
             </div>
         </div>
         <div class="form-row mb-3">
-          <label for="subject">Tema</label>
-          <input type="text" class="form-control" id="subject" th:field="*{subject}" required/>
-          <p class="error-msg" th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}"></p>
+          <label for="themes">Tema</label>
+          <input type="text" class="form-control" id="themes" th:field="*{themes}" required/>
+          <p class="error-msg" th:if="${#fields.hasErrors('themes')}" th:errors="*{themes}"></p>
         </div>
         <div class="form-row mb-3">
           <label for="sessionTextArea">Contenido</label>
@@ -64,7 +64,7 @@
         </div>
         <div class="row mb-3">
           <div class="col">
-            <label for="subject">Next Week</label>
+            <label for="nextWeek">Next Week</label>
             <input type="text" class="form-control" id="nextWeek" th:field="*{nextWeek}" />
           </div>
           <div class="col">

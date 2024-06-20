@@ -60,7 +60,7 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public SessionEntity partialUpdateSession(PatchSessionDto patchSessionDto) {
         return sessionRepository.findById(patchSessionDto.getId()).map(existingSession -> {
-            Optional.ofNullable(patchSessionDto.getSubject()).ifPresent(existingSession::setSubject);
+            Optional.ofNullable(patchSessionDto.getThemes()).ifPresent(existingSession::setThemes);
             Optional.ofNullable(patchSessionDto.getContent()).ifPresent(existingSession::setContent);
             Optional.ofNullable(patchSessionDto.getIsImportant()).ifPresent(existingSession::setIsImportant);
             Optional.ofNullable(patchSessionDto.getIsPaid()).ifPresent(existingSession::setIsPaid);

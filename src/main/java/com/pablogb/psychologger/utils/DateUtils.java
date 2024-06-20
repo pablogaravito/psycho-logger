@@ -1,6 +1,7 @@
 package com.pablogb.psychologger.utils;
 
 import java.time.LocalDate;
+import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
@@ -25,9 +26,11 @@ public final class DateUtils {
         return input.format(format);
     }
 
-    public static String formatShortBirthdayDate(LocalDate input) {
+    public static String formatBirthdayDate(String input) {
         Locale spanishLocale = new Locale("es", "PE");
+        LocalDate birthdayLocalDate = LocalDate.parse(input, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        LocalDate birthdayCurrentYear = birthdayLocalDate.withYear(Year.now().getValue());
         DateTimeFormatter format = DateTimeFormatter.ofPattern("EEEE, dd 'de' MMMM", spanishLocale);
-        return input.format(format);
+        return birthdayCurrentYear.format(format);
     }
 }

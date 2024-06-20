@@ -17,7 +17,7 @@ public class SessionCreateView {
 
     @NotBlank(message = "Subject cannot be blank")
     @NonNull
-    private String subject;
+    private String themes;
 
     @NotBlank(message = "Session's content cannot be blank")
     @NonNull

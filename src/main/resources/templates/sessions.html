@@ -20,7 +20,7 @@
                 <tbody>
                 <tr th:each="sessionCreateView: ${sessionViews}">
                     <td th:text="${sessionCreateView.sessionDate}"></td>
-                    <td th:text="${sessionCreateView.subject}"></td>
+                    <td th:text="${sessionCreateView.themes}"></td>
                     <td>
                         <div th:each="patient: ${sessionCreateView.patients}">
                             <p><a th:href="@{/view/patients(id = ${patient.id})}" th:text="${patient.name}"></a></p>

@@ -22,7 +22,7 @@ public class SearchViewController {
 
     @GetMapping
     public String searchPatient(@RequestParam(name = "keyword") String keyword, Model model) {
-        List<PatientListView> patients = patientService.searchByName(keyword).stream()
+        List<PatientListView> patients = patientService.searchPatientByName(keyword).stream()
                 .map(PatientListView::create)
                 .toList();
         model.addAttribute("keyword", keyword);

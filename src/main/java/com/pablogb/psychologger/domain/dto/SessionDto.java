@@ -18,9 +18,9 @@ public class SessionDto {
     @NonNull
     private LocalDate sessionDate;
 
-    @NotBlank(message = "Subject cannot be blank")
+    @NotBlank(message = "Themes cannot be blank")
     @NonNull
-    private String subject;
+    private String themes;
 
     @NotBlank(message = "Session's content cannot be blank")
     @NonNull
