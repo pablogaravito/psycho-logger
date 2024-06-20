@@ -1,9 +1,6 @@
 package com.pablogb.psychologger.controller.gui;
 
-import com.pablogb.psychologger.controller.gui.view.PatientListView;
-import com.pablogb.psychologger.controller.gui.view.PatientShort;
-import com.pablogb.psychologger.controller.gui.view.PatientView;
-import com.pablogb.psychologger.controller.gui.view.SessionCreateView;
+import com.pablogb.psychologger.controller.gui.view.*;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.mapper.Mapper;
@@ -15,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -57,9 +55,8 @@ public class PatientViewController {
 
     @GetMapping("/{id}/sessions")
     public String getPatientSessions(@PathVariable Long id, Model model) {
-        Set<SessionCreateView> patientSessions = patientService.getPatientSessions(id)
-                .stream().map(sessionViewMapper::mapTo)
-                .collect(Collectors.toSet());
+        List<SessionListViewShort> patientSessions = patientService.getPatientSessions(id)
+                .stream().map(SessionListViewShort::create).toList();
         PatientShort patient = PatientShort.create(patientService.getPatient(id));
         model.addAttribute("patient", patient);
         model.addAttribute("patientSessions", patientSessions);

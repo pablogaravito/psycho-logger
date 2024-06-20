@@ -11,20 +11,23 @@
             <table class="table table-dark table-striped">
                 <thead>
                 <tr>
-                    <th style="width:35%" scope="col">Fecha</th>
-                    <th style="width:65%" scope="col">Temas</th>
+                    <th style="width:40%" scope="col">Fecha</th>
+                    <th style="width:50%" scope="col">Temas</th>
+                    <th style="width:10%" scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="patientSession: ${patientSessions}">
                     <td th:text="${patientSession.sessionDate}"></td>
+                    <td th:text="${patientSession.themes}"></td>
                     <td>
                         <a
                                 role="button"
+                                class="box-btn sessions"
                                 th:href="@{/view/sessions(id = ${patientSession.id})}"
-                                th:text="${patientSession.themes}"
-                                title="Ver Sesión"
+                                title="Ver/Editar Sesión"
                         >
+                            <i class='bx bx-edit' ></i>
                         </a>
                     </td>
                 </tr>
