@@ -14,15 +14,20 @@
                     <th style="width:26%" scope="col">Nombre</th>
                     <th style="width:38%" scope="col">Deuda</th>
                     <th style="width:14%" scope="col"></th>
-                    <th style="width:14%" scope="col"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="patient: ${patients}">
-                    <td th:text="${patient.shortName}"></td>
+                    <td><a role="button" th:href="@{/view/patients(id = ${patient.id})}" th:text="${patient.shortName}"></a></td>
                     <td th:text="${patient.debtCount}"></td>
-                    <td> <a role="button" class="update" th:href="@{/view/patients(id = ${patient.id})}">Editar</a> </td>
-                    <td> <a role="button" class="update" th:href="@{/view/patients/{id}/sessions(id=${patient.id})}">Sesiones</a> </td>
+                    <td>
+                        <a
+                                role="button"
+                                th:href="@{/view/patients/{id}/debt(id=${patient.id})}"
+                        >
+                            <i class='bx bx-dollar-circle'></i>
+                        </a>
+                    </td>
                 </tr>
             </table>
         </div>

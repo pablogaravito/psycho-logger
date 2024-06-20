@@ -65,4 +65,15 @@ public class PatientViewController {
         model.addAttribute("patientSessions", patientSessions);
         return "patientSessions";
     }
+
+    @GetMapping("/{id}/debt")
+    public String getPatientDebt(@PathVariable Long id, Model model) {
+        Set<SessionCreateView> patientSessions = patientService.getPatientSessions(id)
+                .stream().map(sessionViewMapper::mapTo)
+                .collect(Collectors.toSet());
+        PatientShort patient = PatientShort.create(patientService.getPatient(id));
+        model.addAttribute("patient", patient);
+        model.addAttribute("patientSessions", patientSessions);
+        return "patientDebt";
+    }
 }
