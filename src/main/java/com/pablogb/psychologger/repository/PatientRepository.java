@@ -16,7 +16,7 @@ public interface PatientRepository extends JpaRepository<PatientEntity, Long> {
     Set<PatientEntity> getPatientsFromSession(@Param("sessionId") Long sessionId);
 
     Set<PatientEntity> findByIsActiveTrue();
-    
+
     @Query("SELECT p FROM PatientEntity p WHERE LOWER(p.shortName) LIKE LOWER(CONCAT('%', :name%, '%')) OR LOWER(p.firstNames) LIKE LOWER(CONCAT('%', :name, '%')) OR LOWER(p.lastNames) LIKE LOWER(CONCAT('%', :name, '%'))")
     List<PatientEntity> searchPatientByName(@Param("name") String name);
 
