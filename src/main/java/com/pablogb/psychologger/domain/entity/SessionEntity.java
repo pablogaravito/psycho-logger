@@ -13,7 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "session")
+@Table(name = "SESSION")
 public class SessionEntity {
 
     @Id
@@ -21,33 +21,33 @@ public class SessionEntity {
     private Long id;
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    @Column(name = "sessionDate", nullable = false)
+    @Column(name = "SESSION_DATE", nullable = false)
     private LocalDate sessionDate;
 
-    @Column(name = "themes", nullable = false)
+    @Column(name = "THEMES", nullable = false)
     private String themes;
 
     @Lob
-    @Column(name = "content", nullable = false)
+    @Column(name = "CONTENT", nullable = false)
     private String content;
 
-    @Column(name = "is_important", nullable = false)
+    @Column(name = "IS_IMPORTANT", nullable = false)
     @Builder.Default
     private Boolean isImportant = false;
 
-    @Column(name = "is_paid", nullable = false)
+    @Column(name = "IS_PAID", nullable = false)
     @Builder.Default
     private Boolean isPaid = false;
 
-    @Column(name = "next_week")
+    @Column(name = "NEXT_WEEK")
     private String nextWeek;
 
     @JsonIgnore
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(
-            name = "patient_session",
-            joinColumns = @JoinColumn(name = "session_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "patient_id", referencedColumnName = "id")
+            name = "PATIENT_SESSION",
+            joinColumns = @JoinColumn(name = "SESSION_ID", referencedColumnName = "ID"),
+            inverseJoinColumns = @JoinColumn(name = "PATIENT_ID", referencedColumnName = "ID")
     )
     private Set<PatientEntity> patients;
 }
