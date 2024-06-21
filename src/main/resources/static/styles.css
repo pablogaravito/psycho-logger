@@ -73,6 +73,16 @@ body {
 .btn-math {
     padding: 0.3rem 0.8rem;
     font-size: 17px;
+    filter: brightness(1);
+    border-radius: 8px;
+}
+
+.btn-math:hover {
+    filter: brightness(0.90);
+}
+
+.btn-math:active {
+    transform: scale(0.95);
 }
 
 .btn-plus {
@@ -82,14 +92,9 @@ body {
 
 .btn-minus {
     background-color: #EE4266;
-    font-size: 17px;
+    padding: 0.3rem 0.9rem !important;
 }
 
-#submit-btn {
-    padding: 0.6rem 2rem;
-    background-color: #7E8EF1 !important;
-    font-size: 18px;
-}
 .error-msg {
     color: #FF204E;
 }
@@ -126,7 +131,28 @@ body {
 }
 
 .debt {
-    background-color: #cdfad5;
+    background-color: #CDFAD5;
+}
+
+.save-btn {
+    padding: 0.6rem 2rem;
+    /*background-color: #7E8EF1 !important;*/
+    font-size: 17px;
+    border-radius: 8px;
+    color: #7E8EF1;
+    border-color: #7E8EF1;
+    background-color: transparent;
+}
+
+.save-btn:hover {
+    background-color: #7E8EF1;
+    color: #fff;
+}
+
+.save-btn:active, .save-btn:focus {
+    background-color: #7E8EF1;
+    color: #fff;
+    box-shadow: 0 0 0 0.1rem #7E8EF1;
 }
 
 .box-img {

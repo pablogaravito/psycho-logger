@@ -31,7 +31,7 @@
                 </select>
               </div>
               <div class="col-3">
-                <button type="button" id="add-patient" class="btn btn-math btn-plus m-0">+</button>
+                <button type="button" id="add-patient" class="btn-math btn-plus m-0">+</button>
               </div>
             </div>
           </div>
@@ -87,9 +87,9 @@
         <input type="hidden" id="hId" th:field="*{id}" />
         <input type="hidden" id="patientIds" th:field="*{patients}" />
         <div class="text-center">
-          <button id="submit-btn"
+          <button
                   type="submit"
-                  class="btn btn-primary"
+                  class="save-btn"
           >
               <i class="bx bx-save box-img"></i>
               <span th:if="${formMethod == 'post'}">Guardar</span>
