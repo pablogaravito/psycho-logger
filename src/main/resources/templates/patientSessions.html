@@ -7,8 +7,10 @@
     <body>
         <div th:replace="~{fragments/general :: navbar('sessions')}"></div>
         <div class="main-container container-medium">
-            <h2 class="title mb-3">Sesiones de: <a th:href="@{/view/patients(id = ${patient.id})}" th:text="${patient.name}"></a></h2>
-            <table class="table table-dark table-striped">
+            <h2 class="title mt-2 mb-3">Sesiones por Paciente </h2>
+            <label>Paciente:</label>
+            <p class="mb-2"><a th:href="@{/view/patients(id = ${patient.id})}" th:text="${patient.name}"></a></p>
+            <table class="table table-dark table-striped mt-3">
                 <thead>
                 <tr>
                     <th style="width:40%" scope="col">Fecha</th>

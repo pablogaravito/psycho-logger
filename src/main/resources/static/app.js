@@ -28,7 +28,7 @@ const addPatient = () => {
     row.appendChild(cellTitle);
     var cellButton = document.createElement('td');
     cellButton.classList.add('text-end');
-    cellButton.innerHTML = '<button type="button" class="btn btn-danger" onclick="removePatient('+patientId+')">-</button>';
+    cellButton.innerHTML = '<button type="button" class="btn btn-math btn-minus" onclick="removePatient('+patientId+')">-</button>';
     
     row.appendChild(cellButton);
     idArray.push(patientId);

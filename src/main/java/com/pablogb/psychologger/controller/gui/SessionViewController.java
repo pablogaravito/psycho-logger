@@ -94,7 +94,6 @@ public class SessionViewController {
     @GetMapping("/list")
     public String getSessionsList(Model model) {
         Set<SessionEntity> sessions = sessionService.getSessions();
-
         Set<SessionListView> sessionListViews = sessions.stream().map(s -> SessionListView.create(s, patientService::retrievePatients)).collect(Collectors.toSet());
         model.addAttribute("sessionViews", sessionListViews);
         return "sessions";
