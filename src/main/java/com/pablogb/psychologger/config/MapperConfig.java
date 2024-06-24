@@ -32,12 +32,27 @@ public class MapperConfig {
             }
         };
 
-        Provider<Sex> sexStringProvider = new AbstractProvider<>() {
+//        Provider<Sex> sexStringProvider = new AbstractProvider<>() {
+//            @Override
+//            protected Sex get() {
+//                return Sex.FEMALE;
+//            }
+//        };
+
+        Provider<Character> defaultCharProvider = new AbstractProvider<Character>() {
+            @Override
+            protected Character get() {
+                return 'F';
+            }
+        };
+
+        Provider<Sex> sexCharProvider = new AbstractProvider<Sex>() {
             @Override
             protected Sex get() {
                 return Sex.FEMALE;
             }
         };
+
 
         Provider<String> defaultStringProvider = new AbstractProvider<>() {
             @Override
@@ -53,16 +68,16 @@ public class MapperConfig {
             }
         };
 
-        Converter<Sex, String> fromSexToString = new AbstractConverter<>() {
+        Converter<Sex, Character> fromSexToChar = new AbstractConverter<>() {
             @Override
-            protected String convert(Sex sex) {
+            protected Character convert(Sex sex) {
                 return (Optional.ofNullable(sex)).orElse(Sex.FEMALE).getCode();
             }
         };
 
-        Converter<String, Sex> fromStringToSex = new AbstractConverter<>() {
+        Converter<Character, Sex> fromCharToSex = new AbstractConverter<>() {
             @Override
-            protected Sex convert(String s) {
+            protected Sex convert(Character s) {
                 return Sex.getSexFromCode(s);
             }
         };
@@ -102,13 +117,21 @@ public class MapperConfig {
         modelMapper.addConverter(fromStringToString);
         modelMapper.getTypeMap(String.class, String.class).setProvider(defaultStringProvider);
 
-        modelMapper.createTypeMap(Sex.class, String.class);
-        modelMapper.addConverter(fromSexToString);
-        modelMapper.getTypeMap(Sex.class, String.class).setProvider(defaultStringProvider);
+//        modelMapper.createTypeMap(Sex.class, String.class);
+//        modelMapper.addConverter(fromSexToString);
+//        modelMapper.getTypeMap(Sex.class, String.class).setProvider(defaultStringProvider);
 
-        modelMapper.createTypeMap(String.class, Sex.class);
-        modelMapper.addConverter(fromStringToSex);
-        modelMapper.getTypeMap(String.class, Sex.class).setProvider(sexStringProvider);
+//        modelMapper.createTypeMap(String.class, Sex.class);
+//        modelMapper.addConverter(fromStringToSex);
+//        modelMapper.getTypeMap(String.class, Sex.class).setProvider(sexStringProvider);
+
+        modelMapper.createTypeMap(Sex.class, Character.class);
+        modelMapper.addConverter(fromSexToChar);
+        modelMapper.getTypeMap(Sex.class, Character.class).setProvider(defaultCharProvider);
+
+        modelMapper.createTypeMap(Character.class, Sex.class);
+        modelMapper.addConverter(fromCharToSex);
+        modelMapper.getTypeMap(Character.class, Sex.class).setProvider(sexCharProvider);
 
         modelMapper.createTypeMap(PatientEntity.class, String.class);
         modelMapper.addConverter(patientEntToStr);

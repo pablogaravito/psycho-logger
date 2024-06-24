@@ -30,5 +30,5 @@ public class PatientView {
     private Boolean isActive;
 
     @NonNull
-    private String sex;
+    private Character sex;
 }

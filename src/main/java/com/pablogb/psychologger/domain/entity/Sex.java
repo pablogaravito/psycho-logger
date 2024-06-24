@@ -10,10 +10,10 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 public enum Sex {
 
-    MALE("M"),
-    FEMALE("F");
-    private final String code;
-    public static Sex getSexFromCode(String code) {
+    MALE('M'),
+    FEMALE('F');
+    private final Character code;
+    public static Sex getSexFromCode(Character code) {
         return Stream.of(Sex.values()).filter(s -> Objects.equals(code, s.code))
                 .findFirst().orElse(Sex.FEMALE);
     }

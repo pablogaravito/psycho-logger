@@ -6,9 +6,9 @@ import jakarta.persistence.Converter;
 import java.util.stream.Stream;
 
 @Converter(autoApply = true)
-public class SexConverter implements AttributeConverter<Sex, String> {
+public class SexConverter implements AttributeConverter<Sex, Character> {
     @Override
-    public String convertToDatabaseColumn(Sex sex) {
+    public Character convertToDatabaseColumn(Sex sex) {
         if (sex == null) {
             return null;
         }
@@ -16,7 +16,7 @@ public class SexConverter implements AttributeConverter<Sex, String> {
     }
 
     @Override
-    public Sex convertToEntityAttribute(String code) {
+    public Sex convertToEntityAttribute(Character code) {
         if (code == null) {
             return null;
         }

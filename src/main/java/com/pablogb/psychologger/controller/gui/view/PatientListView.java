@@ -16,7 +16,7 @@ public class PatientListView {
 
     private String birthDate;
 
-    private String sex;
+    private Character sex;
 
     public static PatientListView create(PatientEntity patientEntity) {
         return PatientListView.builder()

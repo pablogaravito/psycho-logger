@@ -13,7 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "SESSION")
+@Table(name = "`SESSION`")
 public class SessionEntity {
 
     @Id
