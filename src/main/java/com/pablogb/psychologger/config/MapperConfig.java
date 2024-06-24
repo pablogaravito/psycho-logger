@@ -32,13 +32,6 @@ public class MapperConfig {
             }
         };
 
-//        Provider<Sex> sexStringProvider = new AbstractProvider<>() {
-//            @Override
-//            protected Sex get() {
-//                return Sex.FEMALE;
-//            }
-//        };
-
         Provider<Character> defaultCharProvider = new AbstractProvider<Character>() {
             @Override
             protected Character get() {
@@ -52,7 +45,6 @@ public class MapperConfig {
                 return Sex.FEMALE;
             }
         };
-
 
         Provider<String> defaultStringProvider = new AbstractProvider<>() {
             @Override
@@ -104,7 +96,6 @@ public class MapperConfig {
             }
         };
 
-
         modelMapper.createTypeMap(String.class, LocalDate.class);
         modelMapper.addConverter(toStringDate);
         modelMapper.getTypeMap(String.class, LocalDate.class).setProvider(localDateProvider);
@@ -116,14 +107,6 @@ public class MapperConfig {
         modelMapper.createTypeMap(String.class, String.class);
         modelMapper.addConverter(fromStringToString);
         modelMapper.getTypeMap(String.class, String.class).setProvider(defaultStringProvider);
-
-//        modelMapper.createTypeMap(Sex.class, String.class);
-//        modelMapper.addConverter(fromSexToString);
-//        modelMapper.getTypeMap(Sex.class, String.class).setProvider(defaultStringProvider);
-
-//        modelMapper.createTypeMap(String.class, Sex.class);
-//        modelMapper.addConverter(fromStringToSex);
-//        modelMapper.getTypeMap(String.class, Sex.class).setProvider(sexStringProvider);
 
         modelMapper.createTypeMap(Sex.class, Character.class);
         modelMapper.addConverter(fromSexToChar);
