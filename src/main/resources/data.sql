@@ -31,7 +31,7 @@ INSERT INTO PATIENT (ID, FIRST_NAMES, LAST_NAMES, SHORT_NAME, BIRTH_DATE, SEX, I
 VALUES (10, 'Hermann Karl', 'Hesse', 'Hermann Hesse', '1877-07-02', 'M', TRUE);
 
 
--- THERAPY_SESSION DATA
+-- SESSION DATA
 INSERT INTO `SESSION` (ID, THEMES, CONTENT, SESSION_DATE, NEXT_WEEK, IS_IMPORTANT, IS_PAID)
 VALUES(1, 'trabajo niño interior', 'el paciente habló de muchas cosas muy interesantes, ha sufrido mucho en la vida. Le recordé que la vida es un carnaval y que mañana el sol volverá a brillar!!! Así es, amigos, así que ya está en camino a la sanación definitiva de su alma, Dios mediante, claro está =)', '2020-05-12', 'situación traumática cuando se le cayó su helado de niño', TRUE, TRUE);
 

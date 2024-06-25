@@ -2,15 +2,16 @@ package com.pablogb.psychologger.domain.dto;
 
 import lombok.*;
 
-import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class PatientSessionsWithDebtContextDto {
-    private Long patientId;
+public class PatientWithDebtCountDto {
+    @NonNull
+    private Long id;
+    @NonNull
     private String shortName;
-    private List<SessionDebtContextDto> sessionsWithDebt;
+    @NonNull
+    private Long debtCount;
 }

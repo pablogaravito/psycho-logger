@@ -4,6 +4,7 @@ import com.pablogb.psychologger.controller.gui.view.PatientShort;
 import com.pablogb.psychologger.domain.dto.PatchPatientDto;
 import com.pablogb.psychologger.domain.dto.PatientWithBirthdayContextDto;
 import com.pablogb.psychologger.domain.dto.PatientWithDebtContextDto;
+import com.pablogb.psychologger.domain.dto.PatientWithDebtCountDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.exception.EntityNotFoundException;
@@ -13,10 +14,7 @@ import com.pablogb.psychologger.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -89,7 +87,9 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public List<PatientWithDebtContextDto> getPatientsWithDebt() {
-        return patientRepository.getPatientsWithDebt();
+        List<PatientWithDebtCountDto> patientsWithDebt = patientRepository.getPatientsWithDebt();
+        List<PatientWithDebtContextDto> patientWithDebtContextDtos = patientsWithDebt.stream().map(p -> PatientWithDebtContextDto.create(p, patientRepository.getPatientDebt(p.getId()))).toList();
+        return patientWithDebtContextDtos;
     }
 
     @Override

@@ -19,20 +19,21 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="patientSession: ${patientSessions}">
-                    <td th:text="${patientSession.sessionDate}"></td>
-                    <td th:text="${patientSession.themes}"></td>
-                    <td>
-                        <a
-                                role="button"
-                                class="box-btn sessions"
-                                th:href="@{/view/sessions(id = ${patientSession.id})}"
-                                title="Ver/Editar Sesión"
-                        >
-                            <i class='bx bx-edit' ></i>
-                        </a>
-                    </td>
-                </tr>
+                    <tr th:each="patientSession: ${patientSessions}">
+                        <td th:text="${patientSession.sessionDate}"></td>
+                        <td th:text="${patientSession.themes}"></td>
+                        <td>
+                            <a
+                                    role="button"
+                                    class="box-btn sessions"
+                                    th:href="@{/view/sessions(id = ${patientSession.id})}"
+                                    title="Ver/Editar Sesión"
+                            >
+                                <i class='bx bx-edit' ></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

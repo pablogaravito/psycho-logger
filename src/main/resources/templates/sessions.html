@@ -18,25 +18,26 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="sessionCreateView: ${sessionViews}">
-                    <td th:text="${sessionCreateView.sessionDate}"></td>
-                    <td th:text="${sessionCreateView.themes}"></td>
-                    <td>
-                        <div th:each="patient: ${sessionCreateView.patients}">
-                            <p><a th:href="@{/view/patients(id = ${patient.id})}" th:text="${patient.name}"></a></p>
-                        </div>
-                    </td>
-                    <td>
-                        <a
-                                role="button"
-                                class="box-btn sessions"
-                                th:href="@{/view/sessions(id = ${sessionCreateView.id})}"
-                                title="Ver/Editar Sesión"
-                        >
-                            <i class='bx bx-edit'></i>
-                        </a>
-                    </td>
-                </tr>
+                    <tr th:each="sessionCreateView: ${sessionViews}">
+                        <td th:text="${sessionCreateView.sessionDate}"></td>
+                        <td th:text="${sessionCreateView.themes}"></td>
+                        <td>
+                            <div th:each="patient: ${sessionCreateView.patients}">
+                                <p><a th:href="@{/view/patients(id = ${patient.id})}" th:text="${patient.name}"></a></p>
+                            </div>
+                        </td>
+                        <td>
+                            <a
+                                    role="button"
+                                    class="box-btn sessions"
+                                    th:href="@{/view/sessions(id = ${sessionCreateView.id})}"
+                                    title="Ver/Editar Sesión"
+                            >
+                                <i class='bx bx-edit'></i>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

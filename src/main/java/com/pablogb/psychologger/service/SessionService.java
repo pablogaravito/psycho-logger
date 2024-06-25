@@ -15,9 +15,4 @@ public interface SessionService {
     SessionEntity partialUpdateSession(PatchSessionDto patchSessionDto);
     void deleteSession(Long id);
     boolean sessionExists(Long id);
-
-
-
-    //Set<Session> getLast10Sessions();
-
 }
