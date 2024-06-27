@@ -92,17 +92,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     @Transactional
-    public void updateSessionPaidStatus(List<DebtSessionShortDto> debtSessionShortDtos) {
-        debtSessionShortDtos.forEach(dto -> {
-            SessionEntity session = sessionRepository.findById(dto.getId())
-                    .orElseThrow(() -> new EntityNotFoundException(dto.getId(), SessionEntity.class));
-            session.setIsPaid(dto.getIsPaid());
-            sessionRepository.save(session);
-        });
-    }
-
-    @Override
-    public void updatePaidStatus(List<Long> sessionIds) {
+    public void updateSessionPaidStatus(List<Long> sessionIds) {
         sessionIds.forEach(id -> {
             SessionEntity session = sessionRepository.findById(id)
                     .orElseThrow(() -> new EntityNotFoundException(id, SessionEntity.class));

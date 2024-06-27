@@ -25,6 +25,5 @@ public interface PatientService {
     List<PatientEntity> searchPatientByName(String name);
     List<PatientWithBirthdayContextDto> getPatientsWithIncomingBirthdays();
     List<PatientWithDebtContextDto> getPatientsWithDebt();
-    void updateSessionPaidStatus(List<DebtSessionShortDto> debtSessionShortDtos);
-    void updatePaidStatus(List<Long> sessionIds);
+    void updateSessionPaidStatus(List<Long> sessionIds);
 }

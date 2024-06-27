@@ -45,23 +45,11 @@ public class SearchViewController {
     }
 
     @PostMapping("/debt/pay")
-    public String payPatientDebt(@ModelAttribute DebtUpdateForm debtUpdateForm, Model model) {
-        System.out.println("got here");
-        System.out.println(debtUpdateForm.getDebtSessions());
-        patientService.updateSessionPaidStatus(debtUpdateForm.getDebtSessions());
-//        return "redirect:/view/search/debt";
-        return "redirect:/";
-    }
-
-    @PostMapping("/updateDebtSessions")
     public String updateDebtSessions(@RequestParam(required = false) List<Long> sessionIds) {
-        System.out.println("got here anew");
-        if (sessionIds == null) {
-            return "redirect:/";
-        } else {
-            patientService.updatePaidStatus(sessionIds);
-            return "redirect:/";
+        if (sessionIds != null) {
+            patientService.updateSessionPaidStatus(sessionIds);
         }
+        return "redirect:/view/search/debt";
     }
 
 }

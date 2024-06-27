@@ -25,7 +25,7 @@
                         <div th:id="'collapse' + ${patient.id}" class="accordion-collapse collapse"
                              data-bs-parent="#debtAccordion">
                             <div class="accordion-body">
-                                <form th:action="@{/view/search/updateDebtSessions}" method="post">
+                                <form th:action="@{/view/search/debt/pay}" method="post">
                                     <div class="row" th:each="debtSession, iterStat : ${patient.debtSessions}">
                                         <div class="col-4"><p th:text="${debtSession.sessionDate}"></p></div>
                                         <div class="col-7"><p th:text="${debtSession.themes}"></p></div>
