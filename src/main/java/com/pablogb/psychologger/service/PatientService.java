@@ -1,10 +1,8 @@
 package com.pablogb.psychologger.service;
 
 import com.pablogb.psychologger.controller.gui.view.PatientShort;
-import com.pablogb.psychologger.domain.dto.DebtSessionShortDto;
 import com.pablogb.psychologger.domain.dto.PatchPatientDto;
 import com.pablogb.psychologger.domain.dto.PatientWithBirthdayContextDto;
-import com.pablogb.psychologger.domain.dto.PatientWithDebtContextDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 
@@ -24,6 +22,4 @@ public interface PatientService {
     List<PatientShort> retrievePatients(Set<PatientEntity> patients);
     List<PatientEntity> searchPatientByName(String name);
     List<PatientWithBirthdayContextDto> getPatientsWithIncomingBirthdays();
-    List<PatientWithDebtContextDto> getPatientsWithDebt();
-    void updateSessionPaidStatus(List<Long> sessionIds);
 }
