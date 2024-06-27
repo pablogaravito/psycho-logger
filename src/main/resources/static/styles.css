@@ -187,3 +187,14 @@ body {
   line-height: 4rem;
 }
 
+.debt-btns-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.patient-debt {
+    color: #100c08;
+}
+
+
+

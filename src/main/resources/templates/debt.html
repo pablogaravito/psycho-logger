@@ -27,14 +27,32 @@
                             <div class="accordion-body">
                                 <form th:action="@{/view/debt/pay}" method="post">
                                     <div class="row" th:each="debtSession, iterStat : ${patient.debtSessions}">
-                                        <div class="col-4"><p th:text="${debtSession.sessionDate}"></p></div>
-                                        <div class="col-7"><p th:text="${debtSession.themes}"></p></div>
+                                        <div class="col-3"><p th:text="${debtSession.sessionDate}"></p></div>
+                                        <div class="col-8"><p th:text="${debtSession.themes}"></p></div>
                                         <div class="col-1">
                                             <input type="checkbox" name="sessionIds" th:value="${debtSession.id}" th:checked="${debtSession.isPaid}"/>
                                         </div>
                                     </div>
-                                    <div class="text-center">
-                                        <button type="submit" class="btn btn-primary">Actualizar Deuda</button>
+                                    <div class="debt-btns-container">
+                                        <button
+                                                type="button"
+                                                class="box-btn edit"
+                                                title="Ver Paciente"
+                                        >
+                                            <a
+                                                    class="patient-debt"
+                                                    th:href="@{/view/patients(id = ${patient.id})}"
+                                            >
+                                                <i class='bx bx-user' ></i>
+                                            </a>
+                                        </button>
+                                        <button
+                                                type="submit"
+                                                class="box-btn debt"
+                                                title="Actualizar Deuda"
+                                        >
+                                            <i class='bx bx-dollar-circle' ></i>
+                                        </button>
                                     </div>
                                 </form>
                             </div>

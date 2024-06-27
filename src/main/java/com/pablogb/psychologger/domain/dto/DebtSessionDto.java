@@ -1,10 +1,10 @@
 package com.pablogb.psychologger.domain.dto;
 
+import com.pablogb.psychologger.utils.DateUtils;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @Getter
 @Setter
@@ -15,10 +15,9 @@ public class DebtSessionDto {
     private boolean isPaid;
 
     public DebtSessionDto(Long id, String themes, LocalDate sessionDate, boolean isPaid) {
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         this.id = id;
         this.themes = themes;
-        this.sessionDate = sessionDate.format(format);
+        this.sessionDate = DateUtils.formatShortDate(sessionDate);
         this.isPaid = isPaid;
     }
 }
