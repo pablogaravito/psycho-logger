@@ -1,17 +1,15 @@
 package com.pablogb.psychologger.controller.gui;
 
 import com.pablogb.psychologger.controller.gui.view.PatientListView;
+import com.pablogb.psychologger.domain.dto.DebtUpdateForm;
 import com.pablogb.psychologger.domain.dto.PatientWithBirthdayContextDto;
 import com.pablogb.psychologger.domain.dto.PatientWithDebtContextDto;
 import com.pablogb.psychologger.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -42,6 +40,28 @@ public class SearchViewController {
     public String getDebtPeople(Model model) {
         List<PatientWithDebtContextDto> patientsWithDebt = patientService.getPatientsWithDebt();
         model.addAttribute("patients", patientsWithDebt);
+        model.addAttribute("debtUpdateForm", new DebtUpdateForm());
         return "debt";
     }
+
+    @PostMapping("/debt/pay")
+    public String payPatientDebt(@ModelAttribute DebtUpdateForm debtUpdateForm, Model model) {
+        System.out.println("got here");
+        System.out.println(debtUpdateForm.getDebtSessions());
+        patientService.updateSessionPaidStatus(debtUpdateForm.getDebtSessions());
+//        return "redirect:/view/search/debt";
+        return "redirect:/";
+    }
+
+    @PostMapping("/updateDebtSessions")
+    public String updateDebtSessions(@RequestParam(required = false) List<Long> sessionIds) {
+        System.out.println("got here anew");
+        if (sessionIds == null) {
+            return "redirect:/";
+        } else {
+            patientService.updatePaidStatus(sessionIds);
+            return "redirect:/";
+        }
+    }
+
 }
