@@ -9,6 +9,7 @@ import com.pablogb.psychologger.service.PatientService;
 import com.pablogb.psychologger.service.SessionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -97,6 +98,27 @@ public class SessionViewController {
         Set<SessionListView> sessionListViews = sessions.stream().map(s -> SessionListView.create(s, patientService::retrievePatients)).collect(Collectors.toSet());
         model.addAttribute("sessionViews", sessionListViews);
         return "sessions";
+    }
+
+//    @GetMapping("/list/pages")
+//    public Page<Person> getPersonsPaginated(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size) {
+//        return personService.getPersonsPaginated(page, size);
+//    }
+
+    @GetMapping("/page")
+    public String getSessionsPage(Model model,
+                               @RequestParam(defaultValue = "0") int page,
+                               @RequestParam(defaultValue = "5") int size) {
+        Page<SessionEntity> sessionsPage = sessionService.getSessionsPaginated(page, size);
+        Page<SessionListView> sessionViews = sessionsPage.map(s -> SessionListView.create(s, patientService::retrievePatients));
+
+        model.addAttribute("sessionViews", sessionViews.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", sessionViews.getTotalPages());
+        model.addAttribute("totalItems", sessionViews.getTotalElements());
+        return "sessions_pag";
     }
 
     private List<Long> getPatientIds(String csvInput) {

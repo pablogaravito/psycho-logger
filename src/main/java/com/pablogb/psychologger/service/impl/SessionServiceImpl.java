@@ -8,6 +8,9 @@ import com.pablogb.psychologger.repository.PatientRepository;
 import com.pablogb.psychologger.repository.SessionRepository;
 import com.pablogb.psychologger.service.SessionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -55,6 +58,11 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public boolean sessionExists(Long id) {
         return sessionRepository.existsById(id);
+    }
+
+    @Override
+    public Page<SessionEntity> getSessionsPaginated(int page, int size) {
+        return sessionRepository.findAll(PageRequest.of(page, size));
     }
 
     @Override

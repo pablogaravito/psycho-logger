@@ -10,6 +10,7 @@ import com.pablogb.psychologger.service.PatientService;
 import com.pablogb.psychologger.service.SessionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -74,12 +75,9 @@ public class SessionController {
         if (!sessionService.sessionExists(id)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
         patchSessionDto.setId(id);
-
         SessionEntity updatedSession = sessionService.partialUpdateSession(patchSessionDto);
         return new ResponseEntity<>(sessionMapper.mapTo(updatedSession), HttpStatus.OK);
-
     }
 
     @DeleteMapping("/{id}")
