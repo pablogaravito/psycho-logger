@@ -110,7 +110,7 @@ public class SessionViewController {
     @GetMapping("/page")
     public String getSessionsPage(Model model,
                                @RequestParam(defaultValue = "0") int page,
-                               @RequestParam(defaultValue = "5") int size) {
+                               @RequestParam(defaultValue = "4") int size) {
         Page<SessionEntity> sessionsPage = sessionService.getSessionsPaginated(page, size);
         Page<SessionListView> sessionViews = sessionsPage.map(s -> SessionListView.create(s, patientService::retrievePatients));
 
