@@ -7,6 +7,7 @@ import com.pablogb.psychologger.mapper.Mapper;
 import com.pablogb.psychologger.service.PatientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -44,7 +45,7 @@ public class PatientViewController {
         return "redirect:/view/patients/list";
     }
 
-    @GetMapping("/list")
+    @GetMapping("/old")
     public String getPatientsList(Model model) {
         Set<PatientListView> patients = patientService.getPatients().stream()
                 .map(PatientListView::create)
@@ -52,6 +53,22 @@ public class PatientViewController {
         model.addAttribute("patients", patients);
         return "patients";
     }
+
+    @GetMapping("/list")
+    public String getPatientsPage(Model model,
+                                  @RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "6") int size) {
+
+        Page<PatientEntity> patientsPage = patientService.getPatientsPaginated(page, size);
+        Page<PatientListView> patients = patientsPage.map(PatientListView::create);
+
+        model.addAttribute("patients", patients.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", patients.getTotalPages());
+        model.addAttribute("totalItems", patients.getTotalElements());
+        return "patients";
+    }
+
 
     @GetMapping("/{id}/sessions")
     public String getPatientSessions(@PathVariable Long id, Model model) {

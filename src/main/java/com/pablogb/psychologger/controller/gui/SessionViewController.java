@@ -92,7 +92,7 @@ public class SessionViewController {
         return "redirect:/view/sessions/list";
     }
 
-    @GetMapping("/list")
+    @GetMapping("/old")
     public String getSessionsList(Model model) {
         Set<SessionEntity> sessions = sessionService.getSessions();
         Set<SessionListView> sessionListViews = sessions.stream().map(s -> SessionListView.create(s, patientService::retrievePatients)).collect(Collectors.toSet());
@@ -100,17 +100,10 @@ public class SessionViewController {
         return "sessions";
     }
 
-//    @GetMapping("/list/pages")
-//    public Page<Person> getPersonsPaginated(
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size) {
-//        return personService.getPersonsPaginated(page, size);
-//    }
-
-    @GetMapping("/page")
+    @GetMapping("/list")
     public String getSessionsPage(Model model,
                                @RequestParam(defaultValue = "0") int page,
-                               @RequestParam(defaultValue = "4") int size) {
+                               @RequestParam(defaultValue = "5") int size) {
         Page<SessionEntity> sessionsPage = sessionService.getSessionsPaginated(page, size);
         Page<SessionListView> sessionViews = sessionsPage.map(s -> SessionListView.create(s, patientService::retrievePatients));
 
@@ -118,7 +111,7 @@ public class SessionViewController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", sessionViews.getTotalPages());
         model.addAttribute("totalItems", sessionViews.getTotalElements());
-        return "sessions_pag";
+        return "sessions";
     }
 
     private List<Long> getPatientIds(String csvInput) {

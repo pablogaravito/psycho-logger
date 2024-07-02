@@ -5,6 +5,7 @@ import com.pablogb.psychologger.domain.dto.PatchPatientDto;
 import com.pablogb.psychologger.domain.dto.PatientWithBirthdayContextDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Set;
@@ -13,6 +14,7 @@ import java.util.Set;
 public interface PatientService {
     PatientEntity getPatient(Long id);
     Set<PatientEntity> getPatients();
+    Page<PatientEntity> getPatientsPaginated(int page, int size);
     Set<PatientEntity> getActivePatients();
     Set<SessionEntity> getPatientSessions(Long id);
     PatientEntity savePatient(PatientEntity patientEntity);

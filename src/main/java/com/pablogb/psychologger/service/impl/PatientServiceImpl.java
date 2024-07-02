@@ -10,6 +10,8 @@ import com.pablogb.psychologger.repository.PatientRepository;
 import com.pablogb.psychologger.repository.SessionRepository;
 import com.pablogb.psychologger.service.PatientService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -36,6 +38,11 @@ public class PatientServiceImpl implements PatientService {
         Iterable<PatientEntity> patientEntities = patientRepository.findAll();
         patientEntities.forEach(patients::add);
         return patients;
+    }
+
+    @Override
+    public Page<PatientEntity> getPatientsPaginated(int page, int size) {
+        return patientRepository.findAll(PageRequest.of(page, size));
     }
 
     @Override

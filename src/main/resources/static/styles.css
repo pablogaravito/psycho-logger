@@ -15,18 +15,53 @@ body {
     padding-top: 2.5rem;
 }
 
-
 .main-container {
     border-style: solid;
     /*border-radius: 1rem;*/
     /*background-color: #1D1E22;*/
     padding: 1rem;
     margin: 0.5rem 0;
-    height: 33rem;
-    overflow-y: auto;
-    padding-right: 1.5rem;
+    height: 33.5rem;
+    padding-right: 1.2rem;
     border-radius: 11px;
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
+
+.title {
+    flex: 0 0 10%;
+    margin: 0;
+    padding: 5px;
+    text-align: center;
+}
+
+.navigation-container {
+    flex: 0 0 10%;
+    padding: 5px;
+    margin: 0;
+}
+
+.table-container {
+    flex: 0 0 75%;
+    overflow-y: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    padding: 0;
+}
+
+th {
+    background-color: #f2f2f2;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
 
 ::-webkit-scrollbar-track {
     box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.1);
@@ -97,10 +132,6 @@ body {
 
 .error-msg {
     color: #FF204E;
-}
-
-.title {
-    text-align: center;
 }
 
 .box-btn {

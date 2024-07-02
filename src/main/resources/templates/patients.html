@@ -8,44 +8,59 @@
         <div th:replace="~{fragments/general :: navbar('patients')}"></div>
         <div class="main-container container-medium">
             <h2 class="title mt-2 mb-3">Pacientes</h2>
-            <table class="table table-dark table-striped">
-                <thead>
-                    <tr>
-                        <th style="width:39%" scope="col">Nombre</th>
-                        <th style="width:33%" scope="col">Fecha de Nacimiento</th>
-                        <th style="width:12%" scope="col">Sexo</th>
-                        <th style="width:8%" scope="col"></th>
-                        <th style="width:8%" scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="patient: ${patients}">
-                        <td th:text="${patient.shortName}"></td>
-                        <td th:text="${patient.birthDate}"></td>
-                        <td th:text="${patient.sex}"></td>
-                        <td>
-                            <a
+            <div class="table-container mb-3">
+                <table class="table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th style="width:39%" scope="col">Nombre</th>
+                            <th style="width:33%" scope="col">Fecha de Nacimiento</th>
+                            <th style="width:12%" scope="col">Sexo</th>
+                            <th style="width:8%" scope="col"></th>
+                            <th style="width:8%" scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="patient: ${patients}">
+                            <td th:text="${patient.shortName}"></td>
+                            <td th:text="${patient.birthDate}"></td>
+                            <td th:text="${patient.sex}"></td>
+                            <td>
+                                <a
+                                        role="button"
+                                        class="box-btn edit"
+                                        th:href="@{/view/patients(id = ${patient.id})}"
+                                        title="Ver/Editar Paciente"
+                                >
+                                    <i class='bx bx-edit'></i>
+                                </a>
+                            </td>
+                            <td>
+                                <a
                                     role="button"
-                                    class="box-btn edit"
-                                    th:href="@{/view/patients(id = ${patient.id})}"
-                                    title="Ver/Editar Paciente"
+                                    class="box-btn sessions"
+                                    th:href="@{/view/patients/{id}/sessions(id=${patient.id})}"
+                                    title="Ver Sesiones"
                             >
-                                <i class='bx bx-edit'></i>
-                            </a>
-                        </td>
-                        <td>
-                            <a
-                                role="button"
-                                class="box-btn sessions"
-                                th:href="@{/view/patients/{id}/sessions(id=${patient.id})}"
-                                title="Ver Sesiones"
-                        >
-                                <i class='bx bx-archive'></i>
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                                    <i class='bx bx-archive'></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <nav aria-label="Page navigation" data-bs-theme="dark" class="navigation-container">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${currentPage == 0} ? disabled">
+                        <a class="page-link" th:href="@{/view/patients/list(page=${currentPage - 1})}">&laquo;</a>
+                    </li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${currentPage == i} ? active">
+                        <a class="page-link" th:href="@{/view/patients/list(page=${i})}" th:text="${i + 1}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? disabled">
+                        <a class="page-link" th:href="@{/view/patients/list(page=${currentPage + 1})}">&raquo;</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     </body>
