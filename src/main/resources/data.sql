@@ -30,6 +30,8 @@ VALUES (9, 'Neal', 'Morse', 'Neal Morse', '1960-08-02', 'M', TRUE);
 INSERT INTO PATIENT (ID, FIRST_NAMES, LAST_NAMES, SHORT_NAME, BIRTH_DATE, SEX, IS_ACTIVE)
 VALUES (10, 'Hermann Karl', 'Hesse', 'Hermann Hesse', '1877-07-02', 'M', TRUE);
 
+INSERT INTO PATIENT (ID, FIRST_NAMES, LAST_NAMES, SHORT_NAME, BIRTH_DATE, SEX, IS_ACTIVE)
+VALUES (11, 'David Michael', 'Buss', 'David Buss', '1953-04-14', 'M', TRUE);
 
 -- SESSION DATA
 INSERT INTO `SESSION` (ID, THEMES, CONTENT, SESSION_DATE, NEXT_WEEK, IS_IMPORTANT, IS_PAID)
@@ -67,6 +69,24 @@ VALUES(11, 'Lorem ipsum quis per lobortis, tristique fringilla morbi', 'Lorem ip
 
 INSERT INTO `SESSION` (ID, THEMES, CONTENT, SESSION_DATE, NEXT_WEEK, IS_IMPORTANT, IS_PAID)
 VALUES(12, 'Lorem ipsum cubilia porta aenean, fames platea interdum', 'Lorem ipsum nullam at lorem mauris dolor maecenas ante, ultrices mollis blandit aliquam leo praesent tempus, morbi mauris cras nam per donec fringilla. Blandit et fermentum scelerisque mattis arcu vestibulum quisque purus venenatis commodo justo, dictum laoreet morbi nullam aenean ornare lorem maecenas habitasse nibh. Molestie dapibus imperdiet nibh molestie curabitur est dictum praesent, magna vulputate placerat dictum sagittis odio porta, habitant duis mauris auctor at porta laoreet', '2011-08-11', 'Lorem ipsum ac mattis, magna molestie', TRUE, FALSE);
+
+INSERT INTO `SESSION` (ID, THEMES, CONTENT, SESSION_DATE, NEXT_WEEK, IS_IMPORTANT, IS_PAID)
+VALUES(13, 'Lorem ipsum nulla duis nisi, tristique aenean scelerisque', 'Lorem ipsum porta senectus pulvinar himenaeos cras quisque iaculis imperdiet, gravida torquent tempor phasellus lacinia per lacus semper, ornare phasellus curabitur rhoncus nisl nec lectus elit. Ac hendrerit gravida donec netus augue elit eleifend aliquet donec morbi volutpat odio, orci phasellus fringilla aenean scelerisque fringilla tortor placerat porta in rutrum. Morbi consequat sed habitant pulvinar potenti cubilia nisi curae, euismod bibendum varius class orci torquent inceptos elit vitae, etiam faucibus est mi commodo ornare scelerisque', '2011-08-11', null, TRUE, TRUE);
+
+INSERT INTO `SESSION` (ID, THEMES, CONTENT, SESSION_DATE, NEXT_WEEK, IS_IMPORTANT, IS_PAID)
+VALUES(14, 'Lorem ipsum massa eget neque, molestie platea conubia', 'Lorem ipsum tortor sollicitudin torquent taciti aliquam vel lacinia laoreet turpis purus fringilla, nullam lobortis magna posuere adipiscing nisl porttitor maecenas id sodales nostra. Consequat interdum donec varius lorem id eu urna luctus risus viverra ut, sit enim velit inceptos commodo luctus sagittis hendrerit urna velit. Elit aliquam nibh morbi pretium aptent elit vel sed sodales porttitor risus, faucibus laoreet per mattis risus aliquam tellus nibh vehicula arcu duis nibh, sollicitudin pulvinar iaculis auctor facilisis aliquam vestibulum mattis ullamcorper venenatis', '2012-08-11', 'Lorem ipsum diam, fames', TRUE, FALSE);
+
+INSERT INTO `SESSION` (ID, THEMES, CONTENT, SESSION_DATE, NEXT_WEEK, IS_IMPORTANT, IS_PAID)
+VALUES(15, 'Lorem ipsum cras enim aptent, vehicula nam eget', 'Lorem ipsum risus posuere porttitor metus aliquam, odio fringilla quisque tempor vestibulum vivamus mauris, urna sem mattis dictum sodales. Convallis facilisis luctus gravida ad varius sed himenaeos orci torquent fringilla magna volutpat vel eleifend ornare, justo cursus eu sit sem torquent curabitur id blandit justo erat quisque tortor. Curabitur elit purus class eleifend amet nisi mauris elit dolor, aliquet interdum velit accumsan varius ornare bibendum vitae, varius blandit bibendum faucibus hendrerit congue placerat aenean', '2013-08-11', 'Lorem ipsum rhoncus, donec', TRUE, FALSE);
+
+INSERT INTO `SESSION` (ID, THEMES, CONTENT, SESSION_DATE, NEXT_WEEK, IS_IMPORTANT, IS_PAID)
+VALUES(16, 'Lorem ipsum tortor blandit nam, donec iaculis augue', 'Lorem ipsum tempor praesent rhoncus magna primis laoreet nam eget, donec sed dapibus torquent accumsan non proin imperdiet habitasse suspendisse, dictumst nibh aenean scelerisque habitant ultrices rutrum fermentum. Tellus cursus taciti etiam mi nullam curabitur tempus purus proin senectus, aenean suscipit quam porta feugiat urna faucibus accumsan eros, accumsan vitae ornare himenaeos justo habitasse dolor purus vel. Habitasse nullam netus condimentum lobortis velit scelerisque, nullam neque pulvinar justo integer amet euismod, nostra senectus habitasse sed feugiat', '2014-08-11', 'Lorem ipsum felis, est', TRUE, FALSE);
+
+INSERT INTO `SESSION` (ID, THEMES, CONTENT, SESSION_DATE, NEXT_WEEK, IS_IMPORTANT, IS_PAID)
+VALUES(17, 'Lorem ipsum vel massa netus, laoreet nisl vitae', 'Lorem ipsum eget iaculis per velit libero nulla blandit, nostra ac vitae id curae et tempus malesuada eleifend, quis scelerisque phasellus conubia elementum laoreet praesent. Posuere phasellus aliquam potenti aliquam ultrices, luctus malesuada elit nulla eget nibh, tempor auctor ad erat. Nec imperdiet cras etiam aptent aenean turpis habitant quis, cubilia nostra arcu ultricies vulputate viverra ornare, duis sapien leo massa molestie proin aliquet', '2015-08-11', 'Lorem ipsum quisque, tincidunt', TRUE, FALSE);
+
+INSERT INTO `SESSION` (ID, THEMES, CONTENT, SESSION_DATE, NEXT_WEEK, IS_IMPORTANT, IS_PAID)
+VALUES(18, 'Lorem ipsum per dictum est, turpis dolor ullamcorper', 'Lorem ipsum primis risus adipiscing mauris urna quam ipsum, erat per porttitor sollicitudin et arcu leo convallis, ultrices volutpat bibendum eu venenatis erat viverra. Aenean nibh auctor phasellus est tellus condimentum tempus pulvinar ipsum libero diam, arcu interdum leo odio faucibus quisque potenti aenean leo ac. Eleifend nisl class quisque gravida conubia ac leo lectus mattis taciti, porttitor in curabitur torquent aenean dictumst laoreet iaculis in', '2016-08-11', 'Lorem ipsum quis, phasellus', TRUE, FALSE);
 
 
 -- JOIN TABLE DATA
@@ -114,3 +134,37 @@ VALUES (10, 11);
 
 INSERT INTO PATIENT_SESSION (PATIENT_ID, SESSION_ID)
 VALUES (3, 12);
+
+
+INSERT INTO PATIENT_SESSION (PATIENT_ID, SESSION_ID)
+VALUES (1, 13);
+
+INSERT INTO PATIENT_SESSION (PATIENT_ID, SESSION_ID)
+VALUES (1, 14);
+
+INSERT INTO PATIENT_SESSION (PATIENT_ID, SESSION_ID)
+VALUES (11, 14);
+
+INSERT INTO PATIENT_SESSION (PATIENT_ID, SESSION_ID)
+VALUES (1, 15);
+
+INSERT INTO PATIENT_SESSION (PATIENT_ID, SESSION_ID)
+VALUES (7, 15);
+
+INSERT INTO PATIENT_SESSION (PATIENT_ID, SESSION_ID)
+VALUES (1, 16);
+
+INSERT INTO PATIENT_SESSION (PATIENT_ID, SESSION_ID)
+VALUES (8, 16);
+
+INSERT INTO PATIENT_SESSION (PATIENT_ID, SESSION_ID)
+VALUES (1, 17);
+
+INSERT INTO PATIENT_SESSION (PATIENT_ID, SESSION_ID)
+VALUES (9, 17);
+
+INSERT INTO PATIENT_SESSION (PATIENT_ID, SESSION_ID)
+VALUES (1, 18);
+
+INSERT INTO PATIENT_SESSION (PATIENT_ID, SESSION_ID)
+VALUES (10, 18);

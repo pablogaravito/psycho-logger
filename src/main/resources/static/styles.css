@@ -48,6 +48,10 @@ body {
     overflow-y: auto;
 }
 
+.container-no-pagination {
+    overflow-y: auto;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
