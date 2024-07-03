@@ -15,8 +15,7 @@ public interface PatientService {
     PatientEntity getPatient(Long id);
     Set<PatientEntity> getPatients();
     Page<PatientEntity> getPatientsPaginated(int page, int size);
-    Set<PatientEntity> getActivePatients();
-    Set<SessionEntity> getPatientSessions(Long id);
+    List<PatientEntity> getActivePatients();
     PatientEntity savePatient(PatientEntity patientEntity);
     PatientEntity partialUpdatePatient(PatchPatientDto patchPatientDto);
     void deletePatient(Long id);

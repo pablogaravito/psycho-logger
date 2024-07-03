@@ -1,7 +1,6 @@
 package com.pablogb.psychologger.service.impl;
 
 import com.pablogb.psychologger.domain.dto.PatchSessionDto;
-import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.exception.EntityNotFoundException;
 import com.pablogb.psychologger.repository.PatientRepository;
@@ -14,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -40,10 +40,11 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public Set<PatientEntity> getPatients(Long id) {
-        SessionEntity sessionEntity = getSession(id);
-        return sessionEntity.getPatients();
+    public List<SessionEntity> getPatientSessions(Long id) {
+        return List.of();
     }
+
+
 
     @Override
     public SessionEntity saveSession(SessionEntity sessionEntity) {
@@ -63,6 +64,12 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public Page<SessionEntity> getSessionsPaginated(int page, int size) {
         return sessionRepository.findAll(PageRequest.of(page, size));
+    }
+
+    @Override
+    public Page<SessionEntity> getPatientSessionsPaginated(Long patientId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return sessionRepository.getSessionsFromPatientPaginated(patientId, pageable);
     }
 
     @Override

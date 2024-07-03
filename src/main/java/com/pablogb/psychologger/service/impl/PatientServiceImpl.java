@@ -24,7 +24,6 @@ import java.util.Set;
 public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository patientRepository;
-    private final SessionRepository sessionRepository;
 
     @Override
     public PatientEntity getPatient(Long id) {
@@ -46,14 +45,11 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Set<PatientEntity> getActivePatients() {
+    public List<PatientEntity> getActivePatients() {
         return patientRepository.findByIsActiveTrue();
     }
 
-    @Override
-    public Set<SessionEntity> getPatientSessions(Long id) {
-        return sessionRepository.getSessionsFromPatient(id);
-    }
+
 
     @Override
     public PatientEntity savePatient(PatientEntity patientEntity) {

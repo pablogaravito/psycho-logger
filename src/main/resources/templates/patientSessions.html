@@ -8,33 +8,50 @@
         <div th:replace="~{fragments/general :: navbar('sessions')}"></div>
         <div class="main-container container-medium">
             <h2 class="title mt-2 mb-3">Sesiones por Paciente </h2>
-            <label>Paciente:</label>
-            <p class="mb-2"><a th:href="@{/view/patients(id = ${patient.id})}" th:text="${patient.name}"></a></p>
-            <table class="table table-dark table-striped mt-3">
-                <thead>
-                <tr>
-                    <th style="width:40%" scope="col">Fecha</th>
-                    <th style="width:50%" scope="col">Temas</th>
-                    <th style="width:10%" scope="col"></th>
-                </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="patientSession: ${patientSessions}">
-                        <td th:text="${patientSession.sessionDate}"></td>
-                        <td th:text="${patientSession.themes}"></td>
-                        <td>
-                            <a
-                                    role="button"
-                                    class="box-btn sessions"
-                                    th:href="@{/view/sessions(id = ${patientSession.id})}"
-                                    title="Ver/Editar Sesión"
-                            >
-                                <i class='bx bx-edit' ></i>
-                            </a>
-                        </td>
+            <div class="patient-info">
+                <label>Paciente:</label>
+                <p class="mb-2"><a th:href="@{/view/patients(id = ${patient.id})}" th:text="${patient.name}"></a></p>
+            </div>
+            <div class="sm-table-container mb-3">
+                <table class="table table-dark table-striped">
+                    <thead>
+                    <tr>
+                        <th style="width:40%" scope="col">Fecha</th>
+                        <th style="width:50%" scope="col">Temas</th>
+                        <th style="width:10%" scope="col"></th>
                     </tr>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <tr th:each="patientSession: ${patientSessions}">
+                            <td th:text="${patientSession.sessionDate}"></td>
+                            <td th:text="${patientSession.themes}"></td>
+                            <td>
+                                <a
+                                        role="button"
+                                        class="box-btn sessions"
+                                        th:href="@{/view/sessions(id = ${patientSession.id})}"
+                                        title="Ver/Editar Sesión"
+                                >
+                                    <i class='bx bx-edit' ></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <nav aria-label="Page navigation" data-bs-theme="dark" class="navigation-container">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item" th:classappend="${currentPage == 0} ? disabled">
+                        <a class="page-link" th:href="@{/view/patients/{id}/sessions(page=${currentPage - 1}, id=${patient.id})}">&laquo;</a>
+                    </li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${currentPage == i} ? active">
+                        <a class="page-link" th:href="@{/view/patients/{id}/sessions(page=${i}, id=${patient.id})}" th:text="${i + 1}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? disabled">
+                        <a class="page-link" th:href="@{/view/patients/{id}/sessions(page=${currentPage + 1}, id=${patient.id})}">&raquo;</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     </body>

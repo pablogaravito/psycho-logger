@@ -92,14 +92,6 @@ public class SessionViewController {
         return "redirect:/view/sessions/list";
     }
 
-    @GetMapping("/old")
-    public String getSessionsList(Model model) {
-        Set<SessionEntity> sessions = sessionService.getSessions();
-        Set<SessionListView> sessionListViews = sessions.stream().map(s -> SessionListView.create(s, patientService::retrievePatients)).collect(Collectors.toSet());
-        model.addAttribute("sessionViews", sessionListViews);
-        return "sessions";
-    }
-
     @GetMapping("/list")
     public String getSessionsPage(Model model,
                                @RequestParam(defaultValue = "0") int page,
@@ -113,6 +105,8 @@ public class SessionViewController {
         model.addAttribute("totalItems", sessionViews.getTotalElements());
         return "sessions";
     }
+
+
 
     private List<Long> getPatientIds(String csvInput) {
         return Stream.of(csvInput.split(","))

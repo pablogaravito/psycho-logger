@@ -5,6 +5,7 @@ import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.mapper.Mapper;
 import com.pablogb.psychologger.service.PatientService;
+import com.pablogb.psychologger.service.SessionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/view/patients")
 public class PatientViewController {
     private final PatientService patientService;
+    private final SessionService sessionService;
     private final Mapper<PatientEntity, PatientView> patientViewMapper;
     private final Mapper<SessionEntity, SessionCreateView> sessionViewMapper;
 
@@ -45,15 +47,6 @@ public class PatientViewController {
         return "redirect:/view/patients/list";
     }
 
-    @GetMapping("/old")
-    public String getPatientsList(Model model) {
-        Set<PatientListView> patients = patientService.getPatients().stream()
-                .map(PatientListView::create)
-                .collect(Collectors.toSet());
-        model.addAttribute("patients", patients);
-        return "patients";
-    }
-
     @GetMapping("/list")
     public String getPatientsPage(Model model,
                                   @RequestParam(defaultValue = "0") int page,
@@ -69,25 +62,19 @@ public class PatientViewController {
         return "patients";
     }
 
-
     @GetMapping("/{id}/sessions")
-    public String getPatientSessions(@PathVariable Long id, Model model) {
-        List<SessionListViewShort> patientSessions = patientService.getPatientSessions(id)
-                .stream().map(SessionListViewShort::create).toList();
+    public String getPatientSessions(Model model,
+                                     @PathVariable Long id,
+                                     @RequestParam(defaultValue = "0") int page,
+                                     @RequestParam(defaultValue = "4") int size) {
+        Page<SessionEntity> sessionsPage = sessionService.getPatientSessionsPaginated(id, page, size);
+        Page<SessionListViewShort> patientSessions = sessionsPage.map(SessionListViewShort::create);
         PatientShort patient = PatientShort.create(patientService.getPatient(id));
         model.addAttribute("patient", patient);
-        model.addAttribute("patientSessions", patientSessions);
+        model.addAttribute("patientSessions", patientSessions.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", patientSessions.getTotalPages());
+        model.addAttribute("totalItems", patientSessions.getTotalElements());
         return "patientSessions";
-    }
-
-    @GetMapping("/{id}/debt")
-    public String getPatientDebt(@PathVariable Long id, Model model) {
-        Set<SessionCreateView> patientSessions = patientService.getPatientSessions(id)
-                .stream().map(sessionViewMapper::mapTo)
-                .collect(Collectors.toSet());
-        PatientShort patient = PatientShort.create(patientService.getPatient(id));
-        model.addAttribute("patient", patient);
-        model.addAttribute("patientSessions", patientSessions);
-        return "patientDebt";
     }
 }

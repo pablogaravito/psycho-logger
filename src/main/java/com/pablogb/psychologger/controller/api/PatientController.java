@@ -6,12 +6,14 @@ import com.pablogb.psychologger.domain.entity.PatientEntity;
 import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.mapper.Mapper;
 import com.pablogb.psychologger.service.PatientService;
+import com.pablogb.psychologger.service.SessionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 public class PatientController {
 
     private final PatientService patientService;
+    private final SessionService sessionService;
 
     private final Mapper<PatientEntity, PatientDto> patientMapper;
 
@@ -91,7 +94,7 @@ public class PatientController {
     }
 
     @GetMapping("/{id}/sessions")
-    public ResponseEntity<Set<SessionEntity>> getPatientSessions(@PathVariable Long id) {
-        return new ResponseEntity<>(patientService.getPatientSessions(id), HttpStatus.OK);
+    public ResponseEntity<List<SessionEntity>> getPatientSessions(@PathVariable Long id) {
+        return new ResponseEntity<>(sessionService.getPatientSessions(id), HttpStatus.OK);
     }
 }

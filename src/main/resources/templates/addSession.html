@@ -10,7 +10,7 @@
   </head>
   <body>
     <div th:replace="~{fragments/general :: navbar('sessions')}"></div>
-    <div class="main-container container-medium">
+    <div class="main-container container-medium container-no-pagination">
       <h2 class="title mt-1 mb-3" th:text="${formMethod == 'post'} ? 'Registrar Sesión' : 'Editar Sesión'"></h2>
       <form th:method="${formMethod}" th:object="${sessionView}" th:action="@{/view/sessions}" autocomplete="off">
         <div th:if="${formMethod == 'post'}" class="row mb-0">
