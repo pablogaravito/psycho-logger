@@ -27,13 +27,29 @@
                                  data-bs-parent="#debtAccordion">
                                 <div class="accordion-body">
                                     <form th:action="@{/view/debt/pay}" method="post">
-                                        <div class="row" th:each="debtSession, iterStat : ${patient.debtSessions}">
-                                            <div class="col-3"><p th:text="${debtSession.sessionDate}"></p></div>
-                                            <div class="col-8"><p th:text="${debtSession.themes}"></p></div>
-                                            <div class="col-1">
-                                                <input type="checkbox" name="sessionIds" th:value="${debtSession.id}" th:checked="${debtSession.isPaid}"/>
-                                            </div>
-                                        </div>
+
+
+                                        <table class="table table-dark table-striped table-debt">
+                                            <thead>
+                                            <tr>
+                                                <th style="width:28%" scope="col"></th>
+                                                <th style="width:60%" scope="col"></th>
+                                                <th style="width:12%" scope="col"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="debtSession, iterStat : ${patient.debtSessions}">
+                                                <td th:text="${debtSession.sessionDate}"></td>
+                                                <td th:text="${debtSession.themes}"></td>
+                                                <td>
+                                                    <input type="checkbox" name="sessionIds" th:value="${debtSession.id}" th:checked="${debtSession.isPaid}"/>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+
+
+
                                         <div class="debt-btns-container">
                                             <button
                                                     type="button"
