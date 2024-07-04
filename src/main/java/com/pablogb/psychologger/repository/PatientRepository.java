@@ -14,7 +14,7 @@ import java.util.Set;
 public interface PatientRepository extends JpaRepository<PatientEntity, Long> {
 
     @Query("SELECT p FROM PatientEntity p JOIN p.sessions s WHERE s.id = :sessionId")
-    Set<PatientEntity> getPatientsFromSession(@Param("sessionId") Long sessionId);
+    List<PatientEntity> getPatientsFromSession(@Param("sessionId") Long sessionId);
 
     List<PatientEntity> findByIsActiveTrue();
 

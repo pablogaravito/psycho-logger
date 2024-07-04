@@ -4,7 +4,7 @@ import com.pablogb.psychologger.domain.entity.Sex;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,5 +19,5 @@ public class PatchPatientDto {
     private LocalDate birthDate;
     private Boolean isActive;
     private Sex sex;
-    private Set<SessionDto> sessions;
+    private List<SessionDto> sessions;
 }

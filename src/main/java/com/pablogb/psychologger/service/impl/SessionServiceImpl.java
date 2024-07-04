@@ -12,17 +12,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class SessionServiceImpl implements SessionService {
     private final SessionRepository sessionRepository;
     private final PatientRepository patientRepository;
-
 
     @Override
     public SessionEntity getSession(Long id) {
@@ -31,8 +27,8 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public Set<SessionEntity> getSessions() {
-        Set<SessionEntity> sessions = new HashSet<>();
+    public List<SessionEntity> getSessions() {
+        List<SessionEntity> sessions = new ArrayList<>();
         Iterable<SessionEntity> sessionEntities = sessionRepository.findAll();
         sessionEntities.forEach(e -> e.setPatients(patientRepository.getPatientsFromSession(e.getId())));
         sessionEntities.forEach(sessions::add);
@@ -41,10 +37,8 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public List<SessionEntity> getPatientSessions(Long id) {
-        return List.of();
+        return sessionRepository.getSessionsFromPatient(id);
     }
-
-
 
     @Override
     public SessionEntity saveSession(SessionEntity sessionEntity) {

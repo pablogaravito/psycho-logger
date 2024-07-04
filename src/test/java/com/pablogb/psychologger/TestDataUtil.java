@@ -7,6 +7,7 @@ import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.domain.entity.Sex;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 public final class TestDataUtil {
@@ -47,7 +48,7 @@ public final class TestDataUtil {
 
     public static SessionEntity createTestSessionA() {
         PatientEntity patient = createTestPatientA();
-        Set<PatientEntity> patients = Set.of(patient);
+        List<PatientEntity> patients = List.of(patient);
         return SessionEntity.builder()
                 .sessionDate(LocalDate.parse("2019-05-12"))
                 .themes("trabajo niño interior")
@@ -60,7 +61,7 @@ public final class TestDataUtil {
 
     public static SessionEntity createTestSessionB() {
         PatientEntity patient = createTestPatientB();
-        Set<PatientEntity> patients = Set.of(patient);
+        List<PatientEntity> patients = List.of(patient);
         return SessionEntity.builder()
                 .sessionDate(LocalDate.parse("2018-08-11"))
                 .themes("trabajo emocional")

@@ -4,7 +4,7 @@ import com.pablogb.psychologger.domain.entity.PatientEntity;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,5 +19,5 @@ public class PatchSessionDto {
     private Boolean isImportant;
     private Boolean isPaid;
     private String nextWeek;
-    private Set<PatientEntity> patients;
+    private List<PatientEntity> patients;
 }

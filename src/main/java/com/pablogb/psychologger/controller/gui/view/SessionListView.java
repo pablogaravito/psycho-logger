@@ -23,7 +23,7 @@ public class SessionListView {
 
     private List<PatientShort> patients;
 
-    public static SessionListView create(SessionEntity sessionEntity, Function<Set<PatientEntity>, List<PatientShort>> patientNameRetriever) {
+    public static SessionListView create(SessionEntity sessionEntity, Function<List<PatientEntity>, List<PatientShort>> patientNameRetriever) {
         return SessionListView.builder()
                 .id(sessionEntity.getId())
                 .sessionDate(DateUtils.formatIntermediateDate(sessionEntity.getSessionDate()))

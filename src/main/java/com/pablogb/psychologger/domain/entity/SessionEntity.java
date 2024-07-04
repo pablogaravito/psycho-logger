@@ -4,8 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "SESSION")
+@Table(name = "session")
 public class SessionEntity {
 
     @Id
@@ -21,33 +22,33 @@ public class SessionEntity {
     private Long id;
 
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    @Column(name = "SESSION_DATE", nullable = false)
+    @Column(name = "session_date", nullable = false)
     private LocalDate sessionDate;
 
-    @Column(name = "THEMES", nullable = false)
+    @Column(name = "themes", nullable = false)
     private String themes;
 
     @Lob
-    @Column(name = "CONTENT", nullable = false)
+    @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "IS_IMPORTANT", nullable = false)
+    @Column(name = "is_important", nullable = false)
     @Builder.Default
     private Boolean isImportant = false;
 
-    @Column(name = "IS_PAID", nullable = false)
+    @Column(name = "is_paid", nullable = false)
     @Builder.Default
     private Boolean isPaid = false;
 
-    @Column(name = "NEXT_WEEK")
+    @Column(name = "next_week")
     private String nextWeek;
 
     @JsonIgnore
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinTable(
-            name = "PATIENT_SESSION",
-            joinColumns = @JoinColumn(name = "SESSION_ID", referencedColumnName = "ID"),
-            inverseJoinColumns = @JoinColumn(name = "PATIENT_ID", referencedColumnName = "ID")
+            name = "patient_session",
+            joinColumns = @JoinColumn(name = "session_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "patient_id", referencedColumnName = "id")
     )
-    private Set<PatientEntity> patients;
+    private List<PatientEntity> patients;
 }

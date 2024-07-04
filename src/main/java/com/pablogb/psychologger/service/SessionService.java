@@ -11,7 +11,7 @@ import java.util.Set;
 public interface SessionService {
 
     SessionEntity getSession(Long id);
-    Set<SessionEntity> getSessions();
+    List<SessionEntity> getSessions();
     List<SessionEntity> getPatientSessions(Long id);
     SessionEntity saveSession(SessionEntity sessionEntity);
     SessionEntity partialUpdateSession(PatchSessionDto patchSessionDto);

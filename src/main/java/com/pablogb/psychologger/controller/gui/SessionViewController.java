@@ -37,7 +37,7 @@ public class SessionViewController {
                                  @RequestParam(required = false) Long id) {
         if (Objects.isNull(id)) {
             SessionCreateView sessionCreateView = new SessionCreateView();
-            Set<PatientView> activePatients = patientService.getActivePatients().stream().map(patientViewMapper::mapTo).collect(Collectors.toSet());
+            List<PatientView> activePatients = patientService.getActivePatients().stream().map(patientViewMapper::mapTo).toList();
             model.addAttribute("activePatients", activePatients);
             model.addAttribute("formMethod", "post");
             model.addAttribute("sessionView", sessionCreateView);
@@ -46,7 +46,7 @@ public class SessionViewController {
             List<PatientShort> patients = session.getPatients().stream().map(PatientShort::create).toList();
             SessionEditView sessionEditView = sessionEditViewMapper.mapTo(session);
             sessionEditView.setPatients(patients);
-            model.addAttribute("activePatients", Collections.emptySet());
+            model.addAttribute("activePatients", Collections.emptyList());
             model.addAttribute("formMethod", "put");
             model.addAttribute("sessionView", sessionEditView);
         }
@@ -79,7 +79,7 @@ public class SessionViewController {
 
         List<Long> patientIds = getPatientIds(sessionCreateView.getPatients());
 
-        Set<PatientEntity> patients = new HashSet<>();
+        List<PatientEntity> patients = new ArrayList<>();
         for (Long id : patientIds) {
             PatientEntity patient = patientService.getPatient(id);
             patients.add(patient);

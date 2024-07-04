@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,7 +46,7 @@ public class SessionController {
     public ResponseEntity<SessionDto> saveSession(@Valid @RequestBody SessionContextDto sessionContextDto) {
         List<Long> patientIds = sessionContextDto.getPatientId();
 
-        Set<PatientEntity> patients = new HashSet<>();
+        List<PatientEntity> patients = new ArrayList<>();
         for (Long id : patientIds) {
             PatientEntity patient = patientService.getPatient(id);
             patients.add(patient);

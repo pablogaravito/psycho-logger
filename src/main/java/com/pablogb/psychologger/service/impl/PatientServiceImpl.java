@@ -4,20 +4,17 @@ import com.pablogb.psychologger.controller.gui.view.PatientShort;
 import com.pablogb.psychologger.domain.dto.PatchPatientDto;
 import com.pablogb.psychologger.domain.dto.PatientWithBirthdayContextDto;
 import com.pablogb.psychologger.domain.entity.PatientEntity;
-import com.pablogb.psychologger.domain.entity.SessionEntity;
 import com.pablogb.psychologger.exception.EntityNotFoundException;
 import com.pablogb.psychologger.repository.PatientRepository;
-import com.pablogb.psychologger.repository.SessionRepository;
 import com.pablogb.psychologger.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +29,8 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Set<PatientEntity> getPatients() {
-        Set<PatientEntity> patients = new HashSet<>();
+    public List<PatientEntity> getPatients() {
+        List<PatientEntity> patients = new ArrayList<>();
         Iterable<PatientEntity> patientEntities = patientRepository.findAll();
         patientEntities.forEach(patients::add);
         return patients;
@@ -80,7 +77,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<PatientShort> retrievePatients(Set<PatientEntity> patients) {
+    public List<PatientShort> retrievePatients(List<PatientEntity> patients) {
         return patients.stream().map(PatientShort::create).toList();
     }
 
