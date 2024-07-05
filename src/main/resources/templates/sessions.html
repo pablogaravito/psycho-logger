@@ -10,18 +10,11 @@
     <h2 class="title mt-2 mb-3">Sesiones</h2>
     <div class="searchFormDiv">
         <form th:action="@{/view/sessions/list}" id="searchForm">
-            <div class="row d-flex">
-                <div class="col-md-6 mt-2">
-                    <div class="search">
-                        <i class="fa fa-search"></i>
-                        <input id="keyword" type="search" name="keyword" th:value="${keyword}" required class="form-control"
-                               placeholder="Enter keyword">
-                        <button type="submit" class="btn btn-secondary">Search</button>
-                    </div>
-                </div>
-                <div class="col-md-1 mt-2">
-                    <button id="btnClear" class="btn btn-info">Clear</button>
-                </div>
+            <div class="search">
+                <input id="keyword" type="search" name="keyword" th:value="${keyword}" required class="form-control"
+                       placeholder="Enter keyword">
+                <button type="submit" class="btn btn-secondary">Search</button>
+                <button id="btnClear" class="btn btn-info">Clear</button>
             </div>
         </form>
     </div>
@@ -73,5 +66,15 @@
     </nav>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#btnClear").on("click", function (e) {
+            e.preventDefault();
+            $("#keyword").text("");
+            window.location = "[[@{/view/sessions/list}]]";
+        });
+    });
+</script>
 </body>
 </html>
