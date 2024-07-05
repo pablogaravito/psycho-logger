@@ -17,6 +17,29 @@ public interface SessionRepository extends JpaRepository<SessionEntity, Long> {
     @Query("select s from SessionEntity s join s.patients p where p.id = :patientId")
     List<SessionEntity> getSessionsFromPatient(Long patientId);
 
-    @Query("SELECT s FROM SessionEntity s WHERE LOWER(s.themes) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(s.content) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(s.newtWeek) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    @Query("SELECT s FROM SessionEntity s WHERE " +
+            "LOWER(s.themes) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(s.content) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(s.nextWeek) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<SessionEntity> findSessionsByKeyword(@Param("keyword") String keyword, Pageable pageable);
+
+
+    /**
+     *     @Query("SELECT m FROM Meeting m WHERE " +
+     *            "LOWER(m.column1) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+     *            "LOWER(m.column2) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+     *            "LOWER(m.column3) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+     *     Page<Meeting> searchMeetings(@Param("searchTerm") String searchTerm, Pageable pageable);
+     *
+     *
+     *
+     *
+     *     @Query("SELECT s FROM SessionEntity s WHERE " +
+     *             "LOWER(s.themes) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+     *             "LOWER(s.content) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+     *             "LOWER(s.newtWeek) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+     */
+
+
 }
+

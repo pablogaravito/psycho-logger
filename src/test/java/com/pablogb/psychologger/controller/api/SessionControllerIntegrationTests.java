@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
@@ -107,8 +108,8 @@ class SessionControllerIntegrationTests {
         testPatientB.setId(null);
         SessionEntity testSessionA = TestDataUtil.createTestSessionA();
         SessionEntity testSessionB = TestDataUtil.createTestSessionB();
-        testSessionA.setPatients(Set.of(testPatientA));
-        testSessionB.setPatients(Set.of(testPatientB));
+        testSessionA.setPatients(List.of(testPatientA));
+        testSessionB.setPatients(List.of(testPatientB));
 
         sessionService.saveSession(testSessionA);
         sessionService.saveSession(testSessionB);
@@ -126,7 +127,7 @@ class SessionControllerIntegrationTests {
         PatientEntity testPatientB = TestDataUtil.createTestPatientB();
         testPatientB.setId(null);
         SessionEntity testSessionB = TestDataUtil.createTestSessionB();
-        testSessionB.setPatients(Set.of(testPatientB));
+        testSessionB.setPatients(List.of(testPatientB));
 
         SessionEntity savedSession = sessionService.saveSession(testSessionB);
 
@@ -143,7 +144,7 @@ class SessionControllerIntegrationTests {
         PatientEntity testPatientB = TestDataUtil.createTestPatientB();
         testPatientB.setId(null);
         SessionEntity testSession = TestDataUtil.createTestSessionB();
-        testSession.setPatients(Set.of(testPatientB));
+        testSession.setPatients(List.of(testPatientB));
         SessionEntity savedSession = sessionService.saveSession(testSession);
 
         mockMvc.perform(
@@ -185,7 +186,7 @@ class SessionControllerIntegrationTests {
         PatientEntity testPatientA = TestDataUtil.createTestPatientA();
         testPatientA.setId(null);
         SessionEntity testSessionA = TestDataUtil.createTestSessionA();
-        testSessionA.setPatients(Set.of(testPatientA));
+        testSessionA.setPatients(List.of(testPatientA));
         SessionEntity savedSession = sessionService.saveSession(testSessionA);
         String incompleteSessionJson = objectMapper.writeValueAsString(incompleteSession);
 
@@ -203,8 +204,8 @@ class SessionControllerIntegrationTests {
         testPatientA.setId(null);
         SessionEntity testSessionA = TestDataUtil.createTestSessionA();
         SessionEntity testSessionB = TestDataUtil.createTestSessionB();
-        testSessionA.setPatients(Set.of(testPatientA));
-        testSessionB.setPatients(Set.of(testPatientA));
+        testSessionA.setPatients(List.of(testPatientA));
+        testSessionB.setPatients(List.of(testPatientA));
 
         SessionEntity savedSession = sessionService.saveSession(testSessionA);
         String sessionJson = objectMapper.writeValueAsString(testSessionB);
@@ -224,8 +225,8 @@ class SessionControllerIntegrationTests {
         testPatientB.setId(null);
         SessionEntity testSessionA = TestDataUtil.createTestSessionA();
         SessionEntity updatedSession = TestDataUtil.createTestSessionB();
-        testSessionA.setPatients(Set.of(testPatientA));
-        updatedSession.setPatients(Set.of(testPatientB));
+        testSessionA.setPatients(List.of(testPatientA));
+        updatedSession.setPatients(List.of(testPatientB));
 
         SessionEntity savedSession = sessionService.saveSession(testSessionA);
         String updatedSessionJson = objectMapper.writeValueAsString(updatedSession);
@@ -244,7 +245,7 @@ class SessionControllerIntegrationTests {
         PatientEntity testPatientB = TestDataUtil.createTestPatientB();
         testPatientB.setId(null);
         SessionEntity testSessionB = TestDataUtil.createTestSessionB();
-        testSessionB.setPatients(Set.of(testPatientB));
+        testSessionB.setPatients(List.of(testPatientB));
 
         String patientJson = objectMapper.writeValueAsString(testSessionB);
         mockMvc.perform(
@@ -260,7 +261,7 @@ class SessionControllerIntegrationTests {
         testPatientA.setId(null);
 
         SessionEntity testSessionA = TestDataUtil.createTestSessionA();
-        testSessionA.setPatients(Set.of(testPatientA));
+        testSessionA.setPatients(List.of(testPatientA));
         SessionEntity savedSession = sessionService.saveSession(testSessionA);
 
         PatchSessionDto testSessionDto = TestDataUtil.createIncompleteSessionDto();
@@ -289,7 +290,7 @@ class SessionControllerIntegrationTests {
         testPatientA.setId(null);
 
         SessionEntity testSessionA = TestDataUtil.createTestSessionA();
-        testSessionA.setPatients(Set.of(testPatientA));
+        testSessionA.setPatients(List.of(testPatientA));
         SessionEntity savedSession = sessionService.saveSession(testSessionA);
 
         mockMvc.perform(

@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.util.Set;
+import java.util.List;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -283,7 +283,7 @@ class PatientControllerIntegrationTests {
         SessionEntity testSessionA = TestDataUtil.createTestSessionA();
         SessionEntity testSessionB = TestDataUtil.createTestSessionB();
 
-        testPatientA.setSessions(Set.of(testSessionA, testSessionB));
+        testPatientA.setSessions(List.of(testSessionA, testSessionB));
 
         PatientEntity savedPatient = patientService.savePatient(testPatientA);
 

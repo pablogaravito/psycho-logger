@@ -17,7 +17,7 @@ import java.util.List;
 @NamedNativeQuery(
         name = "PatientEntity.findPersonsWithUpcomingAndRecentBirthdays",
         query = "SELECT p.id, p.short_name AS shortName, FORMATDATETIME(p.birth_date, 'yyyy-MM-dd') AS birthDate " +
-                "FROM PATIENT p " +
+                "FROM patients p " +
                 "WHERE DAYOFYEAR(p.birth_date) - DAYOFYEAR(CURDATE()) BETWEEN 0 AND 14 " +
                 "OR " +
                 "DAYOFYEAR( CONCAT(YEAR(CURDATE()),'-12-31') ) - ( DAYOFYEAR(CURDATE()) - DAYOFYEAR(p.birth_date) ) BETWEEN 0 AND 14 " +
@@ -47,7 +47,7 @@ import java.util.List;
         )
 )
 
-@Table(name = "patient")
+@Table(name = "patients")
 public class PatientEntity {
 
     @Id

@@ -61,9 +61,13 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    public Page<SessionEntity> getSessionsPaginated(String keyword, int page, int size) {
+        return sessionRepository.findSessionsByKeyword(keyword, PageRequest.of(page, size));
+    }
+
+    @Override
     public Page<SessionEntity> getPatientSessionsPaginated(Long patientId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return sessionRepository.getSessionsFromPatientPaginated(patientId, pageable);
+        return sessionRepository.getSessionsFromPatientPaginated(patientId, PageRequest.of(page, size));
     }
 
     @Override

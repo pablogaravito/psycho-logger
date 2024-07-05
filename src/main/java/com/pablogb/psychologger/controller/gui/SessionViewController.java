@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
@@ -94,9 +96,17 @@ public class SessionViewController {
 
     @GetMapping("/list")
     public String getSessionsPage(Model model,
-                               @RequestParam(defaultValue = "0") int page,
-                               @RequestParam(defaultValue = "5") int size) {
-        Page<SessionEntity> sessionsPage = sessionService.getSessionsPaginated(page, size);
+                                  @RequestParam(required = false) String keyword,
+                                  @RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "5") int size) {
+        Page<SessionEntity> sessionsPage;
+        if (keyword == null) {
+            sessionsPage = sessionService.getSessionsPaginated(page, size);
+        } else {
+            sessionsPage = sessionService.getSessionsPaginated(keyword, page, size);
+            model.addAttribute("keyword", keyword);
+        }
+
         Page<SessionListView> sessionViews = sessionsPage.map(s -> SessionListView.create(s, patientService::retrievePatients));
 
         model.addAttribute("sessionViews", sessionViews.getContent());
@@ -105,7 +115,6 @@ public class SessionViewController {
         model.addAttribute("totalItems", sessionViews.getTotalElements());
         return "sessions";
     }
-
 
 
     private List<Long> getPatientIds(String csvInput) {
