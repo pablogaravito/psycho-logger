@@ -98,7 +98,7 @@ public class SessionViewController {
     public String getSessionsPage(Model model,
                                   @RequestParam(required = false) String keyword,
                                   @RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "5") int size) {
+                                  @RequestParam(defaultValue = "4") int size) {
         Page<SessionEntity> sessionsPage;
         if (keyword == null) {
             sessionsPage = sessionService.getSessionsPaginated(page, size);

@@ -10,15 +10,23 @@
     <h2 class="title mt-2 mb-3">Sesiones</h2>
     <div class="searchFormDiv">
         <form th:action="@{/view/sessions/list}" id="searchForm">
-            <div class="search">
-                <input id="keyword" type="search" name="keyword" th:value="${keyword}" required class="form-control"
-                       placeholder="Enter keyword">
-                <button type="submit" class="btn btn-secondary">Search</button>
-                <button id="btnClear" class="btn btn-info">Clear</button>
+            <div class="row g-0 search">
+                <div style="width:60%">
+                    <input id="keyword" type="search" name="keyword" th:value="${keyword}" required class="form-control"
+                           placeholder="Buscar en sesiones">
+                </div>
+                <div class="btn-group" style="width:11%">
+                    <button type="submit" class="box-btn">
+                        <i class='bx bx-search-alt-2 btn-search'></i>
+                    </button>
+                    <button id="btnClear" class="box-btn">
+                        <i class='bx bx-x-circle btn-search'></i>
+                    </button>
+                </div>
             </div>
         </form>
     </div>
-    <div class="table-container mb-3">
+    <div class="sm-table-container mb-3">
         <table class="table table-dark table-striped">
             <thead>
             <tr>

@@ -43,6 +43,12 @@ body {
     margin: 0;
 }
 
+.search {
+    flex: 0 0 10%;
+    padding: 5px;
+    margin: 0;
+}
+
 .table-container {
     flex: 0 0 75%;
     overflow-y: auto;
