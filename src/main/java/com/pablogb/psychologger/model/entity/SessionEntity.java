@@ -1,6 +1,7 @@
 package com.pablogb.psychologger.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.pablogb.psychologger.model.audit.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,7 +16,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "sessions")
-public class SessionEntity {
+public class SessionEntity extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

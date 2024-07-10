@@ -2,6 +2,7 @@ package com.pablogb.psychologger.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.pablogb.psychologger.dto.view.PatientWithBirthdayContextDto;
+import com.pablogb.psychologger.model.audit.Auditable;
 import com.pablogb.psychologger.model.enums.Sex;
 import com.pablogb.psychologger.model.converter.SexConverter;
 import jakarta.persistence.*;
@@ -51,7 +52,7 @@ import java.util.List;
 )
 
 @Table(name = "patients")
-public class PatientEntity {
+public class PatientEntity extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
