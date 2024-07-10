@@ -3,9 +3,9 @@ package com.pablogb.psychologger.controller.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pablogb.psychologger.TestDataUtil;
-import com.pablogb.psychologger.domain.dto.PatchSessionDto;
-import com.pablogb.psychologger.domain.entity.PatientEntity;
-import com.pablogb.psychologger.domain.entity.SessionEntity;
+import com.pablogb.psychologger.dto.api.PatchSessionDto;
+import com.pablogb.psychologger.model.entity.PatientEntity;
+import com.pablogb.psychologger.model.entity.SessionEntity;
 import com.pablogb.psychologger.service.SessionService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

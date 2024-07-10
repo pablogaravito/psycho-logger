@@ -1,9 +1,9 @@
 package com.pablogb.psychologger.controller.api;
 
-import com.pablogb.psychologger.domain.dto.PatchPatientDto;
-import com.pablogb.psychologger.domain.dto.PatientDto;
-import com.pablogb.psychologger.domain.entity.PatientEntity;
-import com.pablogb.psychologger.domain.entity.SessionEntity;
+import com.pablogb.psychologger.dto.api.PatchPatientDto;
+import com.pablogb.psychologger.dto.api.PatientDto;
+import com.pablogb.psychologger.model.entity.PatientEntity;
+import com.pablogb.psychologger.model.entity.SessionEntity;
 import com.pablogb.psychologger.mapper.Mapper;
 import com.pablogb.psychologger.service.PatientService;
 import com.pablogb.psychologger.service.SessionService;

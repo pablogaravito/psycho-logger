@@ -1,22 +1,20 @@
 package com.pablogb.psychologger.controller.api;
 
-import com.pablogb.psychologger.domain.dto.PatchSessionDto;
-import com.pablogb.psychologger.domain.dto.SessionContextDto;
-import com.pablogb.psychologger.domain.dto.SessionDto;
-import com.pablogb.psychologger.domain.entity.PatientEntity;
-import com.pablogb.psychologger.domain.entity.SessionEntity;
+import com.pablogb.psychologger.dto.api.PatchSessionDto;
+import com.pablogb.psychologger.dto.api.SessionContextDto;
+import com.pablogb.psychologger.dto.api.SessionDto;
+import com.pablogb.psychologger.model.entity.PatientEntity;
+import com.pablogb.psychologger.model.entity.SessionEntity;
 import com.pablogb.psychologger.mapper.Mapper;
 import com.pablogb.psychologger.service.PatientService;
 import com.pablogb.psychologger.service.SessionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

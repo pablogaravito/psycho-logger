@@ -1,8 +1,8 @@
 package com.pablogb.psychologger.service.impl;
 
-import com.pablogb.psychologger.domain.dto.PatientWithDebtContextDto;
-import com.pablogb.psychologger.domain.dto.PatientWithDebtCountDto;
-import com.pablogb.psychologger.domain.entity.SessionEntity;
+import com.pablogb.psychologger.dto.view.PatientWithDebtContextDto;
+import com.pablogb.psychologger.dto.api.PatientWithDebtCountDto;
+import com.pablogb.psychologger.model.entity.SessionEntity;
 import com.pablogb.psychologger.exception.EntityNotFoundException;
 import com.pablogb.psychologger.repository.PatientRepository;
 import com.pablogb.psychologger.repository.SessionRepository;

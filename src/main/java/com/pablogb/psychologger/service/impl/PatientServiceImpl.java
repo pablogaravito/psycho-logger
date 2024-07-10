@@ -1,9 +1,9 @@
 package com.pablogb.psychologger.service.impl;
 
-import com.pablogb.psychologger.controller.gui.view.PatientShort;
-import com.pablogb.psychologger.domain.dto.PatchPatientDto;
-import com.pablogb.psychologger.domain.dto.PatientWithBirthdayContextDto;
-import com.pablogb.psychologger.domain.entity.PatientEntity;
+import com.pablogb.psychologger.dto.view.PatientShort;
+import com.pablogb.psychologger.dto.api.PatchPatientDto;
+import com.pablogb.psychologger.dto.view.PatientWithBirthdayContextDto;
+import com.pablogb.psychologger.model.entity.PatientEntity;
 import com.pablogb.psychologger.exception.EntityNotFoundException;
 import com.pablogb.psychologger.repository.PatientRepository;
 import com.pablogb.psychologger.service.PatientService;

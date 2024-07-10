@@ -1,8 +1,8 @@
 package com.pablogb.psychologger.config;
 
-import com.pablogb.psychologger.domain.entity.PatientEntity;
-import com.pablogb.psychologger.domain.entity.Sex;
-import com.pablogb.psychologger.utils.DateUtils;
+import com.pablogb.psychologger.model.entity.PatientEntity;
+import com.pablogb.psychologger.model.enums.Sex;
+import com.pablogb.psychologger.util.DateUtils;
 import org.modelmapper.*;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;

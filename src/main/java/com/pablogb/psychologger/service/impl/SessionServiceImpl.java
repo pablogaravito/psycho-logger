@@ -1,7 +1,7 @@
 package com.pablogb.psychologger.service.impl;
 
-import com.pablogb.psychologger.domain.dto.PatchSessionDto;
-import com.pablogb.psychologger.domain.entity.SessionEntity;
+import com.pablogb.psychologger.dto.api.PatchSessionDto;
+import com.pablogb.psychologger.model.entity.SessionEntity;
 import com.pablogb.psychologger.exception.EntityNotFoundException;
 import com.pablogb.psychologger.repository.PatientRepository;
 import com.pablogb.psychologger.repository.SessionRepository;
@@ -9,7 +9,6 @@ import com.pablogb.psychologger.service.SessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

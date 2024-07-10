@@ -1,9 +1,8 @@
 package com.pablogb.psychologger.service;
 
-import com.pablogb.psychologger.domain.dto.PatchSessionDto;
-import com.pablogb.psychologger.domain.entity.SessionEntity;
+import com.pablogb.psychologger.dto.api.PatchSessionDto;
+import com.pablogb.psychologger.model.entity.SessionEntity;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 

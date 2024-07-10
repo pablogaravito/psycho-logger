@@ -1,14 +1,13 @@
 package com.pablogb.psychologger;
 
-import com.pablogb.psychologger.domain.dto.PatchPatientDto;
-import com.pablogb.psychologger.domain.dto.PatchSessionDto;
-import com.pablogb.psychologger.domain.entity.PatientEntity;
-import com.pablogb.psychologger.domain.entity.SessionEntity;
-import com.pablogb.psychologger.domain.entity.Sex;
+import com.pablogb.psychologger.dto.api.PatchPatientDto;
+import com.pablogb.psychologger.dto.api.PatchSessionDto;
+import com.pablogb.psychologger.model.entity.PatientEntity;
+import com.pablogb.psychologger.model.entity.SessionEntity;
+import com.pablogb.psychologger.model.enums.Sex;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 public final class TestDataUtil {
     private TestDataUtil() {

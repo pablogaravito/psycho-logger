@@ -1,6 +1,6 @@
 package com.pablogb.psychologger.service;
 
-import com.pablogb.psychologger.domain.dto.PatientWithDebtContextDto;
+import com.pablogb.psychologger.dto.view.PatientWithDebtContextDto;
 
 import java.util.List;
 
