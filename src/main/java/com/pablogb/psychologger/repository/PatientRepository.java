@@ -1,9 +1,11 @@
 package com.pablogb.psychologger.repository;
 
+import com.pablogb.psychologger.dto.api.PatientWithDebtCountDto;
 import com.pablogb.psychologger.dto.view.DebtSessionDto;
 import com.pablogb.psychologger.dto.view.PatientWithBirthdayContextDto;
-import com.pablogb.psychologger.dto.api.PatientWithDebtCountDto;
 import com.pablogb.psychologger.model.entity.PatientEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,6 +18,8 @@ public interface PatientRepository extends JpaRepository<PatientEntity, Long> {
     List<PatientEntity> getPatientsFromSession(@Param("sessionId") Long sessionId);
 
     List<PatientEntity> findByIsActiveTrue();
+
+    Page<PatientEntity> findByIsActiveTrue(Pageable pageable);
 
     @Query("SELECT p FROM PatientEntity p WHERE LOWER(p.shortName) LIKE LOWER(CONCAT('%', :name, '%')) OR LOWER(p.firstNames) LIKE LOWER(CONCAT('%', :name, '%')) OR LOWER(p.lastNames) LIKE LOWER(CONCAT('%', :name, '%'))")
     List<PatientEntity> searchPatientByName(@Param("name") String name);

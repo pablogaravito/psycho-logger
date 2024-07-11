@@ -3,9 +3,9 @@ package com.pablogb.psychologger.controller.api;
 import com.pablogb.psychologger.dto.api.PatchSessionDto;
 import com.pablogb.psychologger.dto.api.SessionContextDto;
 import com.pablogb.psychologger.dto.api.SessionDto;
+import com.pablogb.psychologger.mapper.Mapper;
 import com.pablogb.psychologger.model.entity.PatientEntity;
 import com.pablogb.psychologger.model.entity.SessionEntity;
-import com.pablogb.psychologger.mapper.Mapper;
 import com.pablogb.psychologger.service.PatientService;
 import com.pablogb.psychologger.service.SessionService;
 import jakarta.validation.Valid;
@@ -29,17 +29,13 @@ public class SessionController {
 
     private final Mapper<SessionEntity, SessionDto> sessionMapper;
 
-    @GetMapping("/greeting")
-    public String testGreeting() {
-        return "hello there";
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<SessionDto> getSession(@PathVariable Long id) {
         SessionEntity foundSession = sessionService.getSession(id);
         SessionDto sessionDto = sessionMapper.mapTo(foundSession);
         return new ResponseEntity<>(sessionDto, HttpStatus.OK);
     }
+
     @PostMapping
     public ResponseEntity<SessionDto> saveSession(@Valid @RequestBody SessionContextDto sessionContextDto) {
         List<Long> patientIds = sessionContextDto.getPatientId();

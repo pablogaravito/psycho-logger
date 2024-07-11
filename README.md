@@ -13,6 +13,14 @@ A spring boot application, using MySql and Thymeleaf, meant for psychotherapists
 * [![Bootstrap][Bootstrap.com]][Bootstrap-url]
 * [![JQuery][JQuery.com]][JQuery-url]
 
+## API Endpoints
+
+| Method | Endpoint         | Description          |
+|--------|------------------|----------------------|
+| GET    | `/api/resource`  | Retrieve resource    |
+| POST   | `/api/resource`  | Create new resource  |
+| PUT    | `/api/resource`  | Update a resource    |
+| DELETE | `/api/resource`  | Delete a resource    |
 
 ## Contact
 
