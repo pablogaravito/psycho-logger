@@ -1,7 +1,7 @@
 package com.pablogb.psychologger.repository;
 
 import com.pablogb.psychologger.dto.api.PatientWithDebtCountDto;
-import com.pablogb.psychologger.dto.view.DebtSessionDto;
+import com.pablogb.psychologger.dto.view.DebtSessionViewDto;
 import com.pablogb.psychologger.dto.view.PatientWithBirthdayContextDto;
 import com.pablogb.psychologger.model.entity.PatientEntity;
 import org.springframework.data.domain.Page;
@@ -31,11 +31,11 @@ public interface PatientRepository extends JpaRepository<PatientEntity, Long> {
             "ORDER BY COUNT(s) DESC")
     List<PatientWithDebtCountDto> getPatientsWithDebt();
 
-    @Query("SELECT new com.pablogb.psychologger.dto.view.DebtSessionDto(s.id, s.themes, s.sessionDate, s.isPaid) " +
+    @Query("SELECT new com.pablogb.psychologger.dto.view.DebtSessionViewDto(s.id, s.themes, s.sessionDate, s.isPaid) " +
             "FROM SessionEntity s JOIN s.patients p " +
             "WHERE p.id = :patientId AND s.isPaid = false " +
             "ORDER BY s.sessionDate DESC")
-    List<DebtSessionDto> getPatientDebt(@Param("patientId") Long patientId);
+    List<DebtSessionViewDto> getPatientDebt(@Param("patientId") Long patientId);
 
     @Query(name = "PatientEntity.findPersonsWithUpcomingAndRecentBirthdays", nativeQuery = true)
     List<PatientWithBirthdayContextDto> findPersonsWithUpcomingAndRecentBirthdays();

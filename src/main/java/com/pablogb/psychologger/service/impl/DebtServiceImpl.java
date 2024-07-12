@@ -1,5 +1,7 @@
 package com.pablogb.psychologger.service.impl;
 
+import com.pablogb.psychologger.dto.api.DebtSessionDto;
+import com.pablogb.psychologger.dto.view.DebtSessionViewDto;
 import com.pablogb.psychologger.dto.view.PatientWithDebtContextDto;
 import com.pablogb.psychologger.dto.api.PatientWithDebtCountDto;
 import com.pablogb.psychologger.model.entity.SessionEntity;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +27,17 @@ public class DebtServiceImpl implements DebtService {
     public List<PatientWithDebtContextDto> getPatientsWithDebt() {
         List<PatientWithDebtCountDto> patientsWithDebt = patientRepository.getPatientsWithDebt();
         return patientsWithDebt.stream().map(p -> PatientWithDebtContextDto.create(p, patientRepository.getPatientDebt(p.getId()))).toList();
+    }
+
+    @Override
+    public List<PatientWithDebtCountDto> getPatientsWithDebtApi() {
+        return patientRepository.getPatientsWithDebt();
+    }
+
+    @Override
+    public List<DebtSessionDto> getPatientDebt(Long id) {
+        List<DebtSessionViewDto> patientDebt = patientRepository.getPatientDebt(id);
+        return patientDebt.stream().map(DebtSessionDto::create).toList();
     }
 
     @Override

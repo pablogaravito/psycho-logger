@@ -19,9 +19,9 @@ public class PatientWithDebtContextDto {
     @NonNull
     private Long debtCount;
     @NonNull
-    private List<DebtSessionDto> debtSessions;
+    private List<DebtSessionViewDto> debtSessions;
 
-    public static PatientWithDebtContextDto create(PatientWithDebtCountDto patientWithDebtCountDto, List<DebtSessionDto> debtSessions) {
+    public static PatientWithDebtContextDto create(PatientWithDebtCountDto patientWithDebtCountDto, List<DebtSessionViewDto> debtSessions) {
         return PatientWithDebtContextDto.builder()
                 .id(patientWithDebtCountDto.getId())
                 .shortName(patientWithDebtCountDto.getShortName())

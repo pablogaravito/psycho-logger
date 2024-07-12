@@ -17,10 +17,26 @@ A spring boot application, using MySql and Thymeleaf, meant for psychotherapists
 
 | Method | Endpoint         | Description          |
 |--------|------------------|----------------------|
-| GET    | `/api/resource`  | Retrieve resource    |
-| POST   | `/api/resource`  | Create new resource  |
-| PUT    | `/api/resource`  | Update a resource    |
-| DELETE | `/api/resource`  | Delete a resource    |
+| GET    | `/api/patients/<id>`  | Retrieve a patient  |
+| GET    | `/api/patients`  | Retrieve all active patients  |
+| GET    | `/api/patients?page=<page>&size=<size>`  | Retrieve active patients with pagination |
+| GET    | `/api/patients/all`  | Retrieve all patients  |
+| POST   | `/api/patients`  | Create new patient  |
+| PUT    | `/api/patients/<id>`  | Update a patient    |
+| PATCH  | `/api/patients/<id>`  | Partial Update a patient    |
+| DELETE | `/api/patients/<id>`  | Delete a patient    |
+| GET    | `/api/sessions/<id>`  | Retrieve a session    |
+| GET    | `/api/sessions?page=<page>&size=<size>`  | Retrieve sessions with pagination |
+| GET    | `/api/sessions`  | Retrieve all sessions  |
+| GET    | `/api/patients/<id>/sessions`  | Retrieve a patient's sessions |
+| GET    | `/api/patients/<id>/sessions?page=<page>&size=<size>`  | Retrieve a patient's sessions with pagination |
+| POST   | `/api/sessions`  | Create new session  |
+| PUT    | `/api/sessions/<id>`  | Update a session    |
+| PATCH  | `/api/sessions/<id>`  | Partial Update a session    |
+| DELETE | `/api/sessions/<id>`  | Delete a session    |
+| GET    | `/api/debt/`  | Retrieve patients with debt  |
+| GET    | `/api/debt/<id>`  | Retrieve a patient's debt sessions |
+| POST    | `/api/debt/pay/<id>`  | Pay a debt session |
 
 ## Contact
 

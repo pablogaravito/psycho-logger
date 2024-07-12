@@ -1,6 +1,9 @@
 package com.pablogb.psychologger.dto.api;
 
+import com.pablogb.psychologger.dto.view.PatientListView;
+import com.pablogb.psychologger.model.entity.PatientEntity;
 import com.pablogb.psychologger.model.enums.Sex;
+import com.pablogb.psychologger.util.DateUtils;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import lombok.*;
@@ -40,4 +43,14 @@ public class PatientDto {
     private Sex sex;
 
     private Set<SessionDto> sessions;
+
+
+    public static PatientDto create(PatientEntity patientEntity) {
+        return PatientDto.builder()
+                .id(patientEntity.getId())
+                .sex(patientEntity.getSex())
+                .birthDate(patientEntity.getBirthDate())
+                .shortName(patientEntity.getShortName())
+                .build();
+    }
 }

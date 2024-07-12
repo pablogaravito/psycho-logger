@@ -38,7 +38,6 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public Page<PatientEntity> getPatientsPaginated(int page, int size) {
-//        return patientRepository.findAll(PageRequest.of(page, size));
         return patientRepository.findByIsActiveTrue(PageRequest.of(page, size));
     }
 

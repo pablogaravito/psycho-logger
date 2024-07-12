@@ -8,13 +8,13 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class DebtSessionDto {
+public class DebtSessionViewDto {
     private Long id;
     private String themes;
     private String sessionDate;
     private boolean isPaid;
 
-    public DebtSessionDto(Long id, String themes, LocalDate sessionDate, boolean isPaid) {
+    public DebtSessionViewDto(Long id, String themes, LocalDate sessionDate, boolean isPaid) {
         this.id = id;
         this.themes = themes;
         this.sessionDate = DateUtils.formatShortDate(sessionDate);

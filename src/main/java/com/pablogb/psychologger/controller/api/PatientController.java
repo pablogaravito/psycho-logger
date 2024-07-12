@@ -9,13 +9,12 @@ import com.pablogb.psychologger.service.PatientService;
 import com.pablogb.psychologger.service.SessionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -77,15 +76,24 @@ public class PatientController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Set<PatientDto>> getPatients() {
-        Set<PatientDto> patientDtoSet = patientService.getPatients().stream().map(patientMapper::mapTo).collect(Collectors.toSet());
-        return new ResponseEntity<>(patientDtoSet, HttpStatus.OK);
+    public ResponseEntity<List<PatientDto>> getPatients() {
+        List<PatientDto> patientDtoList = patientService.getPatients().stream().map(patientMapper::mapTo).toList();
+        return new ResponseEntity<>(patientDtoList, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<Set<PatientDto>> getActivePatients() {
-        Set<PatientDto> patientDtoSet = patientService.getActivePatients().stream().map(patientMapper::mapTo).collect(Collectors.toSet());
-        return new ResponseEntity<>(patientDtoSet, HttpStatus.OK);
+    public ResponseEntity<List<PatientDto>> getActivePatients() {
+        List<PatientDto> patientDtoList = patientService.getActivePatients().stream().map(patientMapper::mapTo).toList();
+        return new ResponseEntity<>(patientDtoList, HttpStatus.OK);
+    }
+
+    @GetMapping("/pages")
+    public ResponseEntity<Page<PatientDto>> getActivePatientsPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<PatientEntity> patientsPage = patientService.getPatientsPaginated(page, size);
+        Page<PatientDto> patients = patientsPage.map(PatientDto::create);
+        return new ResponseEntity<>(patients, HttpStatus.OK);
     }
 
     @GetMapping("/{id}/sessions")
