@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pablogb.psychologger.TestDataUtil;
 import com.pablogb.psychologger.dto.api.PatientDto;
+import com.pablogb.psychologger.mapper.Mapper;
 import com.pablogb.psychologger.model.entity.PatientEntity;
 import com.pablogb.psychologger.model.entity.SessionEntity;
 import com.pablogb.psychologger.service.PatientService;
@@ -39,6 +40,9 @@ class PatientControllerIntegrationTests {
 
     @Autowired
     private PatientService patientService;
+
+    @Autowired
+    private Mapper<PatientEntity, PatientDto> patientDtoMapper;
 
     private final ObjectMapper objectMapper;
 
@@ -77,8 +81,8 @@ class PatientControllerIntegrationTests {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(patientJson)
                 ).andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.firstNames").value("Puerca"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.shortName").value("Puerca Pérez"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.firstNames").value("Juana"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.shortName").value("Juanita Cortéz"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.birthDate").value("1996-08-11")
                 );
     }
@@ -108,8 +112,8 @@ class PatientControllerIntegrationTests {
     void testThatGetPatientsReturnsSetOfPatients() throws Exception {
         PatientEntity testPatientA = TestDataUtil.createTestPatientA();
         PatientEntity testPatientB = TestDataUtil.createTestPatientB();
-        patientService.savePatient(testPatientA);
-        patientService.savePatient(testPatientB);
+        patientService.savePatient(patientDtoMapper.mapTo(testPatientA));
+        patientService.savePatient(patientDtoMapper.mapTo(testPatientB));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/patients")
@@ -121,7 +125,7 @@ class PatientControllerIntegrationTests {
 
     @Test
     void testThatGetPatientReturnsHttpStatus200WhenPatientExists() throws Exception {
-        PatientEntity savedPatient = patientService.savePatient(TestDataUtil.createTestPatientB());
+        PatientDto savedPatient = patientService.savePatient(patientDtoMapper.mapTo(TestDataUtil.createTestPatientB()));
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/patients/" + savedPatient.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -133,12 +137,12 @@ class PatientControllerIntegrationTests {
     @Test
     void testThatGetPatientReturnsPatientWhenPatientExists() throws Exception {
         PatientEntity testPatientB = TestDataUtil.createTestPatientB();
-        patientService.savePatient(testPatientB);
+        patientService.savePatient(patientDtoMapper.mapTo(testPatientB));
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/patients/1")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.firstNames").value("Puerca")
+                MockMvcResultMatchers.jsonPath("$.firstNames").value("Juana")
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.birthDate").value("1996-08-11")
         );
@@ -168,7 +172,7 @@ class PatientControllerIntegrationTests {
     @Test
     void testThatFullUpdatePatientReturnsHttpStatus400WhenPayloadIsIncomplete() throws Exception {
         PatientDto incompletePatient = TestDataUtil.createIncompletePatientDto();
-        PatientEntity savedPatient = patientService.savePatient(TestDataUtil.createTestPatientA());
+        PatientDto savedPatient = patientService.savePatient(patientDtoMapper.mapTo(TestDataUtil.createTestPatientA()));
         String incompletePatientJson = objectMapper.writeValueAsString(incompletePatient);
 
         mockMvc.perform(
@@ -182,7 +186,7 @@ class PatientControllerIntegrationTests {
     @Test
     void testThatFullUpdatePatientReturnsHttpStatus200WhenPatientExists() throws Exception {
         PatientEntity testPatientA = TestDataUtil.createTestPatientA();
-        patientService.savePatient(testPatientA);
+        patientService.savePatient(patientDtoMapper.mapTo(testPatientA));
         PatientEntity testPatientB = TestDataUtil.createTestPatientB();
         String patientJson = objectMapper.writeValueAsString(testPatientB);
         mockMvc.perform(
@@ -195,7 +199,7 @@ class PatientControllerIntegrationTests {
     @Test
     void testThatFullUpdatePatientUpdatesExistingPatient() throws Exception {
         PatientEntity testPatientB = TestDataUtil.createTestPatientB();
-        PatientEntity savedPatient = patientService.savePatient(testPatientB);
+        PatientDto savedPatient = patientService.savePatient(patientDtoMapper.mapTo(testPatientB));
         PatientEntity updatedPatient = TestDataUtil.createTestPatientA();
         updatedPatient.setId(null);
         String updatedPatientJson = objectMapper.writeValueAsString(updatedPatient);
@@ -223,7 +227,7 @@ class PatientControllerIntegrationTests {
     @Test
     void testThatPartialUpdatePatientReturnsUpdatedPatientAndHttpStatus200() throws Exception {
         PatientEntity testPatientB = TestDataUtil.createTestPatientB();
-        PatientEntity savedPatient = patientService.savePatient(testPatientB);
+        PatientDto savedPatient = patientService.savePatient(patientDtoMapper.mapTo(testPatientB));
         PatientDto testPatientDTo = TestDataUtil.createIncompletePatientDto();
 
         String patientJson = objectMapper.writeValueAsString(testPatientDTo);
@@ -248,7 +252,7 @@ class PatientControllerIntegrationTests {
     @Test
     void testThatDeletePatientReturnsHttpStatus204WhenPatientExists() throws Exception {
         PatientEntity testPatientA = TestDataUtil.createTestPatientA();
-        PatientEntity savedPatient = patientService.savePatient(testPatientA);
+        PatientDto savedPatient = patientService.savePatient(patientDtoMapper.mapTo(testPatientA));
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/patients/" + savedPatient.getId())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -267,7 +271,7 @@ class PatientControllerIntegrationTests {
     @Test
     void testThatGetPatientSessionsReturnsHttpStatus200WhenPatientExists() throws Exception {
         PatientEntity testPatientA = TestDataUtil.createTestPatientA();
-        PatientEntity savedPatient = patientService.savePatient(testPatientA);
+        PatientDto savedPatient = patientService.savePatient(patientDtoMapper.mapTo(testPatientA));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/patients/" + savedPatient.getId() + "/sessions")
@@ -285,7 +289,7 @@ class PatientControllerIntegrationTests {
 
         testPatientA.setSessions(List.of(testSessionA, testSessionB));
 
-        PatientEntity savedPatient = patientService.savePatient(testPatientA);
+        PatientDto savedPatient = patientService.savePatient(patientDtoMapper.mapTo(testPatientA));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/patients/" + savedPatient.getId() + "/sessions")

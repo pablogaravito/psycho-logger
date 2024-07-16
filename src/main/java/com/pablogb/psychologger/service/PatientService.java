@@ -10,15 +10,15 @@ import java.util.List;
 
 
 public interface PatientService {
-    PatientEntity getPatient(Long id);
-    List<PatientEntity> getPatients();
+    PatientDto getPatient(Long id);
+    List<PatientDto> getPatients();
     Page<PatientEntity> getPatientsPaginated(int page, int size);
-    List<PatientEntity> getActivePatients();
-    PatientEntity savePatient(PatientEntity patientEntity);
-    PatientEntity partialUpdatePatient(PatientDto patientDto);
+    List<PatientDto> getActivePatients();
+    PatientDto savePatient(PatientDto patientDto);
+    PatientDto partialUpdatePatient(PatientDto patientDto);
     void deletePatient(Long id);
     boolean patientExists(Long id);
     List<PatientShort> retrievePatients(List<PatientEntity> patients);
-    List<PatientEntity> searchPatientByName(String name);
+    List<PatientDto> searchPatientByName(String name);
     List<PatientWithBirthdayContextDto> getPatientsWithIncomingBirthdays();
 }

@@ -27,9 +27,9 @@ public final class TestDataUtil {
 
     public static PatientEntity createTestPatientB() {
         return PatientEntity.builder()
-                .firstNames("Juanita")
+                .firstNames("Juana")
                 .lastNames("Pérez Cortéz")
-                .shortName("Puerca Cortéz")
+                .shortName("Juanita Cortéz")
                 .birthDate(LocalDate.parse("1996-08-11"))
                 .sex(Sex.FEMALE)
                 .isActive(true)

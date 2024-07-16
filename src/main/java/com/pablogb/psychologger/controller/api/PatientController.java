@@ -24,24 +24,24 @@ public class PatientController {
     private final PatientService patientService;
     private final SessionService sessionService;
 
-    private final Mapper<PatientEntity, CreatePatientDto> patientMapper;
+    private final Mapper<PatientEntity, PatientDto> patientMapper;
+    private final Mapper<PatientEntity, CreatePatientDto> createPatientDtoMapper;
 
     @GetMapping("/{id}")
-    public ResponseEntity<CreatePatientDto> getPatient(@PathVariable Long id) {
-        PatientEntity foundPatient = patientService.getPatient(id);
-        CreatePatientDto createPatientDto = patientMapper.mapTo(foundPatient);
-        return new ResponseEntity<>(createPatientDto, HttpStatus.OK);
+    public ResponseEntity<PatientDto> getPatient(@PathVariable Long id) {
+        PatientDto foundPatient = patientService.getPatient(id);
+        return new ResponseEntity<>(foundPatient, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<CreatePatientDto> createPatient(@Valid @RequestBody CreatePatientDto createPatientDto) {
-        PatientEntity patientEntity = patientMapper.mapFrom(createPatientDto);
-        PatientEntity savedPatient = patientService.savePatient(patientEntity);
-        return new ResponseEntity<>(patientMapper.mapTo(savedPatient), HttpStatus.CREATED);
+    public ResponseEntity<PatientDto> createPatient(@Valid @RequestBody CreatePatientDto createPatientDto) {
+        PatientEntity patientEntity = createPatientDtoMapper.mapFrom(createPatientDto);
+        PatientDto savedPatient = patientService.savePatient(patientMapper.mapTo(patientEntity));
+        return new ResponseEntity<>(savedPatient, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CreatePatientDto> fullUpdatePatient(
+    public ResponseEntity<PatientDto> fullUpdatePatient(
             @PathVariable Long id,
             @Valid @RequestBody CreatePatientDto createPatientDto) {
         if (!patientService.patientExists(id)) {
@@ -49,13 +49,13 @@ public class PatientController {
         }
 
         createPatientDto.setId(id);
-        PatientEntity patientEntity = patientMapper.mapFrom(createPatientDto);
-        PatientEntity savedPatient = patientService.savePatient(patientEntity);
-        return new ResponseEntity<>(patientMapper.mapTo(savedPatient), HttpStatus.OK);
+        PatientEntity patientEntity = createPatientDtoMapper.mapFrom(createPatientDto);
+        PatientDto savedPatient = patientService.savePatient(patientMapper.mapTo(patientEntity));
+        return new ResponseEntity<>(savedPatient, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<CreatePatientDto> partialUpdatePatient(
+    public ResponseEntity<PatientDto> partialUpdatePatient(
             @PathVariable Long id,
             @RequestBody PatientDto patientDto) {
 
@@ -64,9 +64,8 @@ public class PatientController {
         }
 
         patientDto.setId(id);
-
-        PatientEntity updatedPatient = patientService.partialUpdatePatient(patientDto);
-        return new ResponseEntity<>(patientMapper.mapTo(updatedPatient), HttpStatus.OK);
+        PatientDto updatedPatient = patientService.partialUpdatePatient(patientDto);
+        return new ResponseEntity<>(updatedPatient, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
@@ -77,25 +76,22 @@ public class PatientController {
 
     @GetMapping("/all")
     public ResponseEntity<List<PatientDto>> getPatients() {
-        //List<PatientDto> patientDtoList = patientService.getPatients().stream().map(patientMapper::mapTo).toList();
-        List<PatientDto> patientDtoList = patientService.getPatients().stream().map(PatientDto::create).toList();
-        return new ResponseEntity<>(patientDtoList, HttpStatus.OK);
+        return new ResponseEntity<>(patientService.getPatients(), HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<List<PatientDto>> getActivePatients() {
-//        List<CreatePatientDto> createPatientDtoList = patientService.getActivePatients().stream().map(patientMapper::mapTo).toList();
-        List<PatientDto> patientDtoList = patientService.getActivePatients().stream().map(PatientDto::create).toList();
-        return new ResponseEntity<>(patientDtoList, HttpStatus.OK);
+        return new ResponseEntity<>(patientService.getActivePatients(), HttpStatus.OK);
     }
 
     @GetMapping("/pages")
-    public ResponseEntity<Page<PatientDto>> getActivePatientsPaginated(
+    public ResponseEntity<List<PatientDto>> getActivePatientsPaginated(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Page<PatientEntity> patientsPage = patientService.getPatientsPaginated(page, size);
         Page<PatientDto> patients = patientsPage.map(PatientDto::create);
-        return new ResponseEntity<>(patients, HttpStatus.OK);
+        List<PatientDto> content = patients.getContent();
+        return new ResponseEntity<>(content, HttpStatus.OK);
     }
 
     @GetMapping("/{id}/sessions")

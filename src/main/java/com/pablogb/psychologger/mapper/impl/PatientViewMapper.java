@@ -1,5 +1,6 @@
 package com.pablogb.psychologger.mapper.impl;
 
+import com.pablogb.psychologger.dto.api.PatientDto;
 import com.pablogb.psychologger.dto.view.PatientView;
 import com.pablogb.psychologger.model.entity.PatientEntity;
 import com.pablogb.psychologger.mapper.Mapper;
@@ -9,16 +10,17 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class PatientViewMapper implements Mapper<PatientEntity, PatientView> {
+public class PatientViewMapper implements Mapper<PatientDto, PatientView> {
     private final ModelMapper modelMapper;
 
+
     @Override
-    public PatientView mapTo(PatientEntity patientEntity) {
-        return modelMapper.map(patientEntity, PatientView.class);
+    public PatientView mapTo(PatientDto patientDto) {
+        return modelMapper.map(patientDto, PatientView.class);
     }
 
     @Override
-    public PatientEntity mapFrom(PatientView patientView) {
-        return modelMapper.map(patientView, PatientEntity.class);
+    public PatientDto mapFrom(PatientView patientView) {
+        return modelMapper.map(patientView, PatientDto.class);
     }
 }

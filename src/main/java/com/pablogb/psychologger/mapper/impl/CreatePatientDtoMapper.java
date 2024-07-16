@@ -9,10 +9,9 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class PatientMapper implements Mapper<PatientEntity, CreatePatientDto> {
+public class CreatePatientDtoMapper implements Mapper<PatientEntity, CreatePatientDto> {
 
     private final ModelMapper modelMapper;
-
 
     @Override
     public CreatePatientDto mapTo(PatientEntity patientEntity) {
