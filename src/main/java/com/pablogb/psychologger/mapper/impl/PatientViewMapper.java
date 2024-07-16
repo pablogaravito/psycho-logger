@@ -2,7 +2,6 @@ package com.pablogb.psychologger.mapper.impl;
 
 import com.pablogb.psychologger.dto.api.PatientDto;
 import com.pablogb.psychologger.dto.view.PatientView;
-import com.pablogb.psychologger.model.entity.PatientEntity;
 import com.pablogb.psychologger.mapper.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;

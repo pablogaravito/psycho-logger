@@ -88,8 +88,7 @@ public class PatientController {
     public ResponseEntity<List<PatientDto>> getActivePatientsPaginated(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<PatientEntity> patientsPage = patientService.getPatientsPaginated(page, size);
-        Page<PatientDto> patients = patientsPage.map(PatientDto::create);
+        Page<PatientDto> patients = patientService.getPatientsPaginated(page, size);
         List<PatientDto> content = patients.getContent();
         return new ResponseEntity<>(content, HttpStatus.OK);
     }

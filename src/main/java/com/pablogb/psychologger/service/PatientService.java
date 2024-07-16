@@ -12,7 +12,7 @@ import java.util.List;
 public interface PatientService {
     PatientDto getPatient(Long id);
     List<PatientDto> getPatients();
-    Page<PatientEntity> getPatientsPaginated(int page, int size);
+    Page<PatientDto> getPatientsPaginated(int page, int size);
     List<PatientDto> getActivePatients();
     PatientDto savePatient(PatientDto patientDto);
     PatientDto partialUpdatePatient(PatientDto patientDto);

@@ -24,7 +24,7 @@ public class PatientDto {
     private Sex sex;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-    private List<SessionDto> sessions;
+//    private List<SessionDto> sessions;
 
     public static PatientDto create(PatientEntity patientEntity) {
         return PatientDto.builder()
@@ -36,7 +36,7 @@ public class PatientDto {
                 .birthDate(patientEntity.getBirthDate())
                 .createdAt(patientEntity.getCreatedAt())
                 .modifiedAt(patientEntity.getModifiedAt())
-                .sessions(Collections.emptyList())
+                .isActive(patientEntity.getIsActive())
                 .build();
     }
 }

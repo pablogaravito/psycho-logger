@@ -40,13 +40,13 @@ public class SessionController {
     public ResponseEntity<SessionDto> saveSession(@Valid @RequestBody SessionContextDto sessionContextDto) {
         List<Long> patientIds = sessionContextDto.getPatientId();
 
-        List<PatientEntity> patients = new ArrayList<>();
-        for (Long id : patientIds) {
-            PatientEntity patient = patientService.getPatient(id);
-            patients.add(patient);
-        }
+//        List<PatientEntity> patients = new ArrayList<>();
+//        for (Long id : patientIds) {
+//            PatientEntity patient = patientService.getPatient(id);
+//            patients.add(patient);
+//        }
         SessionEntity sessionEntity = sessionMapper.mapFrom(sessionContextDto.getSessionDto());
-        sessionEntity.setPatients(patients);
+//        sessionEntity.setPatients(patients);
         SessionEntity savedSession = sessionService.saveSession(sessionEntity);
         return new ResponseEntity<>(sessionMapper.mapTo(savedSession), HttpStatus.CREATED);
     }

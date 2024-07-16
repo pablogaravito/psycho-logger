@@ -1,6 +1,7 @@
 package com.pablogb.psychologger.controller.view;
 
 import com.pablogb.psychologger.dto.api.PatchSessionDto;
+import com.pablogb.psychologger.dto.api.PatientDto;
 import com.pablogb.psychologger.dto.view.*;
 import com.pablogb.psychologger.model.entity.PatientEntity;
 import com.pablogb.psychologger.model.entity.SessionEntity;
@@ -30,7 +31,7 @@ public class SessionViewController {
 
     private final PatientService patientService;
     private final SessionService sessionService;
-    private final Mapper<PatientEntity, PatientView> patientViewMapper;
+    private final Mapper<PatientDto, PatientView> patientViewMapper;
     private final Mapper<SessionEntity, SessionCreateView> sessionViewMapper;
     private final Mapper<SessionEntity, SessionEditView> sessionEditViewMapper;
 
@@ -81,14 +82,14 @@ public class SessionViewController {
 
         List<Long> patientIds = getPatientIds(sessionCreateView.getPatients());
 
-        List<PatientEntity> patients = new ArrayList<>();
-        for (Long id : patientIds) {
-            PatientEntity patient = patientService.getPatient(id);
-            patients.add(patient);
-        }
+//        List<PatientEntity> patients = new ArrayList<>();
+//        for (Long id : patientIds) {
+//            PatientEntity patient = patientService.getPatient(id);
+//            patients.add(patient);
+//        }
 
         SessionEntity session = sessionViewMapper.mapFrom(sessionCreateView);
-        session.setPatients(patients);
+//        session.setPatients(patients);
         sessionService.saveSession(session);
 
         return "redirect:/view/sessions/list";
