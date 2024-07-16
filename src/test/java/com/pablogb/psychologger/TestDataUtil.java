@@ -1,6 +1,6 @@
 package com.pablogb.psychologger;
 
-import com.pablogb.psychologger.dto.api.PatchPatientDto;
+import com.pablogb.psychologger.dto.api.PatientDto;
 import com.pablogb.psychologger.dto.api.PatchSessionDto;
 import com.pablogb.psychologger.model.entity.PatientEntity;
 import com.pablogb.psychologger.model.entity.SessionEntity;
@@ -36,8 +36,8 @@ public final class TestDataUtil {
                 .build();
     }
 
-    public static PatchPatientDto createIncompletePatientDto() {
-        return PatchPatientDto.builder()
+    public static PatientDto createIncompletePatientDto() {
+        return PatientDto.builder()
                 .shortName("Pando America")
                 .sex(Sex.MALE)
                 .isActive(true)

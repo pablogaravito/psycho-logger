@@ -1,7 +1,7 @@
 package com.pablogb.psychologger.service;
 
 import com.pablogb.psychologger.dto.view.PatientShort;
-import com.pablogb.psychologger.dto.api.PatchPatientDto;
+import com.pablogb.psychologger.dto.api.PatientDto;
 import com.pablogb.psychologger.dto.view.PatientWithBirthdayContextDto;
 import com.pablogb.psychologger.model.entity.PatientEntity;
 import org.springframework.data.domain.Page;
@@ -15,7 +15,7 @@ public interface PatientService {
     Page<PatientEntity> getPatientsPaginated(int page, int size);
     List<PatientEntity> getActivePatients();
     PatientEntity savePatient(PatientEntity patientEntity);
-    PatientEntity partialUpdatePatient(PatchPatientDto patchPatientDto);
+    PatientEntity partialUpdatePatient(PatientDto patientDto);
     void deletePatient(Long id);
     boolean patientExists(Long id);
     List<PatientShort> retrievePatients(List<PatientEntity> patients);

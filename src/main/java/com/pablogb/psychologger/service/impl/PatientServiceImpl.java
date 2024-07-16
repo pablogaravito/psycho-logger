@@ -1,7 +1,7 @@
 package com.pablogb.psychologger.service.impl;
 
 import com.pablogb.psychologger.dto.view.PatientShort;
-import com.pablogb.psychologger.dto.api.PatchPatientDto;
+import com.pablogb.psychologger.dto.api.PatientDto;
 import com.pablogb.psychologger.dto.view.PatientWithBirthdayContextDto;
 import com.pablogb.psychologger.model.entity.PatientEntity;
 import com.pablogb.psychologger.exception.EntityNotFoundException;
@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,14 +56,14 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientEntity partialUpdatePatient(PatchPatientDto patchPatientDto) {
-        return patientRepository.findById(patchPatientDto.getId()).map(existingPatient -> {
-            Optional.ofNullable(patchPatientDto.getFirstNames()).ifPresent(existingPatient::setFirstNames);
-            Optional.ofNullable(patchPatientDto.getLastNames()).ifPresent(existingPatient::setLastNames);
-            Optional.ofNullable(patchPatientDto.getShortName()).ifPresent(existingPatient::setShortName);
-            Optional.ofNullable(patchPatientDto.getSex()).ifPresent(existingPatient::setSex);
-            Optional.ofNullable(patchPatientDto.getBirthDate()).ifPresent(existingPatient::setBirthDate);
-            Optional.ofNullable(patchPatientDto.getIsActive()).ifPresent(existingPatient::setIsActive);
+    public PatientEntity partialUpdatePatient(PatientDto patientDto) {
+        return patientRepository.findById(patientDto.getId()).map(existingPatient -> {
+            Optional.ofNullable(patientDto.getFirstNames()).ifPresent(existingPatient::setFirstNames);
+            Optional.ofNullable(patientDto.getLastNames()).ifPresent(existingPatient::setLastNames);
+            Optional.ofNullable(patientDto.getShortName()).ifPresent(existingPatient::setShortName);
+            Optional.ofNullable(patientDto.getSex()).ifPresent(existingPatient::setSex);
+            Optional.ofNullable(patientDto.getBirthDate()).ifPresent(existingPatient::setBirthDate);
+            Optional.ofNullable(patientDto.getIsActive()).ifPresent(existingPatient::setIsActive);
             return patientRepository.save(existingPatient);
         }).orElseThrow(() -> new RuntimeException("Patient does not exist"));
     }
@@ -96,4 +97,5 @@ public class PatientServiceImpl implements PatientService {
         if (entity.isPresent()) return entity.get();
         else throw new EntityNotFoundException(id, PatientEntity.class);
     }
+
 }

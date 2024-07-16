@@ -3,7 +3,7 @@ package com.pablogb.psychologger.controller.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pablogb.psychologger.TestDataUtil;
-import com.pablogb.psychologger.dto.api.PatchPatientDto;
+import com.pablogb.psychologger.dto.api.PatientDto;
 import com.pablogb.psychologger.model.entity.PatientEntity;
 import com.pablogb.psychologger.model.entity.SessionEntity;
 import com.pablogb.psychologger.service.PatientService;
@@ -85,7 +85,7 @@ class PatientControllerIntegrationTests {
 
     @Test
     void testThatCreateIncompletePatientReturnsHttpStatus400() throws Exception {
-        PatchPatientDto incompletePatient = TestDataUtil.createIncompletePatientDto();
+        PatientDto incompletePatient = TestDataUtil.createIncompletePatientDto();
 
         String jsonPatient = objectMapper.writeValueAsString(incompletePatient);
 
@@ -167,7 +167,7 @@ class PatientControllerIntegrationTests {
 
     @Test
     void testThatFullUpdatePatientReturnsHttpStatus400WhenPayloadIsIncomplete() throws Exception {
-        PatchPatientDto incompletePatient = TestDataUtil.createIncompletePatientDto();
+        PatientDto incompletePatient = TestDataUtil.createIncompletePatientDto();
         PatientEntity savedPatient = patientService.savePatient(TestDataUtil.createTestPatientA());
         String incompletePatientJson = objectMapper.writeValueAsString(incompletePatient);
 
@@ -224,7 +224,7 @@ class PatientControllerIntegrationTests {
     void testThatPartialUpdatePatientReturnsUpdatedPatientAndHttpStatus200() throws Exception {
         PatientEntity testPatientB = TestDataUtil.createTestPatientB();
         PatientEntity savedPatient = patientService.savePatient(testPatientB);
-        PatchPatientDto testPatientDTo = TestDataUtil.createIncompletePatientDto();
+        PatientDto testPatientDTo = TestDataUtil.createIncompletePatientDto();
 
         String patientJson = objectMapper.writeValueAsString(testPatientDTo);
         mockMvc.perform(
