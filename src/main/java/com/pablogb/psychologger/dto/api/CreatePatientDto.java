@@ -1,13 +1,12 @@
 package com.pablogb.psychologger.dto.api;
 
-import com.pablogb.psychologger.model.entity.PatientEntity;
 import com.pablogb.psychologger.model.enums.Sex;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -39,7 +38,4 @@ public class CreatePatientDto {
 
     @NonNull
     private Sex sex;
-
-    private Set<SessionDto> sessions;
-
 }

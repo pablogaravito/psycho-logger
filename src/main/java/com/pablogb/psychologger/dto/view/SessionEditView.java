@@ -1,5 +1,7 @@
 package com.pablogb.psychologger.dto.view;
 
+import com.pablogb.psychologger.dto.api.SessionDto;
+import com.pablogb.psychologger.util.DateUtils;
 import lombok.*;
 
 import java.util.List;
@@ -21,4 +23,16 @@ public class SessionEditView {
     private String nextWeek;
 
     private List<PatientShort> patients;
+
+    public static SessionEditView createFromDto(SessionDto sessionDto) {
+        return SessionEditView.builder()
+                .id(sessionDto.getId())
+                .sessionDate(DateUtils.formatShortDate(sessionDto.getSessionDate()))
+                .themes(sessionDto.getThemes())
+                .content(sessionDto.getContent())
+                .isImportant(sessionDto.getIsImportant())
+                .isPaid(sessionDto.getIsPaid())
+                .nextWeek(sessionDto.getNextWeek())
+                .build();
+    }
 }

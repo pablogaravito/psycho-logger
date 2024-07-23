@@ -1,11 +1,9 @@
 package com.pablogb.psychologger.dto.api;
 
-import com.pablogb.psychologger.model.entity.PatientEntity;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,28 +12,22 @@ import java.util.Set;
 @Builder
 public class SessionDto {
     private Long id;
-
-    @NonNull
     private LocalDate sessionDate;
-
-    @NotBlank(message = "Themes cannot be blank")
-    @NonNull
     private String themes;
-
-    @NotBlank(message = "Session's content cannot be blank")
-    @NonNull
     private String content;
-
-    @NonNull
-    @Builder.Default
-    private Boolean isImportant = false;
-
-    @NonNull
-    @Builder.Default
-    private Boolean isPaid = false;
-
+    private Boolean isImportant;
+    private Boolean isPaid;
     private String nextWeek;
+    private List<PatientDto> patients;
 
-    @NonNull
-    private Set<PatientEntity> patients;
+    public static SessionDto create(CreateSessionDto createSessionDto) {
+        return SessionDto.builder()
+                .sessionDate(createSessionDto.getSessionDate())
+                .themes(createSessionDto.getThemes())
+                .content(createSessionDto.getContent())
+                .isImportant(createSessionDto.getIsImportant())
+                .isPaid(createSessionDto.getIsPaid())
+                .nextWeek(createSessionDto.getNextWeek())
+                .build();
+    }
 }

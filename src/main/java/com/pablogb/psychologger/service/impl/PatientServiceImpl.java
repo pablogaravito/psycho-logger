@@ -1,13 +1,11 @@
 package com.pablogb.psychologger.service.impl;
 
-import com.pablogb.psychologger.dto.api.SessionDto;
-import com.pablogb.psychologger.dto.view.PatientShort;
 import com.pablogb.psychologger.dto.api.PatientDto;
+import com.pablogb.psychologger.dto.view.PatientShort;
 import com.pablogb.psychologger.dto.view.PatientWithBirthdayContextDto;
+import com.pablogb.psychologger.exception.EntityNotFoundException;
 import com.pablogb.psychologger.mapper.Mapper;
 import com.pablogb.psychologger.model.entity.PatientEntity;
-import com.pablogb.psychologger.exception.EntityNotFoundException;
-import com.pablogb.psychologger.model.entity.SessionEntity;
 import com.pablogb.psychologger.repository.PatientRepository;
 import com.pablogb.psychologger.service.PatientService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +22,7 @@ import java.util.Optional;
 public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository patientRepository;
-    private final  Mapper<PatientEntity, PatientDto> patientDtoMapper;
+    private final Mapper<PatientEntity, PatientDto> patientDtoMapper;
 
     @Override
     public PatientDto getPatient(Long id) {
@@ -47,7 +44,6 @@ public class PatientServiceImpl implements PatientService {
         return patientsPage.map(PatientDto::create);
     }
 
-
     @Override
     public List<PatientDto> getActivePatients() {
         List<PatientEntity> patientEntities = patientRepository.findByIsActiveTrue();
@@ -63,16 +59,12 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public PatientDto partialUpdatePatient(PatientDto patientDto) {
-        return patientRepository.findById(patientDto.getId()).map(existingPatient -> {
-            Optional.ofNullable(patientDto.getFirstNames()).ifPresent(existingPatient::setFirstNames);
-            Optional.ofNullable(patientDto.getLastNames()).ifPresent(existingPatient::setLastNames);
-            Optional.ofNullable(patientDto.getShortName()).ifPresent(existingPatient::setShortName);
-            Optional.ofNullable(patientDto.getSex()).ifPresent(existingPatient::setSex);
-            Optional.ofNullable(patientDto.getBirthDate()).ifPresent(existingPatient::setBirthDate);
-            Optional.ofNullable(patientDto.getIsActive()).ifPresent(existingPatient::setIsActive);
-            PatientEntity savedPatient = patientRepository.save(existingPatient);
-            return patientDtoMapper.mapTo(savedPatient);
-        }).orElseThrow(() -> new RuntimeException("Patient does not exist"));
+        return patientRepository.findById(patientDto.getId())
+                .map(existingPatient -> {
+                    updatePatientFields(existingPatient, patientDto);
+                    PatientEntity updatedPatient = patientRepository.save(existingPatient);
+                    return patientDtoMapper.mapTo(updatedPatient);
+                }).orElseThrow(() -> new EntityNotFoundException(patientDto.getId(), PatientEntity.class));
     }
 
     @Override
@@ -99,6 +91,15 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public List<PatientWithBirthdayContextDto> getPatientsWithIncomingBirthdays() {
         return patientRepository.findPersonsWithUpcomingAndRecentBirthdays();
+    }
+
+    private void updatePatientFields(PatientEntity existingPatient, PatientDto patientDto) {
+        Optional.ofNullable(patientDto.getFirstNames()).ifPresent(existingPatient::setFirstNames);
+        Optional.ofNullable(patientDto.getLastNames()).ifPresent(existingPatient::setLastNames);
+        Optional.ofNullable(patientDto.getShortName()).ifPresent(existingPatient::setShortName);
+        Optional.ofNullable(patientDto.getSex()).ifPresent(existingPatient::setSex);
+        Optional.ofNullable(patientDto.getBirthDate()).ifPresent(existingPatient::setBirthDate);
+        Optional.ofNullable(patientDto.getIsActive()).ifPresent(existingPatient::setIsActive);
     }
 
     static PatientEntity unwrapPatient(Optional<PatientEntity> entity, Long id) {

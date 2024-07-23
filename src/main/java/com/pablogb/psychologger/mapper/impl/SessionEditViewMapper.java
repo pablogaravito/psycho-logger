@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class SessionEditMapper implements Mapper<SessionEntity, SessionEditView> {
+public class SessionEditViewMapper implements Mapper<SessionEntity, SessionEditView> {
     private final ModelMapper modelMapper;
 
 

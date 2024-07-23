@@ -1,9 +1,9 @@
 package com.pablogb.psychologger.controller.view;
 
-import com.pablogb.psychologger.dto.api.PatchSessionDto;
+import com.pablogb.psychologger.dto.api.CreateSessionDto;
+import com.pablogb.psychologger.dto.api.SessionDto;
 import com.pablogb.psychologger.dto.api.PatientDto;
 import com.pablogb.psychologger.dto.view.*;
-import com.pablogb.psychologger.model.entity.PatientEntity;
 import com.pablogb.psychologger.model.entity.SessionEntity;
 import com.pablogb.psychologger.mapper.Mapper;
 import com.pablogb.psychologger.service.PatientService;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +32,8 @@ public class SessionViewController {
     private final SessionService sessionService;
     private final Mapper<PatientDto, PatientView> patientViewMapper;
     private final Mapper<SessionEntity, SessionCreateView> sessionViewMapper;
-    private final Mapper<SessionEntity, SessionEditView> sessionEditViewMapper;
+//    private final Mapper<SessionEntity, SessionEditView> sessionEditViewMapper;
+    private final Mapper<SessionEntity, SessionDto> sessionDtoMapper;
 
     @GetMapping
     public String getSessionForm(Model model,
@@ -45,9 +45,10 @@ public class SessionViewController {
             model.addAttribute("formMethod", "post");
             model.addAttribute("sessionView", sessionCreateView);
         } else {
-            SessionEntity session = sessionService.getSession(id);
-            List<PatientShort> patients = session.getPatients().stream().map(PatientShort::create).toList();
-            SessionEditView sessionEditView = sessionEditViewMapper.mapTo(session);
+            SessionDto sessionDto = sessionService.getSession(id);
+            List<PatientShort> patients = sessionDto.getPatients().stream().map(PatientShort::createFromDto).toList();
+//            SessionEditView sessionEditView = sessionEditViewMapper.mapTo(session);
+            SessionEditView sessionEditView = SessionEditView.createFromDto(sessionDto);
             sessionEditView.setPatients(patients);
             model.addAttribute("activePatients", Collections.emptyList());
             model.addAttribute("formMethod", "put");
@@ -61,7 +62,7 @@ public class SessionViewController {
                                 Model model) {
         model.addAttribute("sessionView", sessionCreateView);
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        sessionService.partialUpdateSession(PatchSessionDto.builder()
+        sessionService.partialUpdateSession(SessionDto.builder()
                 .id(sessionCreateView.getId())
                 .nextWeek(sessionCreateView.getNextWeek())
                 .content(sessionCreateView.getContent())
@@ -80,18 +81,12 @@ public class SessionViewController {
             return "addSession";
         }
 
-        List<Long> patientIds = getPatientIds(sessionCreateView.getPatients());
+        CreateSessionDto createSessionDto = CreateSessionDto.createFromSessionCreateView(sessionCreateView);
 
-//        List<PatientEntity> patients = new ArrayList<>();
-//        for (Long id : patientIds) {
-//            PatientEntity patient = patientService.getPatient(id);
-//            patients.add(patient);
-//        }
-
-        SessionEntity session = sessionViewMapper.mapFrom(sessionCreateView);
+//        SessionEntity session = sessionViewMapper.mapFrom(sessionCreateView);
 //        session.setPatients(patients);
-        sessionService.saveSession(session);
-
+//        sessionService.saveSession(sessionDtoMapper.mapTo(session));
+        sessionService.saveSession(createSessionDto);
         return "redirect:/view/sessions/list";
     }
 
@@ -117,10 +112,5 @@ public class SessionViewController {
         return "sessions";
     }
 
-    private List<Long> getPatientIds(String csvInput) {
-        return Stream.of(csvInput.split(","))
-                .map(String::trim)
-                .map(Long::parseLong)
-                .toList();
-    }
+
 }

@@ -12,7 +12,7 @@ import java.util.List;
 public class SessionContextDto {
 
     @NonNull
-    private List<Long> patientId;
+    private List<Long> patientIds;
     @NonNull
-    private SessionDto sessionDto;
+    private CreateSessionDto createSessionDto;
 }

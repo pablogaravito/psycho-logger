@@ -24,7 +24,6 @@ public class PatientDto {
     private Sex sex;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-//    private List<SessionDto> sessions;
 
     public static PatientDto create(PatientEntity patientEntity) {
         return PatientDto.builder()

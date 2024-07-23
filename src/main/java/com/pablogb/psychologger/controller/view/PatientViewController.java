@@ -5,7 +5,6 @@ import com.pablogb.psychologger.dto.view.PatientListView;
 import com.pablogb.psychologger.dto.view.PatientShort;
 import com.pablogb.psychologger.dto.view.PatientView;
 import com.pablogb.psychologger.dto.view.SessionListViewShort;
-import com.pablogb.psychologger.model.entity.PatientEntity;
 import com.pablogb.psychologger.model.entity.SessionEntity;
 import com.pablogb.psychologger.mapper.Mapper;
 import com.pablogb.psychologger.service.PatientService;
@@ -55,8 +54,9 @@ public class PatientViewController {
                                   @RequestParam(defaultValue = "0") int page,
                                   @RequestParam(defaultValue = "6") int size) {
 
-        Page<PatientEntity> patientsPage = patientService.getPatientsPaginated(page, size);
-        Page<PatientListView> patients = patientsPage.map(PatientListView::create);
+//        Page<PatientEntity> patientsPage = patientService.getPatientsPaginated(page, size);
+        Page<PatientDto> patientsPage = patientService.getPatientsPaginated(page, size);
+        Page<PatientListView> patients = patientsPage.map(PatientListView::createFromDto);
 
         model.addAttribute("patients", patients.getContent());
         model.addAttribute("currentPage", page);
@@ -72,7 +72,7 @@ public class PatientViewController {
                                      @RequestParam(defaultValue = "4") int size) {
         Page<SessionEntity> sessionsPage = sessionService.getPatientSessionsPaginated(id, page, size);
         Page<SessionListViewShort> patientSessions = sessionsPage.map(SessionListViewShort::create);
-        PatientShort patient = PatientShort.create(patientService.getPatient(id));
+        PatientShort patient = PatientShort.createFromDto(patientService.getPatient(id));
         model.addAttribute("patient", patient);
         model.addAttribute("patientSessions", patientSessions.getContent());
         model.addAttribute("currentPage", page);

@@ -16,7 +16,7 @@ public class PatientShort {
     public static PatientShort create(PatientEntity patientEntity) {
         return new PatientShort(patientEntity.getId(), patientEntity.getShortName());
     }
-    public static PatientShort create(PatientDto patientDto) {
+    public static PatientShort createFromDto(PatientDto patientDto) {
         return new PatientShort(patientDto.getId(), patientDto.getShortName());
     }
 }

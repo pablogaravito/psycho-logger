@@ -1,10 +1,10 @@
 package com.pablogb.psychologger.controller.api;
 
-import com.pablogb.psychologger.dto.api.PatientDto;
 import com.pablogb.psychologger.dto.api.CreatePatientDto;
+import com.pablogb.psychologger.dto.api.PatientDto;
+import com.pablogb.psychologger.dto.api.SessionDto;
 import com.pablogb.psychologger.mapper.Mapper;
 import com.pablogb.psychologger.model.entity.PatientEntity;
-import com.pablogb.psychologger.model.entity.SessionEntity;
 import com.pablogb.psychologger.service.PatientService;
 import com.pablogb.psychologger.service.SessionService;
 import jakarta.validation.Valid;
@@ -24,7 +24,7 @@ public class PatientController {
     private final PatientService patientService;
     private final SessionService sessionService;
 
-    private final Mapper<PatientEntity, PatientDto> patientMapper;
+    private final Mapper<PatientEntity, PatientDto> patientDtoMapper;
     private final Mapper<PatientEntity, CreatePatientDto> createPatientDtoMapper;
 
     @GetMapping("/{id}")
@@ -36,7 +36,7 @@ public class PatientController {
     @PostMapping
     public ResponseEntity<PatientDto> createPatient(@Valid @RequestBody CreatePatientDto createPatientDto) {
         PatientEntity patientEntity = createPatientDtoMapper.mapFrom(createPatientDto);
-        PatientDto savedPatient = patientService.savePatient(patientMapper.mapTo(patientEntity));
+        PatientDto savedPatient = patientService.savePatient(patientDtoMapper.mapTo(patientEntity));
         return new ResponseEntity<>(savedPatient, HttpStatus.CREATED);
     }
 
@@ -50,7 +50,7 @@ public class PatientController {
 
         createPatientDto.setId(id);
         PatientEntity patientEntity = createPatientDtoMapper.mapFrom(createPatientDto);
-        PatientDto savedPatient = patientService.savePatient(patientMapper.mapTo(patientEntity));
+        PatientDto savedPatient = patientService.savePatient(patientDtoMapper.mapTo(patientEntity));
         return new ResponseEntity<>(savedPatient, HttpStatus.OK);
     }
 
@@ -94,7 +94,7 @@ public class PatientController {
     }
 
     @GetMapping("/{id}/sessions")
-    public ResponseEntity<List<SessionEntity>> getPatientSessions(@PathVariable Long id) {
+    public ResponseEntity<List<SessionDto>> getPatientSessions(@PathVariable Long id) {
         return new ResponseEntity<>(sessionService.getPatientSessions(id), HttpStatus.OK);
     }
 }

@@ -1,5 +1,6 @@
 package com.pablogb.psychologger.mapper.impl;
 
+import com.pablogb.psychologger.dto.api.CreateSessionDto;
 import com.pablogb.psychologger.dto.api.SessionDto;
 import com.pablogb.psychologger.model.entity.SessionEntity;
 import com.pablogb.psychologger.mapper.Mapper;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class SessionMapper implements Mapper<SessionEntity, SessionDto> {
+public class SessionDtoMapper implements Mapper<SessionEntity, SessionDto> {
 
     private final ModelMapper modelMapper;
     @Override
