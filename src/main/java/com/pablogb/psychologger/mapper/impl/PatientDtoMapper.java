@@ -15,11 +15,20 @@ public class PatientDtoMapper implements Mapper<PatientEntity, PatientDto> {
 
     @Override
     public PatientDto mapTo(PatientEntity patientEntity) {
-        return modelMapper.map(patientEntity, PatientDto.class);
+        PatientDto dto = modelMapper.map(patientEntity, PatientDto.class);
+        dto.setCreatedAt(patientEntity.getCreatedAt());
+        return dto;
     }
 
     @Override
     public PatientEntity mapFrom(PatientDto patientDto) {
-        return modelMapper.map(patientDto, PatientEntity.class);
+        PatientEntity entity = modelMapper.map(patientDto, PatientEntity.class);
+        entity.setCreatedAt(null);
+        return entity;
+    }
+
+    public void updateEntityFromDto(PatientDto dto, PatientEntity entity) {
+        modelMapper.map(dto, entity);
+        entity.setCreatedAt(entity.getCreatedAt());
     }
 }

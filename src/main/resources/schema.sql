@@ -8,7 +8,7 @@ CREATE TABLE patients (
     birth_date DATE NOT NULL,
     sex CHAR(1) NOT NULL,
     is_active BOOLEAN NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT '2021-01-01 00:00:00',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     modified_at TIMESTAMP NOT NULL DEFAULT '2021-01-01 00:00:00',
     PRIMARY KEY (id)
 );
@@ -21,7 +21,7 @@ CREATE TABLE sessions (
     next_week VARCHAR(100),
     is_important BOOLEAN NOT NULL,
     is_paid BOOLEAN NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT '2021-01-01 00:00:00',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     modified_at TIMESTAMP NOT NULL DEFAULT '2021-01-01 00:00:00',
     PRIMARY KEY (id)
 );

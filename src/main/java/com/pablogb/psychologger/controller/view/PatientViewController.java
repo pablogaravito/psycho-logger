@@ -1,5 +1,6 @@
 package com.pablogb.psychologger.controller.view;
 
+import com.pablogb.psychologger.dto.api.CreatePatientDto;
 import com.pablogb.psychologger.dto.api.PatientDto;
 import com.pablogb.psychologger.dto.view.PatientListView;
 import com.pablogb.psychologger.dto.view.PatientShort;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class PatientViewController {
     private final PatientService patientService;
     private final SessionService sessionService;
+    private final Mapper<CreatePatientDto, PatientView> patientCreateViewMapper;
     private final Mapper<PatientDto, PatientView> patientViewMapper;
 
     @GetMapping
@@ -44,7 +46,7 @@ public class PatientViewController {
             return "addPatient";
         }
 //        PatientEntity patient = patientViewMapper.mapFrom(patientView);
-        PatientDto patient = patientViewMapper.mapFrom(patientView);
+        CreatePatientDto patient = patientCreateViewMapper.mapFrom(patientView);
         patientService.savePatient(patient);
         return "redirect:/view/patients/list";
     }

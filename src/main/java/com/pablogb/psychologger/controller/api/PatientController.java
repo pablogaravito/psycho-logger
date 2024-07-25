@@ -35,8 +35,7 @@ public class PatientController {
 
     @PostMapping
     public ResponseEntity<PatientDto> createPatient(@Valid @RequestBody CreatePatientDto createPatientDto) {
-        PatientEntity patientEntity = createPatientDtoMapper.mapFrom(createPatientDto);
-        PatientDto savedPatient = patientService.savePatient(patientDtoMapper.mapTo(patientEntity));
+        PatientDto savedPatient = patientService.savePatient(createPatientDto);
         return new ResponseEntity<>(savedPatient, HttpStatus.CREATED);
     }
 
@@ -49,8 +48,7 @@ public class PatientController {
         }
 
         createPatientDto.setId(id);
-        PatientEntity patientEntity = createPatientDtoMapper.mapFrom(createPatientDto);
-        PatientDto savedPatient = patientService.savePatient(patientDtoMapper.mapTo(patientEntity));
+        PatientDto savedPatient = patientService.updatePatient(id, createPatientDto);
         return new ResponseEntity<>(savedPatient, HttpStatus.OK);
     }
 
@@ -59,13 +57,8 @@ public class PatientController {
             @PathVariable Long id,
             @RequestBody PatientDto patientDto) {
 
-        if (!patientService.patientExists(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
         patientDto.setId(id);
-        PatientDto updatedPatient = patientService.partialUpdatePatient(patientDto);
-        return new ResponseEntity<>(updatedPatient, HttpStatus.OK);
+        return new ResponseEntity<>(patientService.partialUpdatePatient(id, patientDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 public class PatientViewMapper implements Mapper<PatientDto, PatientView> {
     private final ModelMapper modelMapper;
 
-
     @Override
     public PatientView mapTo(PatientDto patientDto) {
         return modelMapper.map(patientDto, PatientView.class);
