@@ -29,35 +29,25 @@ public class PatientController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PatientDto> getPatient(@PathVariable Long id) {
-        PatientDto foundPatient = patientService.getPatient(id);
-        return new ResponseEntity<>(foundPatient, HttpStatus.OK);
+        return new ResponseEntity<>(patientService.getPatient(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<PatientDto> createPatient(@Valid @RequestBody CreatePatientDto createPatientDto) {
-        PatientDto savedPatient = patientService.savePatient(createPatientDto);
-        return new ResponseEntity<>(savedPatient, HttpStatus.CREATED);
+    public ResponseEntity<PatientDto> savePatient(@Valid @RequestBody CreatePatientDto createPatientDto) {
+        return new ResponseEntity<>(patientService.savePatient(createPatientDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PatientDto> fullUpdatePatient(
+    public ResponseEntity<PatientDto> updatePatient(
             @PathVariable Long id,
             @Valid @RequestBody CreatePatientDto createPatientDto) {
-        if (!patientService.patientExists(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        createPatientDto.setId(id);
-        PatientDto savedPatient = patientService.updatePatient(id, createPatientDto);
-        return new ResponseEntity<>(savedPatient, HttpStatus.OK);
+        return new ResponseEntity<>(patientService.updatePatient(id, createPatientDto), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<PatientDto> partialUpdatePatient(
             @PathVariable Long id,
             @RequestBody PatientDto patientDto) {
-
-        patientDto.setId(id);
         return new ResponseEntity<>(patientService.partialUpdatePatient(id, patientDto), HttpStatus.OK);
     }
 

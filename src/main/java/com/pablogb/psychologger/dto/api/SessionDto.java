@@ -3,7 +3,7 @@ package com.pablogb.psychologger.dto.api;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -18,16 +18,6 @@ public class SessionDto {
     private Boolean isImportant;
     private Boolean isPaid;
     private String nextWeek;
-    private List<PatientDto> patients;
-
-    public static SessionDto create(CreateSessionDto createSessionDto) {
-        return SessionDto.builder()
-                .sessionDate(createSessionDto.getSessionDate())
-                .themes(createSessionDto.getThemes())
-                .content(createSessionDto.getContent())
-                .isImportant(createSessionDto.getIsImportant())
-                .isPaid(createSessionDto.getIsPaid())
-                .nextWeek(createSessionDto.getNextWeek())
-                .build();
-    }
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 }

@@ -1,7 +1,7 @@
 package com.pablogb.psychologger.controller.view;
 
 import com.pablogb.psychologger.dto.api.CreateSessionDto;
-import com.pablogb.psychologger.dto.api.SessionDto;
+import com.pablogb.psychologger.dto.api.SessionWithPatientsDto;
 import com.pablogb.psychologger.dto.api.PatientDto;
 import com.pablogb.psychologger.dto.view.*;
 import com.pablogb.psychologger.model.entity.SessionEntity;
@@ -21,7 +21,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Controller
@@ -33,7 +32,7 @@ public class SessionViewController {
     private final Mapper<PatientDto, PatientView> patientViewMapper;
     private final Mapper<SessionEntity, SessionCreateView> sessionViewMapper;
 //    private final Mapper<SessionEntity, SessionEditView> sessionEditViewMapper;
-    private final Mapper<SessionEntity, SessionDto> sessionDtoMapper;
+    private final Mapper<SessionEntity, SessionWithPatientsDto> sessionDtoMapper;
 
     @GetMapping
     public String getSessionForm(Model model,
@@ -45,10 +44,10 @@ public class SessionViewController {
             model.addAttribute("formMethod", "post");
             model.addAttribute("sessionView", sessionCreateView);
         } else {
-            SessionDto sessionDto = sessionService.getSession(id);
-            List<PatientShort> patients = sessionDto.getPatients().stream().map(PatientShort::createFromDto).toList();
+            SessionWithPatientsDto sessionWithPatientsDto = sessionService.getSession(id);
+            List<PatientShort> patients = sessionWithPatientsDto.getPatients().stream().map(PatientShort::createFromDto).toList();
 //            SessionEditView sessionEditView = sessionEditViewMapper.mapTo(session);
-            SessionEditView sessionEditView = SessionEditView.createFromDto(sessionDto);
+            SessionEditView sessionEditView = SessionEditView.createFromDto(sessionWithPatientsDto);
             sessionEditView.setPatients(patients);
             model.addAttribute("activePatients", Collections.emptyList());
             model.addAttribute("formMethod", "put");
@@ -62,7 +61,7 @@ public class SessionViewController {
                                 Model model) {
         model.addAttribute("sessionView", sessionCreateView);
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        sessionService.partialUpdateSession(SessionDto.builder()
+        sessionService.partialUpdateSession(SessionWithPatientsDto.builder()
                 .id(sessionCreateView.getId())
                 .nextWeek(sessionCreateView.getNextWeek())
                 .content(sessionCreateView.getContent())
