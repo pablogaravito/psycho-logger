@@ -21,7 +21,7 @@ CREATE TABLE sessions (
     next_week VARCHAR(100),
     is_important BOOLEAN NOT NULL,
     is_paid BOOLEAN NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT '2021-01-01 00:00:00',
     modified_at TIMESTAMP NOT NULL DEFAULT '2021-01-01 00:00:00',
     PRIMARY KEY (id)
 );

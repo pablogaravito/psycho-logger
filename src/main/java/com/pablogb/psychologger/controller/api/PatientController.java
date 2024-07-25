@@ -24,9 +24,6 @@ public class PatientController {
     private final PatientService patientService;
     private final SessionService sessionService;
 
-    private final Mapper<PatientEntity, PatientDto> patientDtoMapper;
-    private final Mapper<PatientEntity, CreatePatientDto> createPatientDtoMapper;
-
     @GetMapping("/{id}")
     public ResponseEntity<PatientDto> getPatient(@PathVariable Long id) {
         return new ResponseEntity<>(patientService.getPatient(id), HttpStatus.OK);
