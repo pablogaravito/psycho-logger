@@ -1,13 +1,14 @@
 package com.pablogb.psychologger.service.impl;
 
-import com.pablogb.psychologger.dto.api.CreatePatientDto;
+import com.pablogb.psychologger.dto.api.PatientCreationDto;
 import com.pablogb.psychologger.dto.api.PatientDto;
 import com.pablogb.psychologger.dto.view.PatientShort;
 import com.pablogb.psychologger.dto.view.PatientWithBirthdayContextDto;
 import com.pablogb.psychologger.exception.EntityNotFoundException;
-import com.pablogb.psychologger.mapper.impl.CreatePatientDtoMapper;
-import com.pablogb.psychologger.mapper.impl.PatientDtoMapper;
+import com.pablogb.psychologger.mapper.impl.PatientEntityToPatientCreationDtoMapper;
+import com.pablogb.psychologger.mapper.impl.PatientEntityToPatientDtoMapper;
 import com.pablogb.psychologger.model.entity.PatientEntity;
+import com.pablogb.psychologger.model.enums.Sex;
 import com.pablogb.psychologger.repository.PatientRepository;
 import com.pablogb.psychologger.service.PatientService;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +25,13 @@ import java.util.Optional;
 public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository patientRepository;
-    private final PatientDtoMapper patientDtoMapper;
-    private final CreatePatientDtoMapper createPatientDtoMapper;
+    private final PatientEntityToPatientDtoMapper patientEntityToPatientDtoMapper;
+    private final PatientEntityToPatientCreationDtoMapper patientEntityToPatientCreationDtoMapper;
 
     @Override
     public PatientDto getPatient(Long id) {
         PatientEntity patientEntity = unwrapPatient(patientRepository.findById(id), id);
-        return patientDtoMapper.mapTo(patientEntity);
+        return patientEntityToPatientDtoMapper.mapTo(patientEntity);
     }
 
     @Override
@@ -38,7 +39,7 @@ public class PatientServiceImpl implements PatientService {
         List<PatientEntity> patients = new ArrayList<>();
         Iterable<PatientEntity> patientEntities = patientRepository.findAll();
         patientEntities.forEach(patients::add);
-        return patients.stream().map(patientDtoMapper::mapTo).toList();
+        return patients.stream().map(patientEntityToPatientDtoMapper::mapTo).toList();
     }
 
     @Override
@@ -50,23 +51,23 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public List<PatientDto> getActivePatients() {
         List<PatientEntity> patientEntities = patientRepository.findByIsActiveTrue();
-        return patientEntities.stream().map(patientDtoMapper::mapTo).toList();
+        return patientEntities.stream().map(patientEntityToPatientDtoMapper::mapTo).toList();
     }
 
     @Override
-    public PatientDto savePatient(CreatePatientDto createPatientDto) {
-        PatientEntity patientEntity = createPatientDtoMapper.mapFrom(createPatientDto);
+    public PatientDto savePatient(PatientCreationDto patientCreationDto) {
+        PatientEntity patientEntity = patientEntityToPatientCreationDtoMapper.mapFrom(patientCreationDto);
         PatientEntity savedPatientEntity = patientRepository.save(patientEntity);
-        return patientDtoMapper.mapTo(savedPatientEntity);
+        return patientEntityToPatientDtoMapper.mapTo(savedPatientEntity);
     }
 
     @Override
-    public PatientDto updatePatient(Long id, CreatePatientDto createPatientDto) {
+    public PatientDto updatePatient(Long id, PatientCreationDto patientCreationDto) {
         return patientRepository.findById(id)
                 .map(existingPatient -> {
-                    updatePatientFields(existingPatient, createPatientDto);
+                    updatePatientFields(existingPatient, patientCreationDto);
                     PatientEntity updatedPatient = patientRepository.save(existingPatient);
-                    return patientDtoMapper.mapTo(updatedPatient);
+                    return patientEntityToPatientDtoMapper.mapTo(updatedPatient);
                 }).orElseThrow(() -> new EntityNotFoundException(id, PatientEntity.class));
     }
 
@@ -76,7 +77,7 @@ public class PatientServiceImpl implements PatientService {
                 .map(existingPatient -> {
                     updatePatientFields(existingPatient, patientDto);
                     PatientEntity updatedPatient = patientRepository.save(existingPatient);
-                    return patientDtoMapper.mapTo(updatedPatient);
+                    return patientEntityToPatientDtoMapper.mapTo(updatedPatient);
                 }).orElseThrow(() -> new EntityNotFoundException(id, PatientEntity.class));
     }
 
@@ -98,7 +99,7 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public List<PatientDto> searchPatientByName(String name) {
         List<PatientEntity> patientEntities = patientRepository.searchPatientByName(name);
-        return patientEntities.stream().map(patientDtoMapper::mapTo).toList();
+        return patientEntities.stream().map(patientEntityToPatientDtoMapper::mapTo).toList();
     }
 
     @Override
@@ -106,13 +107,13 @@ public class PatientServiceImpl implements PatientService {
         return patientRepository.findPersonsWithUpcomingAndRecentBirthdays();
     }
 
-    private void updatePatientFields(PatientEntity existingPatient, CreatePatientDto createPatientDto) {
-        existingPatient.setFirstNames(createPatientDto.getFirstNames());
-        existingPatient.setLastNames(createPatientDto.getLastNames());
-        existingPatient.setShortName(createPatientDto.getShortName());
-        existingPatient.setSex(createPatientDto.getSex());
-        existingPatient.setBirthDate(createPatientDto.getBirthDate());
-        existingPatient.setIsActive(createPatientDto.getIsActive());
+    private void updatePatientFields(PatientEntity existingPatient, PatientCreationDto patientCreationDto) {
+        existingPatient.setFirstNames(patientCreationDto.getFirstNames());
+        existingPatient.setLastNames(patientCreationDto.getLastNames());
+        existingPatient.setShortName(patientCreationDto.getShortName());
+        existingPatient.setSex(Sex.getSexFromCode(patientCreationDto.getSex()));
+        existingPatient.setBirthDate(patientCreationDto.getBirthDate());
+        existingPatient.setIsActive(patientCreationDto.getIsActive());
     }
 
     private void updatePatientFields(PatientEntity existingPatient, PatientDto patientDto) {

@@ -1,14 +1,10 @@
 package com.pablogb.psychologger.controller.api;
 
-import com.pablogb.psychologger.dto.api.CreateSessionDto;
-import com.pablogb.psychologger.dto.api.PatientDto;
+import com.pablogb.psychologger.dto.api.SessionCreationDto;
 import com.pablogb.psychologger.dto.api.SessionDto;
-import com.pablogb.psychologger.mapper.Mapper;
-import com.pablogb.psychologger.model.entity.SessionEntity;
 import com.pablogb.psychologger.service.SessionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Session;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,13 +25,13 @@ public class SessionController {
     }
 
     @PostMapping
-    public ResponseEntity<SessionDto> saveSession(@Valid @RequestBody CreateSessionDto createSessionDto) {
-        return new ResponseEntity<>(sessionService.saveSession(createSessionDto), HttpStatus.CREATED);
+    public ResponseEntity<SessionDto> saveSession(@Valid @RequestBody SessionCreationDto sessionCreationDto) {
+        return new ResponseEntity<>(sessionService.saveSession(sessionCreationDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SessionDto> updateSession(@PathVariable Long id, @Valid @RequestBody CreateSessionDto createSessionDto) {
-        return new ResponseEntity<>(sessionService.updateSession(id, createSessionDto), HttpStatus.OK);
+    public ResponseEntity<SessionDto> updateSession(@PathVariable Long id, @Valid @RequestBody SessionCreationDto sessionCreationDto) {
+        return new ResponseEntity<>(sessionService.updateSession(id, sessionCreationDto), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")

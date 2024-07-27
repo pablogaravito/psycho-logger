@@ -1,6 +1,6 @@
 package com.pablogb.psychologger.controller.view;
 
-import com.pablogb.psychologger.dto.api.CreateSessionDto;
+import com.pablogb.psychologger.dto.api.SessionCreationDto;
 import com.pablogb.psychologger.dto.api.SessionDto;
 import com.pablogb.psychologger.dto.api.PatientDto;
 import com.pablogb.psychologger.dto.view.*;
@@ -16,7 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +28,7 @@ public class SessionViewController {
 
     private final PatientService patientService;
     private final SessionService sessionService;
-    private final Mapper<PatientDto, PatientView> patientViewMapper;
+//    private final Mapper<PatientDto, PatientView> patientViewMapper;
     private final Mapper<SessionEntity, SessionCreateView> sessionViewMapper;
 //    private final Mapper<SessionEntity, SessionEditView> sessionEditViewMapper;
     private final Mapper<SessionEntity, SessionDto> sessionDtoMapper;
@@ -37,23 +36,24 @@ public class SessionViewController {
     @GetMapping
     public String getSessionForm(Model model,
                                  @RequestParam(required = false) Long id) {
-        if (Objects.isNull(id)) {
-            SessionCreateView sessionCreateView = new SessionCreateView();
-            List<PatientView> activePatients = patientService.getActivePatients().stream().map(patientViewMapper::mapTo).toList();
-            model.addAttribute("activePatients", activePatients);
-            model.addAttribute("formMethod", "post");
-            model.addAttribute("sessionView", sessionCreateView);
-        } else {
-            SessionDto sessionDto = sessionService.getSession(id);
-            List<PatientShort> patients = sessionDto.getPatients().stream().map(PatientShort::createFromDto).toList();
-//            SessionEditView sessionEditView = sessionEditViewMapper.mapTo(session);
-            SessionEditView sessionEditView = SessionEditView.createFromDto(sessionDto);
-            sessionEditView.setPatients(patients);
-            model.addAttribute("activePatients", Collections.emptyList());
-            model.addAttribute("formMethod", "put");
-            model.addAttribute("sessionView", sessionEditView);
-        }
-        return "addSession";
+        //fix THIS ***
+//        if (Objects.isNull(id)) {
+//            SessionCreateView sessionCreateView = new SessionCreateView();
+//            List<PatientView> activePatients = patientService.getActivePatients().stream().map(patientViewMapper::mapTo).toList();
+//            model.addAttribute("activePatients", activePatients);
+//            model.addAttribute("formMethod", "post");
+//            model.addAttribute("sessionView", sessionCreateView);
+//        } else {
+//            SessionDto sessionDto = sessionService.getSession(id);
+//            List<PatientShort> patients = sessionDto.getPatients().stream().map(PatientShort::createFromDto).toList();
+////            SessionEditView sessionEditView = sessionEditViewMapper.mapTo(session);
+//            SessionEditView sessionEditView = SessionEditView.createFromDto(sessionDto);
+//            sessionEditView.setPatients(patients);
+//            model.addAttribute("activePatients", Collections.emptyList());
+//            model.addAttribute("formMethod", "put");
+//            model.addAttribute("sessionView", sessionEditView);
+//        }
+//        return "addSession";
     }
 
     @PutMapping
@@ -81,12 +81,12 @@ public class SessionViewController {
             return "addSession";
         }
 
-        CreateSessionDto createSessionDto = CreateSessionDto.createFromSessionCreateView(sessionCreateView);
+        SessionCreationDto sessionCreationDto = SessionCreationDto.createFromSessionCreateView(sessionCreateView);
 
 //        SessionEntity session = sessionViewMapper.mapFrom(sessionCreateView);
 //        session.setPatients(patients);
 //        sessionService.saveSession(sessionDtoMapper.mapTo(session));
-        sessionService.saveSession(createSessionDto);
+        sessionService.saveSession(sessionCreationDto);
         return "redirect:/view/sessions/list";
     }
 

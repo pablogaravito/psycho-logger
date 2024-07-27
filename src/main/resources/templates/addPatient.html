@@ -47,7 +47,7 @@
                                     id="hombre-radio"
                                     value="M"
                                     th:field="*{sex}"
-                                    th:checked="${patient.sex eq 'M'}"
+                                    th:checked="${patient.sex == 'M'}"
                             />
                             <label class="form-check-label" for="hombre-radio">
                                 Hombre
@@ -61,7 +61,7 @@
                                     id="mujer-radio"
                                     value="F"
                                     th:field="*{sex}"
-                                    th:checked="${patient.sex eq 'F'}"
+                                    th:checked="${patient.sex == 'F'}"
                             />
                             <label class="form-check-label" for="mujer-radio"> Mujer </label>
                         </div>

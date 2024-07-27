@@ -3,6 +3,7 @@ package com.pablogb.psychologger.dto.api;
 import com.pablogb.psychologger.model.entity.PatientEntity;
 import com.pablogb.psychologger.model.enums.Sex;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ public class PatientDto {
     private String firstNames;
     private String lastNames;
     private String shortName;
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate birthDate;
     private Boolean isActive;
     private Sex sex;

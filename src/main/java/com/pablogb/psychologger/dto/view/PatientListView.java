@@ -19,14 +19,14 @@ public class PatientListView {
 
     private Character sex;
 
-    public static PatientListView create(PatientEntity patientEntity) {
-        return PatientListView.builder()
-                .id(patientEntity.getId())
-                .sex(patientEntity.getSex().getCode())
-                .birthDate(DateUtils.formatShortDate(patientEntity.getBirthDate()))
-                .shortName(patientEntity.getShortName())
-                .build();
-    }
+//    public static PatientListView create(PatientEntity patientEntity) {
+//        return PatientListView.builder()
+//                .id(patientEntity.getId())
+//                .sex(patientEntity.getSex().getCode())
+//                .birthDate(DateUtils.formatShortDate(patientEntity.getBirthDate()))
+//                .shortName(patientEntity.getShortName())
+//                .build();
+//    }
     public static PatientListView createFromDto(PatientDto patientDto) {
         return PatientListView.builder()
                 .id(patientDto.getId())

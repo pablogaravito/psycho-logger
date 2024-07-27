@@ -1,6 +1,6 @@
 package com.pablogb.psychologger.service;
 
-import com.pablogb.psychologger.dto.api.CreatePatientDto;
+import com.pablogb.psychologger.dto.api.PatientCreationDto;
 import com.pablogb.psychologger.dto.view.PatientShort;
 import com.pablogb.psychologger.dto.api.PatientDto;
 import com.pablogb.psychologger.dto.view.PatientWithBirthdayContextDto;
@@ -15,8 +15,8 @@ public interface PatientService {
     List<PatientDto> getPatients();
     Page<PatientDto> getPatientsPaginated(int page, int size);
     List<PatientDto> getActivePatients();
-    PatientDto savePatient(CreatePatientDto createPatientDto);
-    PatientDto updatePatient(Long id, CreatePatientDto createPatientDto);
+    PatientDto savePatient(PatientCreationDto patientCreationDto);
+    PatientDto updatePatient(Long id, PatientCreationDto patientCreationDto);
     PatientDto partialUpdatePatient(Long id, PatientDto patientDto);
     void deletePatient(Long id);
     boolean patientExists(Long id);

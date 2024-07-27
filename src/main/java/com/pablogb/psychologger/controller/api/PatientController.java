@@ -1,6 +1,6 @@
 package com.pablogb.psychologger.controller.api;
 
-import com.pablogb.psychologger.dto.api.CreatePatientDto;
+import com.pablogb.psychologger.dto.api.PatientCreationDto;
 import com.pablogb.psychologger.dto.api.PatientDto;
 import com.pablogb.psychologger.dto.api.SessionLiteDto;
 import com.pablogb.psychologger.service.PatientService;
@@ -28,15 +28,15 @@ public class PatientController {
     }
 
     @PostMapping
-    public ResponseEntity<PatientDto> savePatient(@Valid @RequestBody CreatePatientDto createPatientDto) {
-        return new ResponseEntity<>(patientService.savePatient(createPatientDto), HttpStatus.CREATED);
+    public ResponseEntity<PatientDto> savePatient(@Valid @RequestBody PatientCreationDto patientCreationDto) {
+        return new ResponseEntity<>(patientService.savePatient(patientCreationDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<PatientDto> updatePatient(
             @PathVariable Long id,
-            @Valid @RequestBody CreatePatientDto createPatientDto) {
-        return new ResponseEntity<>(patientService.updatePatient(id, createPatientDto), HttpStatus.OK);
+            @Valid @RequestBody PatientCreationDto patientCreationDto) {
+        return new ResponseEntity<>(patientService.updatePatient(id, patientCreationDto), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")

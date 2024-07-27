@@ -1,6 +1,6 @@
 package com.pablogb.psychologger.service.impl;
 
-import com.pablogb.psychologger.dto.api.CreateSessionDto;
+import com.pablogb.psychologger.dto.api.SessionCreationDto;
 import com.pablogb.psychologger.dto.api.PatientDto;
 import com.pablogb.psychologger.dto.api.SessionDto;
 import com.pablogb.psychologger.dto.api.SessionLiteDto;
@@ -32,7 +32,7 @@ public class SessionServiceImpl implements SessionService {
     private final Mapper<PatientEntity, PatientDto> patientDtoMapper;
     private final Mapper<SessionEntity, SessionDto> sessionDtoMapper;
     private final Mapper<SessionEntity, SessionLiteDto> sessionLiteDtoMapper;
-    private final Mapper<SessionEntity, CreateSessionDto> createSessionDtoMapper;
+    private final Mapper<SessionEntity, SessionCreationDto> createSessionDtoMapper;
 
     @Override
     public SessionDto getSession(Long id) {
@@ -58,18 +58,18 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public SessionDto saveSession(CreateSessionDto createSessionDto) {
-        SessionEntity sessionEntity = createSessionDtoMapper.mapFrom(createSessionDto);
-        checkAndAddPatientsByIds(sessionEntity, createSessionDto.getPatients());
+    public SessionDto saveSession(SessionCreationDto sessionCreationDto) {
+        SessionEntity sessionEntity = createSessionDtoMapper.mapFrom(sessionCreationDto);
+        checkAndAddPatientsByIds(sessionEntity, sessionCreationDto.getPatients());
         SessionEntity savedSessionEntity = sessionRepository.save(sessionEntity);
         return sessionDtoMapper.mapTo(savedSessionEntity);
     }
 
     @Override
-    public SessionDto updateSession(Long id, CreateSessionDto createSessionDto) {
+    public SessionDto updateSession(Long id, SessionCreationDto sessionCreationDto) {
         return sessionRepository.findById(id)
                 .map(existingSession -> {
-                    updateSessionFields(existingSession, createSessionDto);
+                    updateSessionFields(existingSession, sessionCreationDto);
 //                    checkAndAddPatientsByIds(existingSession, createSessionDto.getPatients());
                     SessionEntity updatedSession = sessionRepository.save(existingSession);
                     return sessionDtoMapper.mapTo(updatedSession);
@@ -127,13 +127,13 @@ public class SessionServiceImpl implements SessionService {
         Optional.ofNullable(sessionDto.getNextWeek()).ifPresent(existingSession::setNextWeek);
     }
 
-    private void updateSessionFields(SessionEntity existingSession, CreateSessionDto createSessionDto) {
-        existingSession.setThemes(createSessionDto.getThemes());
-        existingSession.setContent(createSessionDto.getContent());
-        existingSession.setSessionDate(createSessionDto.getSessionDate());
-        existingSession.setIsPaid(createSessionDto.getIsPaid());
-        existingSession.setIsImportant(createSessionDto.getIsImportant());
-        Optional.ofNullable(createSessionDto.getNextWeek()).ifPresent(existingSession::setNextWeek);
+    private void updateSessionFields(SessionEntity existingSession, SessionCreationDto sessionCreationDto) {
+        existingSession.setThemes(sessionCreationDto.getThemes());
+        existingSession.setContent(sessionCreationDto.getContent());
+        existingSession.setSessionDate(sessionCreationDto.getSessionDate());
+        existingSession.setIsPaid(sessionCreationDto.getIsPaid());
+        existingSession.setIsImportant(sessionCreationDto.getIsImportant());
+        Optional.ofNullable(sessionCreationDto.getNextWeek()).ifPresent(existingSession::setNextWeek);
     }
 
     private void checkAndAddPatientsByIds(SessionEntity sessionEntity, List<Long> patientIds) {

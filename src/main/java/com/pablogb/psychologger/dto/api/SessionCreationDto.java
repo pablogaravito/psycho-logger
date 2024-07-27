@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateSessionDto {
+public class SessionCreationDto {
     private Long id;
 
     @NonNull
@@ -41,10 +41,10 @@ public class CreateSessionDto {
     @NonNull
     private List<Long> patients;
 
-    public static CreateSessionDto createFromSessionCreateView(SessionCreateView sessionCreateView) {
+    public static SessionCreationDto createFromSessionCreateView(SessionCreateView sessionCreateView) {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        return CreateSessionDto.builder()
+        return SessionCreationDto.builder()
                 .id(sessionCreateView.getId())
                 .sessionDate(LocalDate.parse(sessionCreateView.getSessionDate(), format))
                 .themes(sessionCreateView.getThemes())
