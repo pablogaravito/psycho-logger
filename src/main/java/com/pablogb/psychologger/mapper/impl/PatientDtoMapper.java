@@ -22,5 +22,4 @@ public class PatientDtoMapper implements Mapper<PatientEntity, PatientDto> {
     public PatientEntity mapFrom(PatientDto patientDto) {
         return modelMapper.map(patientDto, PatientEntity.class);
     }
-    
 }

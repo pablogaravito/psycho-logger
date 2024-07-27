@@ -80,14 +80,14 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public SessionDto partialUpdateSession(Long id, SessionDto sessionDto) {
 
-        return sessionRepository.findById(sessionDto.getId())
+        return sessionRepository.findById(id)
                 .map(existingSession -> {
                     updateSessionFields(existingSession, sessionDto);
 //                    checkAndAddPatientsByDtos(existingSession, sessionDto.getPatients());
                     SessionEntity updatedSession = sessionRepository.save(existingSession);
                     return sessionDtoMapper.mapTo(updatedSession);
                 })
-                .orElseThrow(() -> new EntityNotFoundException(sessionDto.getId(), SessionEntity.class));
+                .orElseThrow(() -> new EntityNotFoundException(id, SessionEntity.class));
     }
 
     @Override

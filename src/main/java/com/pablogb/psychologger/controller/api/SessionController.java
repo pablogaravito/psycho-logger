@@ -35,23 +35,13 @@ public class SessionController {
 
     @PutMapping("/{id}")
     public ResponseEntity<SessionDto> updateSession(@PathVariable Long id, @Valid @RequestBody CreateSessionDto createSessionDto) {
-        if (!sessionService.sessionExists(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        createSessionDto.setId(id);
-        SessionDto sessionDto = sessionService.updateSession(id, createSessionDto);
-        return new ResponseEntity<>(sessionDto, HttpStatus.OK);
+        return new ResponseEntity<>(sessionService.updateSession(id, createSessionDto), HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<SessionDto> partialUpdateSession(
             @PathVariable Long id,
             @RequestBody SessionDto sessionDto) {
-
-        if (!sessionService.sessionExists(id)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        sessionDto.setId(id);
         return new ResponseEntity<>(sessionService.partialUpdateSession(id, sessionDto), HttpStatus.OK);
     }
 
