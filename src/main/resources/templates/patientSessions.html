@@ -10,7 +10,7 @@
             <h2 class="title mt-2 mb-3">Sesiones por Paciente </h2>
             <div class="patient-info">
                 <label>Paciente:</label>
-                <p class="mb-2"><a th:href="@{/view/patients(id = ${patient.id})}" th:text="${patient.name}"></a></p>
+                <p class="mb-2"><a th:href="@{/view/patients(id = ${patient.id})}" th:text="${patient.shortName}"></a></p>
             </div>
             <div class="sm-table-container mb-3">
                 <table class="table table-dark table-striped">

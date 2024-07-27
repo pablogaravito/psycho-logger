@@ -42,7 +42,7 @@
                 <td th:text="${sessionCreateView.themes}"></td>
                 <td>
                     <div th:each="patient: ${sessionCreateView.patients}">
-                        <p><a th:href="@{/view/patients(id = ${patient.id})}" th:text="${patient.name}"></a></p>
+                        <p><a th:href="@{/view/patients(id = ${patient.id})}" th:text="${patient.shortName}"></a></p>
                     </div>
                 </td>
                 <td>

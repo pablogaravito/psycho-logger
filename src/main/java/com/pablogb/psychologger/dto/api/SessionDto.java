@@ -25,19 +25,9 @@ public class SessionDto {
     private LocalDateTime modifiedAt;
     private List<PatientDto> patients;
 
-//    public static SessionDto create(CreateSessionDto createSessionDto) {
-//        return SessionDto.builder()
-//                .sessionDate(createSessionDto.getSessionDate())
-//                .themes(createSessionDto.getThemes())
-//                .content(createSessionDto.getContent())
-//                .isImportant(createSessionDto.getIsImportant())
-//                .isPaid(createSessionDto.getIsPaid())
-//                .nextWeek(createSessionDto.getNextWeek())
-//                .build();
-//    }
-
     public static SessionDto create(SessionEntity sessionEntity) {
         return SessionDto.builder()
+                .id(sessionEntity.getId())
                 .sessionDate(sessionEntity.getSessionDate())
                 .themes(sessionEntity.getThemes())
                 .content(sessionEntity.getContent())

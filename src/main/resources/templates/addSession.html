@@ -48,7 +48,7 @@
         <div th:unless="${formMethod == 'post'}" class="row mb-2">
           <label>Paciente(s):</label>
             <div th:each="patient: ${sessionView.patients}">
-              <p><a th:href="@{/view/patients(id = ${patient.id})}" th:text="${patient.name}"></a></p>
+              <p><a th:href="@{/view/patients(id = ${patient.id})}" th:text="${patient.shortName}"></a></p>
             </div>
         </div>
         <div class="form-row mb-2">

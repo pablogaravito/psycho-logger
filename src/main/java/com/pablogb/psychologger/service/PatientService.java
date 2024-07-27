@@ -20,7 +20,7 @@ public interface PatientService {
     PatientDto partialUpdatePatient(Long id, PatientDto patientDto);
     void deletePatient(Long id);
     boolean patientExists(Long id);
-    List<PatientShort> retrievePatients(List<PatientEntity> patients);
+    List<PatientShort> retrievePatients(List<PatientDto> patients);
     List<PatientDto> searchPatientByName(String name);
     List<PatientWithBirthdayContextDto> getPatientsWithIncomingBirthdays();
 }

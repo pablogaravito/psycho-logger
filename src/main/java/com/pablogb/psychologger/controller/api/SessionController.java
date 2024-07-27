@@ -56,8 +56,8 @@ public class SessionController {
     public ResponseEntity<List<SessionDto>> getSessionsPaginated(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<SessionDto> patients = sessionService.getSessionsPaginated(page, size);
-        List<SessionDto> content = patients.getContent();
+        Page<SessionDto> sessions = sessionService.getSessionsPaginated(page, size);
+        List<SessionDto> content = sessions.getContent();
         return new ResponseEntity<>(content, HttpStatus.OK);
     }
 }

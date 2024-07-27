@@ -92,8 +92,8 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<PatientShort> retrievePatients(List<PatientEntity> patients) {
-        return patients.stream().map(PatientShort::create).toList();
+    public List<PatientShort> retrievePatients(List<PatientDto> patients) {
+        return patients.stream().map(PatientShort::createFromDto).toList();
     }
 
     @Override

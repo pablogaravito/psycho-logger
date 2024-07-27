@@ -28,32 +28,35 @@ public class SessionViewController {
 
     private final PatientService patientService;
     private final SessionService sessionService;
-//    private final Mapper<PatientDto, PatientView> patientViewMapper;
+    private final Mapper<PatientDto, PatientShort> patientDtoToPatientShortMapper;
     private final Mapper<SessionEntity, SessionCreateView> sessionViewMapper;
-//    private final Mapper<SessionEntity, SessionEditView> sessionEditViewMapper;
+    //    private final Mapper<SessionEntity, SessionEditView> sessionEditViewMapper;
     private final Mapper<SessionEntity, SessionDto> sessionDtoMapper;
 
     @GetMapping
     public String getSessionForm(Model model,
                                  @RequestParam(required = false) Long id) {
-        //fix THIS ***
-//        if (Objects.isNull(id)) {
-//            SessionCreateView sessionCreateView = new SessionCreateView();
-//            List<PatientView> activePatients = patientService.getActivePatients().stream().map(patientViewMapper::mapTo).toList();
-//            model.addAttribute("activePatients", activePatients);
-//            model.addAttribute("formMethod", "post");
-//            model.addAttribute("sessionView", sessionCreateView);
-//        } else {
-//            SessionDto sessionDto = sessionService.getSession(id);
-//            List<PatientShort> patients = sessionDto.getPatients().stream().map(PatientShort::createFromDto).toList();
-////            SessionEditView sessionEditView = sessionEditViewMapper.mapTo(session);
-//            SessionEditView sessionEditView = SessionEditView.createFromDto(sessionDto);
-//            sessionEditView.setPatients(patients);
-//            model.addAttribute("activePatients", Collections.emptyList());
-//            model.addAttribute("formMethod", "put");
-//            model.addAttribute("sessionView", sessionEditView);
-//        }
-//        return "addSession";
+        if (Objects.isNull(id)) {
+            SessionCreateView sessionCreateView = new SessionCreateView();
+            List<PatientShort> activePatients = patientService.getActivePatients().stream().map(patientDtoToPatientShortMapper::mapTo).toList();
+            for (PatientShort patient : activePatients) {
+                System.out.println(patient.getShortName());
+            }
+
+
+            model.addAttribute("activePatients", activePatients);
+            model.addAttribute("formMethod", "post");
+            model.addAttribute("sessionView", sessionCreateView);
+        } else {
+            SessionDto sessionDto = sessionService.getSession(id);
+            List<PatientShort> patients = sessionDto.getPatients().stream().map(PatientShort::createFromDto).toList();
+            SessionEditView sessionEditView = SessionEditView.createFromDto(sessionDto);
+            sessionEditView.setPatients(patients);
+            model.addAttribute("activePatients", Collections.emptyList());
+            model.addAttribute("formMethod", "put");
+            model.addAttribute("sessionView", sessionEditView);
+        }
+        return "addSession";
     }
 
     @PutMapping
@@ -95,24 +98,21 @@ public class SessionViewController {
                                   @RequestParam(required = false) String keyword,
                                   @RequestParam(defaultValue = "0") int page,
                                   @RequestParam(defaultValue = "4") int size) {
-        Page<SessionEntity> sessionsPage;
-        //fix THIS ***
-//        if (keyword == null) {
-//            sessionsPage = sessionService.getSessionsPaginated(page, size);
-//        } else {
-//            sessionsPage = sessionService.getSessionsPaginated(keyword, page, size);
-//            model.addAttribute("keyword", keyword);
-//        }
+        Page<SessionDto> sessionsPage;
 
-        //fix THIS ***
-//        Page<SessionListView> sessionViews = sessionsPage.map(s -> SessionListView.create(s, patientService::retrievePatients));
+        if (keyword == null) {
+            sessionsPage = sessionService.getSessionsPaginated(page, size);
+        } else {
+            sessionsPage = sessionService.getSessionsPaginated(keyword, page, size);
+            model.addAttribute("keyword", keyword);
+        }
 
-//        model.addAttribute("sessionViews", sessionViews.getContent());
-//        model.addAttribute("currentPage", page);
-//        model.addAttribute("totalPages", sessionViews.getTotalPages());
-//        model.addAttribute("totalItems", sessionViews.getTotalElements());
+        Page<SessionListView> sessionViews = sessionsPage.map(s -> SessionListView.createFromDto(s, patientService::retrievePatients));
+
+        model.addAttribute("sessionViews", sessionViews.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", sessionViews.getTotalPages());
+        model.addAttribute("totalItems", sessionViews.getTotalElements());
         return "sessions";
     }
-
-
 }
