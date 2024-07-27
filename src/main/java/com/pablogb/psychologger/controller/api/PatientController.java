@@ -2,9 +2,7 @@ package com.pablogb.psychologger.controller.api;
 
 import com.pablogb.psychologger.dto.api.CreatePatientDto;
 import com.pablogb.psychologger.dto.api.PatientDto;
-import com.pablogb.psychologger.dto.api.SessionDto;
-import com.pablogb.psychologger.mapper.Mapper;
-import com.pablogb.psychologger.model.entity.PatientEntity;
+import com.pablogb.psychologger.dto.api.SessionLiteDto;
 import com.pablogb.psychologger.service.PatientService;
 import com.pablogb.psychologger.service.SessionService;
 import jakarta.validation.Valid;
@@ -74,7 +72,7 @@ public class PatientController {
     }
 
     @GetMapping("/{id}/sessions")
-    public ResponseEntity<List<SessionDto>> getPatientSessions(@PathVariable Long id) {
+    public ResponseEntity<List<SessionLiteDto>> getPatientSessions(@PathVariable Long id) {
         return new ResponseEntity<>(sessionService.getPatientSessions(id), HttpStatus.OK);
     }
 }

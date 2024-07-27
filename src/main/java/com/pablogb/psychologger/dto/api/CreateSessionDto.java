@@ -1,7 +1,6 @@
 package com.pablogb.psychologger.dto.api;
 
 import com.pablogb.psychologger.dto.view.SessionCreateView;
-import com.pablogb.psychologger.model.entity.PatientEntity;
 import com.pablogb.psychologger.util.CommonUtils;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -9,8 +8,6 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 @Getter
 @Setter

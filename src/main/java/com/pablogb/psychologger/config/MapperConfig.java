@@ -121,6 +121,9 @@ public class MapperConfig {
         modelMapper.getTypeMap(PatientEntity.class, String.class).setProvider(defaultStringProvider);
 
         modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
+        modelMapper.getConfiguration()
+                .setSkipNullEnabled(true)
+                .setPropertyCondition(Conditions.isNotNull());
         return modelMapper;
     }
 }

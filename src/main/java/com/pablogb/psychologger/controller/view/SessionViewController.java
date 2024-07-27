@@ -1,7 +1,7 @@
 package com.pablogb.psychologger.controller.view;
 
 import com.pablogb.psychologger.dto.api.CreateSessionDto;
-import com.pablogb.psychologger.dto.api.SessionWithPatientsDto;
+import com.pablogb.psychologger.dto.api.SessionDto;
 import com.pablogb.psychologger.dto.api.PatientDto;
 import com.pablogb.psychologger.dto.view.*;
 import com.pablogb.psychologger.model.entity.SessionEntity;
@@ -32,7 +32,7 @@ public class SessionViewController {
     private final Mapper<PatientDto, PatientView> patientViewMapper;
     private final Mapper<SessionEntity, SessionCreateView> sessionViewMapper;
 //    private final Mapper<SessionEntity, SessionEditView> sessionEditViewMapper;
-    private final Mapper<SessionEntity, SessionWithPatientsDto> sessionDtoMapper;
+    private final Mapper<SessionEntity, SessionDto> sessionDtoMapper;
 
     @GetMapping
     public String getSessionForm(Model model,
@@ -44,10 +44,10 @@ public class SessionViewController {
             model.addAttribute("formMethod", "post");
             model.addAttribute("sessionView", sessionCreateView);
         } else {
-            SessionWithPatientsDto sessionWithPatientsDto = sessionService.getSession(id);
-            List<PatientShort> patients = sessionWithPatientsDto.getPatients().stream().map(PatientShort::createFromDto).toList();
+            SessionDto sessionDto = sessionService.getSession(id);
+            List<PatientShort> patients = sessionDto.getPatients().stream().map(PatientShort::createFromDto).toList();
 //            SessionEditView sessionEditView = sessionEditViewMapper.mapTo(session);
-            SessionEditView sessionEditView = SessionEditView.createFromDto(sessionWithPatientsDto);
+            SessionEditView sessionEditView = SessionEditView.createFromDto(sessionDto);
             sessionEditView.setPatients(patients);
             model.addAttribute("activePatients", Collections.emptyList());
             model.addAttribute("formMethod", "put");
@@ -61,15 +61,16 @@ public class SessionViewController {
                                 Model model) {
         model.addAttribute("sessionView", sessionCreateView);
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        sessionService.partialUpdateSession(SessionWithPatientsDto.builder()
-                .id(sessionCreateView.getId())
-                .nextWeek(sessionCreateView.getNextWeek())
-                .content(sessionCreateView.getContent())
-                .isPaid(sessionCreateView.getIsPaid())
-                .isImportant(sessionCreateView.getIsImportant())
-                .themes(sessionCreateView.getThemes())
-                .sessionDate(LocalDate.parse(sessionCreateView.getSessionDate(), format))
-                .build());
+        // fix THIS ***
+//        sessionService.partialUpdateSession(SessionDto.builder()
+//                .id(sessionCreateView.getId())
+//                .nextWeek(sessionCreateView.getNextWeek())
+//                .content(sessionCreateView.getContent())
+//                .isPaid(sessionCreateView.getIsPaid())
+//                .isImportant(sessionCreateView.getIsImportant())
+//                .themes(sessionCreateView.getThemes())
+//                .sessionDate(LocalDate.parse(sessionCreateView.getSessionDate(), format))
+//                .build());
         return "redirect:/view/sessions/list";
     }
 
@@ -95,19 +96,21 @@ public class SessionViewController {
                                   @RequestParam(defaultValue = "0") int page,
                                   @RequestParam(defaultValue = "4") int size) {
         Page<SessionEntity> sessionsPage;
-        if (keyword == null) {
-            sessionsPage = sessionService.getSessionsPaginated(page, size);
-        } else {
-            sessionsPage = sessionService.getSessionsPaginated(keyword, page, size);
-            model.addAttribute("keyword", keyword);
-        }
+        //fix THIS ***
+//        if (keyword == null) {
+//            sessionsPage = sessionService.getSessionsPaginated(page, size);
+//        } else {
+//            sessionsPage = sessionService.getSessionsPaginated(keyword, page, size);
+//            model.addAttribute("keyword", keyword);
+//        }
 
-        Page<SessionListView> sessionViews = sessionsPage.map(s -> SessionListView.create(s, patientService::retrievePatients));
+        //fix THIS ***
+//        Page<SessionListView> sessionViews = sessionsPage.map(s -> SessionListView.create(s, patientService::retrievePatients));
 
-        model.addAttribute("sessionViews", sessionViews.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", sessionViews.getTotalPages());
-        model.addAttribute("totalItems", sessionViews.getTotalElements());
+//        model.addAttribute("sessionViews", sessionViews.getContent());
+//        model.addAttribute("currentPage", page);
+//        model.addAttribute("totalPages", sessionViews.getTotalPages());
+//        model.addAttribute("totalItems", sessionViews.getTotalElements());
         return "sessions";
     }
 

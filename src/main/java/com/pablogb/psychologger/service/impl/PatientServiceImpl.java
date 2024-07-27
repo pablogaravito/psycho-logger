@@ -66,7 +66,7 @@ public class PatientServiceImpl implements PatientService {
                 .map(existingPatient -> {
                     updatePatientFields(existingPatient, createPatientDto);
                     PatientEntity updatedPatient = patientRepository.save(existingPatient);
-                  return patientDtoMapper.mapTo(updatedPatient);
+                    return patientDtoMapper.mapTo(updatedPatient);
                 }).orElseThrow(() -> new EntityNotFoundException(id, PatientEntity.class));
     }
 
@@ -107,12 +107,12 @@ public class PatientServiceImpl implements PatientService {
     }
 
     private void updatePatientFields(PatientEntity existingPatient, CreatePatientDto createPatientDto) {
-        Optional.ofNullable(createPatientDto.getFirstNames()).ifPresent(existingPatient::setFirstNames);
-        Optional.ofNullable(createPatientDto.getLastNames()).ifPresent(existingPatient::setLastNames);
-        Optional.ofNullable(createPatientDto.getShortName()).ifPresent(existingPatient::setShortName);
-        Optional.ofNullable(createPatientDto.getSex()).ifPresent(existingPatient::setSex);
-        Optional.ofNullable(createPatientDto.getBirthDate()).ifPresent(existingPatient::setBirthDate);
-        Optional.ofNullable(createPatientDto.getIsActive()).ifPresent(existingPatient::setIsActive);
+        existingPatient.setFirstNames(createPatientDto.getFirstNames());
+        existingPatient.setLastNames(createPatientDto.getLastNames());
+        existingPatient.setShortName(createPatientDto.getShortName());
+        existingPatient.setSex(createPatientDto.getSex());
+        existingPatient.setBirthDate(createPatientDto.getBirthDate());
+        existingPatient.setIsActive(createPatientDto.getIsActive());
     }
 
     private void updatePatientFields(PatientEntity existingPatient, PatientDto patientDto) {

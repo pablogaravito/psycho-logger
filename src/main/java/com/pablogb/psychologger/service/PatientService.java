@@ -15,8 +15,8 @@ public interface PatientService {
     List<PatientDto> getPatients();
     Page<PatientDto> getPatientsPaginated(int page, int size);
     List<PatientDto> getActivePatients();
-    PatientDto savePatient(CreatePatientDto patientDto);
-    PatientDto updatePatient(Long id, CreatePatientDto patientDto);
+    PatientDto savePatient(CreatePatientDto createPatientDto);
+    PatientDto updatePatient(Long id, CreatePatientDto createPatientDto);
     PatientDto partialUpdatePatient(Long id, PatientDto patientDto);
     void deletePatient(Long id);
     boolean patientExists(Long id);

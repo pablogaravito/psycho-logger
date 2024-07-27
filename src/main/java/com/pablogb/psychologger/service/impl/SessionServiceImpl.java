@@ -1,13 +1,14 @@
 package com.pablogb.psychologger.service.impl;
 
+import com.pablogb.psychologger.dto.api.CreateSessionDto;
 import com.pablogb.psychologger.dto.api.PatientDto;
 import com.pablogb.psychologger.dto.api.SessionDto;
-import com.pablogb.psychologger.dto.api.SessionWithPatientsDto;
-import com.pablogb.psychologger.dto.api.CreateSessionDto;
+import com.pablogb.psychologger.dto.api.SessionLiteDto;
+import com.pablogb.psychologger.exception.EmptyPatientListException;
+import com.pablogb.psychologger.exception.EntityNotFoundException;
 import com.pablogb.psychologger.mapper.Mapper;
 import com.pablogb.psychologger.model.entity.PatientEntity;
 import com.pablogb.psychologger.model.entity.SessionEntity;
-import com.pablogb.psychologger.exception.EntityNotFoundException;
 import com.pablogb.psychologger.repository.PatientRepository;
 import com.pablogb.psychologger.repository.SessionRepository;
 import com.pablogb.psychologger.service.PatientService;
@@ -17,8 +18,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,52 +29,65 @@ public class SessionServiceImpl implements SessionService {
     private final PatientService patientService;
     private final SessionRepository sessionRepository;
     private final PatientRepository patientRepository;
-    private final  Mapper<PatientEntity, PatientDto> patientDtoMapper;
-    private final Mapper<SessionEntity, SessionWithPatientsDto> sessionWithPatientsDtoMapper;
+    private final Mapper<PatientEntity, PatientDto> patientDtoMapper;
     private final Mapper<SessionEntity, SessionDto> sessionDtoMapper;
+    private final Mapper<SessionEntity, SessionLiteDto> sessionLiteDtoMapper;
+    private final Mapper<SessionEntity, CreateSessionDto> createSessionDtoMapper;
 
     @Override
-    public SessionWithPatientsDto getSession(Long id) {
+    public SessionDto getSession(Long id) {
         SessionEntity sessionEntity = unwrapSession(sessionRepository.findById(id), id);
-        return sessionWithPatientsDtoMapper.mapTo(sessionEntity);
+        return sessionDtoMapper.mapTo(sessionEntity);
     }
 
     @Override
-    public List<SessionWithPatientsDto> getSessions() {
+    public List<SessionDto> getSessions() {
         List<SessionEntity> sessions = new ArrayList<>();
         Iterable<SessionEntity> sessionEntities = sessionRepository.findAll();
         sessionEntities.forEach(e -> e.setPatients(patientRepository.getPatientsFromSession(e.getId())));
         sessionEntities.forEach(sessions::add);
-        return sessions.stream().map(sessionWithPatientsDtoMapper::mapTo).toList();
+        return sessions.stream().map(sessionDtoMapper::mapTo).toList();
     }
 
     @Override
-    public List<SessionDto> getPatientSessions(Long id) {
+    public List<SessionLiteDto> getPatientSessions(Long id) {
         if (!patientRepository.existsById(id)) {
             throw new EntityNotFoundException(id, PatientEntity.class);
         }
-        return sessionRepository.getSessionsFromPatient(id).stream().map(sessionDtoMapper::mapTo).toList();
+        return sessionRepository.getSessionsFromPatient(id).stream().map(sessionLiteDtoMapper::mapTo).toList();
     }
 
     @Override
-    public SessionWithPatientsDto saveSession(CreateSessionDto createSessionDto) {
-        SessionWithPatientsDto sessionWithPatientsDto = SessionWithPatientsDto.create(createSessionDto);
-        SessionEntity sessionEntity = sessionWithPatientsDtoMapper.mapFrom(sessionWithPatientsDto);
-
-        List<PatientEntity> patients = new ArrayList<>();
-        for (Long id : createSessionDto.getPatients()) {
-            if (!patientService.patientExists(id)) throw new EntityNotFoundException(id, PatientEntity.class);
-            PatientEntity patient = patientDtoMapper.mapFrom(patientService.getPatient(id));
-            patients.add(patient);
-        }
-        sessionEntity.setPatients(patients);
+    public SessionDto saveSession(CreateSessionDto createSessionDto) {
+        SessionEntity sessionEntity = createSessionDtoMapper.mapFrom(createSessionDto);
+        checkAndAddPatientsByIds(sessionEntity, createSessionDto.getPatients());
         SessionEntity savedSessionEntity = sessionRepository.save(sessionEntity);
-        return sessionWithPatientsDtoMapper.mapTo(savedSessionEntity);
+        return sessionDtoMapper.mapTo(savedSessionEntity);
     }
 
     @Override
-    public SessionWithPatientsDto updateSession(CreateSessionDto createSessionDto) {
-        return null;
+    public SessionDto updateSession(Long id, CreateSessionDto createSessionDto) {
+        return sessionRepository.findById(id)
+                .map(existingSession -> {
+                    updateSessionFields(existingSession, createSessionDto);
+//                    checkAndAddPatientsByIds(existingSession, createSessionDto.getPatients());
+                    SessionEntity updatedSession = sessionRepository.save(existingSession);
+                    return sessionDtoMapper.mapTo(updatedSession);
+
+                }).orElseThrow(() -> new EntityNotFoundException(id, SessionEntity.class));
+    }
+
+    @Override
+    public SessionDto partialUpdateSession(Long id, SessionDto sessionDto) {
+
+        return sessionRepository.findById(sessionDto.getId())
+                .map(existingSession -> {
+                    updateSessionFields(existingSession, sessionDto);
+//                    checkAndAddPatientsByDtos(existingSession, sessionDto.getPatients());
+                    SessionEntity updatedSession = sessionRepository.save(existingSession);
+                    return sessionDtoMapper.mapTo(updatedSession);
+                })
+                .orElseThrow(() -> new EntityNotFoundException(sessionDto.getId(), SessionEntity.class));
     }
 
     @Override
@@ -86,48 +101,60 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public Page<SessionEntity> getSessionsPaginated(int page, int size) {
-        return sessionRepository.findAll(PageRequest.of(page, size));
+    public Page<SessionDto> getSessionsPaginated(int page, int size) {
+        Page<SessionEntity> sessionsPage = sessionRepository.findAll(PageRequest.of(page, size));
+        return sessionsPage.map(SessionDto::create);
     }
 
     @Override
-    public Page<SessionEntity> getSessionsPaginated(String keyword, int page, int size) {
-        return sessionRepository.findSessionsByKeyword(keyword, PageRequest.of(page, size));
+    public Page<SessionDto> getSessionsPaginated(String keyword, int page, int size) {
+        Page<SessionEntity> sessionsPage = sessionRepository.findSessionsByKeyword(keyword, PageRequest.of(page, size));
+        return sessionsPage.map(SessionDto::create);
     }
 
     @Override
-    public Page<SessionEntity> getPatientSessionsPaginated(Long patientId, int page, int size) {
-        return sessionRepository.getSessionsFromPatientPaginated(patientId, PageRequest.of(page, size));
+    public Page<SessionDto> getPatientSessionsPaginated(Long patientId, int page, int size) {
+        Page<SessionEntity> sessionsPage = sessionRepository.getSessionsFromPatientPaginated(patientId, PageRequest.of(page, size));
+        return sessionsPage.map(SessionDto::create);
     }
 
-    @Override
-    public SessionWithPatientsDto partialUpdateSession(SessionWithPatientsDto sessionWithPatientsDto) {
-        return sessionRepository.findById(sessionWithPatientsDto.getId())
-                .map(existingSession -> {
-                    updateSessionFields(existingSession, sessionWithPatientsDto);
-                    updatePatients(existingSession, sessionWithPatientsDto);
-                    SessionEntity updatedSession = sessionRepository.save(existingSession);
-                    return sessionWithPatientsDtoMapper.mapTo(updatedSession);
-                })
-                .orElseThrow(() -> new EntityNotFoundException(sessionWithPatientsDto.getId(), SessionEntity.class));
+    private void updateSessionFields(SessionEntity existingSession, SessionDto sessionDto) {
+        Optional.ofNullable(sessionDto.getThemes()).ifPresent(existingSession::setThemes);
+        Optional.ofNullable(sessionDto.getContent()).ifPresent(existingSession::setContent);
+        Optional.ofNullable(sessionDto.getSessionDate()).ifPresent(existingSession::setSessionDate);
+        Optional.ofNullable(sessionDto.getIsImportant()).ifPresent(existingSession::setIsImportant);
+        Optional.ofNullable(sessionDto.getIsPaid()).ifPresent(existingSession::setIsPaid);
+        Optional.ofNullable(sessionDto.getNextWeek()).ifPresent(existingSession::setNextWeek);
     }
 
-    private void updateSessionFields(SessionEntity existingSession, SessionWithPatientsDto sessionWithPatientsDto) {
-        Optional.ofNullable(sessionWithPatientsDto.getThemes()).ifPresent(existingSession::setThemes);
-        Optional.ofNullable(sessionWithPatientsDto.getContent()).ifPresent(existingSession::setContent);
-        Optional.ofNullable(sessionWithPatientsDto.getIsImportant()).ifPresent(existingSession::setIsImportant);
-        Optional.ofNullable(sessionWithPatientsDto.getIsPaid()).ifPresent(existingSession::setIsPaid);
-        Optional.ofNullable(sessionWithPatientsDto.getNextWeek()).ifPresent(existingSession::setNextWeek);
+    private void updateSessionFields(SessionEntity existingSession, CreateSessionDto createSessionDto) {
+        existingSession.setThemes(createSessionDto.getThemes());
+        existingSession.setContent(createSessionDto.getContent());
+        existingSession.setSessionDate(createSessionDto.getSessionDate());
+        existingSession.setIsPaid(createSessionDto.getIsPaid());
+        existingSession.setIsImportant(createSessionDto.getIsImportant());
+        Optional.ofNullable(createSessionDto.getNextWeek()).ifPresent(existingSession::setNextWeek);
     }
 
-    private void updatePatients(SessionEntity existingSession, SessionWithPatientsDto sessionWithPatientsDto) {
-        Optional.ofNullable(sessionWithPatientsDto.getPatients())
-                .ifPresent(patientDtos -> {
-                    List<PatientEntity> patientEntities = patientDtos.stream()
-                            .map(patientDtoMapper::mapFrom)
-                            .collect(Collectors.toList());
-                    existingSession.setPatients(patientEntities);
-                });
+    private void checkAndAddPatientsByIds(SessionEntity sessionEntity, List<Long> patientIds) {
+        if (patientIds.isEmpty()) throw new EmptyPatientListException();
+        List<PatientDto> patients = new ArrayList<>();
+        for (Long id : patientIds) {
+            if (!patientService.patientExists(id)) throw new EntityNotFoundException(id, PatientEntity.class);
+            patients.add(patientService.getPatient(id));
+        }
+        sessionEntity.setPatients(patients.stream().map(patientDtoMapper::mapFrom).toList());
+    }
+
+    private void checkAndAddPatientsByDtos(SessionEntity sessionEntity, List<PatientDto> patientDtos) {
+        if (patientDtos.isEmpty()) throw new EmptyPatientListException();
+        List<PatientDto> patients = new ArrayList<>();
+        for (PatientDto patientDto : patientDtos) {
+            Long id = patientDto.getId();
+            if (!patientService.patientExists(id)) throw new EntityNotFoundException(id, PatientEntity.class);
+            patients.add(patientService.getPatient(id));
+        }
+        sessionEntity.setPatients(patients.stream().map(patientDtoMapper::mapFrom).toList());
     }
 
     static SessionEntity unwrapSession(Optional<SessionEntity> entity, Long id) {

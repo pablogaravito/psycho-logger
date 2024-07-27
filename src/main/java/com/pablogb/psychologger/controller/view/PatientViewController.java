@@ -72,14 +72,15 @@ public class PatientViewController {
                                      @PathVariable Long id,
                                      @RequestParam(defaultValue = "0") int page,
                                      @RequestParam(defaultValue = "4") int size) {
-        Page<SessionEntity> sessionsPage = sessionService.getPatientSessionsPaginated(id, page, size);
-        Page<SessionListViewShort> patientSessions = sessionsPage.map(SessionListViewShort::create);
-        PatientShort patient = PatientShort.createFromDto(patientService.getPatient(id));
-        model.addAttribute("patient", patient);
-        model.addAttribute("patientSessions", patientSessions.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", patientSessions.getTotalPages());
-        model.addAttribute("totalItems", patientSessions.getTotalElements());
+        // fix THIX ***
+//        Page<SessionEntity> sessionsPage = sessionService.getPatientSessionsPaginated(id, page, size);
+//        Page<SessionListViewShort> patientSessions = sessionsPage.map(SessionListViewShort::create);
+//        PatientShort patient = PatientShort.createFromDto(patientService.getPatient(id));
+//        model.addAttribute("patient", patient);
+//        model.addAttribute("patientSessions", patientSessions.getContent());
+//        model.addAttribute("currentPage", page);
+//        model.addAttribute("totalPages", patientSessions.getTotalPages());
+//        model.addAttribute("totalItems", patientSessions.getTotalElements());
         return "patientSessions";
     }
 }

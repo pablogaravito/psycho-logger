@@ -1,9 +1,11 @@
 package com.pablogb.psychologger.dto.api;
 
+import com.pablogb.psychologger.model.entity.SessionEntity;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 public class SessionDto {
+
     private Long id;
     private LocalDate sessionDate;
     private String themes;
@@ -20,4 +23,28 @@ public class SessionDto {
     private String nextWeek;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+    private List<PatientDto> patients;
+
+//    public static SessionDto create(CreateSessionDto createSessionDto) {
+//        return SessionDto.builder()
+//                .sessionDate(createSessionDto.getSessionDate())
+//                .themes(createSessionDto.getThemes())
+//                .content(createSessionDto.getContent())
+//                .isImportant(createSessionDto.getIsImportant())
+//                .isPaid(createSessionDto.getIsPaid())
+//                .nextWeek(createSessionDto.getNextWeek())
+//                .build();
+//    }
+
+    public static SessionDto create(SessionEntity sessionEntity) {
+        return SessionDto.builder()
+                .sessionDate(sessionEntity.getSessionDate())
+                .themes(sessionEntity.getThemes())
+                .content(sessionEntity.getContent())
+                .isImportant(sessionEntity.getIsImportant())
+                .isPaid(sessionEntity.getIsPaid())
+                .nextWeek(sessionEntity.getNextWeek())
+                .patients(sessionEntity.getPatients().stream().map(PatientDto::create).toList())
+                .build();
+    }
 }

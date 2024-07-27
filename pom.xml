@@ -12,7 +12,7 @@
 	<artifactId>psycho-logger</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>psycho-logger</name>
-	<description>psycho-logger springboot app</description>
+	<description>psycho-logger spring boot app</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
@@ -96,5 +96,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
