@@ -2,15 +2,24 @@ package com.pablogb.psychologger.controller.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.pablogb.psychologger.TestDataUtil;
+import com.pablogb.psychologger.dto.api.PatientCreationDto;
+import com.pablogb.psychologger.dto.api.SessionDto;
 import com.pablogb.psychologger.service.PatientService;
 import com.pablogb.psychologger.service.SessionService;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -18,6 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class SessionControllerIntegrationTests {
 
     @Autowired
@@ -37,26 +47,20 @@ class SessionControllerIntegrationTests {
         objectMapper.registerModule(new JavaTimeModule());
     }
 
-//    @Test
-//    void greeting() throws Exception {
-//        mockMvc.perform(get("/sessions/greeting"))
-//                .andExpect(status().isOk())
-//                .andExpect(content().string(containsStringIgnoringCase("there")));
-//    }
-//
-//    @Test
-//    void testThatCreatedSessionReturnsHttpStatus201() throws Exception {
-//        SessionEntity testSessionA = TestDataUtil.createTestSessionA();
+
+    @Test
+    void testThatCreatedSessionReturnsHttpStatus201() throws Exception {
+//        SessionDto testSessionA = TestDataUtil.createTestSessionA();
 //        String sessionJson = objectMapper.writeValueAsString(testSessionA);
 //        mockMvc.perform(MockMvcRequestBuilders.post("/sessions")
 //                .contentType(MediaType.APPLICATION_JSON)
 //                .content(sessionJson)
 //        ).andExpect(MockMvcResultMatchers.status().isCreated());
-//    }
-//
-//    @Test
-//    void testThatCreateSessionSuccessfullyReturnsSavedSession() throws Exception {
-//        SessionEntity testSessionB = TestDataUtil.createTestSessionB();
+    }
+
+    @Test
+    void testThatCreateSessionSuccessfullyReturnsSavedSession() throws Exception {
+//        SessionDto testSessionB = TestDataUtil.createTestSessionB();
 //        String sessionJson = objectMapper.writeValueAsString(testSessionB);
 //        mockMvc.perform(
 //                        MockMvcRequestBuilders.post("/sessions")
@@ -66,35 +70,35 @@ class SessionControllerIntegrationTests {
 //                .andExpect(MockMvcResultMatchers.jsonPath("$.subject").value("trabajo emocional"))
 //                .andExpect(MockMvcResultMatchers.jsonPath("$.nextWeek").value("trabajo relación con el padre")
 //                );
-//    }
-//
-//    @Test
-//    void testThatCreateIncompleteSessionReturnsHttpStatus400() throws Exception {
-//        SessionDto incompleteSession = TestDataUtil.createIncompleteSessionDto();
-//
-//        String jsonSession = objectMapper.writeValueAsString(incompleteSession);
-//
-//        mockMvc.perform(
-//                MockMvcRequestBuilders.post("/sessions")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(jsonSession)
-//        ).andExpect(MockMvcResultMatchers.status().isBadRequest());
-//    }
-//
-//    @Test
-//    void testThatGetSessionsReturnsHttpStatus200() throws Exception {
-//        mockMvc.perform(
-//                MockMvcRequestBuilders.get("/sessions")
-//        ).andExpect(MockMvcResultMatchers.status().isOk()
-//        );
-//    }
-//
+    }
+
+    @Test
+    void testThatCreateIncompleteSessionReturnsHttpStatus400() throws Exception {
+        SessionDto incompleteSession = TestDataUtil.createIncompleteSessionDto();
+
+        String jsonSession = objectMapper.writeValueAsString(incompleteSession);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/sessions")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonSession)
+        ).andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void testThatGetSessionsReturnsHttpStatus200() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/sessions")
+        ).andExpect(MockMvcResultMatchers.status().isOk()
+        );
+    }
+
 //    @Test
 //    void testThatGetSessionsReturnsSetOfSessions() throws Exception {
-//        PatientEntity testPatientA = TestDataUtil.createTestPatientA();
-//        testPatientA.setId(null);
-//        PatientEntity testPatientB = TestDataUtil.createTestPatientB();
-//        testPatientB.setId(null);
+//        PatientCreationDto testPatientA = TestDataUtil.createTestPatientA();
+////        testPatientA.setId(null);
+//        PatientCreationDto testPatientB = TestDataUtil.createTestPatientB();
+////        testPatientB.setId(null);
 //        SessionEntity testSessionA = TestDataUtil.createTestSessionA();
 //        SessionEntity testSessionB = TestDataUtil.createTestSessionB();
 //        testSessionA.setPatients(List.of(testPatientA));
@@ -113,7 +117,7 @@ class SessionControllerIntegrationTests {
 //
 //    @Test
 //    void testThatGetSessionReturnsHttpStatus200WhenSessionExists() throws Exception {
-//        PatientEntity testPatientB = TestDataUtil.createTestPatientB();
+//        PatientCreationDto testPatientB = TestDataUtil.createTestPatientB();
 ////        testPatientB.setId(null);
 //        SessionEntity testSessionB = TestDataUtil.createTestSessionB();
 //        testSessionB.setPatients(List.of(testPatientB));
@@ -130,7 +134,7 @@ class SessionControllerIntegrationTests {
 //
 //    @Test
 //    void testThatGetSessionReturnsSessionWhenSessionExists() throws Exception {
-//        PatientEntity testPatientB = TestDataUtil.createTestPatientB();
+//        PatientCreationDto testPatientB = TestDataUtil.createTestPatientB();
 ////        testPatientB.setId(null);
 //        SessionEntity testSession = TestDataUtil.createTestSessionB();
 //        testSession.setPatients(List.of(testPatientB));
@@ -145,8 +149,8 @@ class SessionControllerIntegrationTests {
 //                MockMvcResultMatchers.jsonPath("$.subject").value("trabajo emocional")
 //        );
 //    }
-//
-//
+
+
 //    @Test
 //    void testThatGetSessionReturnsHttpStatus404WhenSessionDoesNotExist() throws Exception {
 //        mockMvc.perform(

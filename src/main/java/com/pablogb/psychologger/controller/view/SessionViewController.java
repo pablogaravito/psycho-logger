@@ -29,8 +29,8 @@ public class SessionViewController {
     private final PatientService patientService;
     private final SessionService sessionService;
     private final Mapper<PatientDto, PatientShort> patientDtoToPatientShortMapper;
-    private final Mapper<SessionEntity, SessionCreateView> sessionViewMapper;
-            private final Mapper<SessionEntity, SessionDto> sessionDtoMapper;
+    private final Mapper<SessionDto, SessionCreateView> sessionViewMapper;
+    private final Mapper<SessionEntity, SessionDto> sessionDtoMapper;
 
     @GetMapping
     public String getSessionForm(Model model,
@@ -54,24 +54,6 @@ public class SessionViewController {
         return "addSession";
     }
 
-    @PutMapping
-    public String updateSession(@Valid @ModelAttribute("sessionView") SessionCreateView sessionCreateView,
-                                Model model) {
-        model.addAttribute("sessionView", sessionCreateView);
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        // fix THIS ***
-//        sessionService.partialUpdateSession(SessionDto.builder()
-//                .id(sessionCreateView.getId())
-//                .nextWeek(sessionCreateView.getNextWeek())
-//                .content(sessionCreateView.getContent())
-//                .isPaid(sessionCreateView.getIsPaid())
-//                .isImportant(sessionCreateView.getIsImportant())
-//                .themes(sessionCreateView.getThemes())
-//                .sessionDate(LocalDate.parse(sessionCreateView.getSessionDate(), format))
-//                .build());
-        return "redirect:/view/sessions/list";
-    }
-
     @PostMapping
     public String createSession(@Valid @ModelAttribute("sessionView") SessionCreateView sessionCreateView, BindingResult result, Model model) {
         model.addAttribute("sessionView", sessionCreateView);
@@ -85,6 +67,26 @@ public class SessionViewController {
 //        session.setPatients(patients);
 //        sessionService.saveSession(sessionDtoMapper.mapTo(session));
         sessionService.saveSession(sessionCreationDto);
+        return "redirect:/view/sessions/list";
+    }
+
+    @PutMapping
+    public String updateSession(@Valid @ModelAttribute("sessionView") SessionCreateView sessionCreateView,
+                                Model model) {
+        model.addAttribute("sessionView", sessionCreateView);
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        // fix THIS ***
+        SessionDto sessionDto = sessionViewMapper.mapFrom(sessionCreateView);
+        sessionService.partialUpdateSession(sessionCreateView.getId(), sessionDto);
+//        sessionService.partialUpdateSession(SessionDto.builder()
+//                .id(sessionCreateView.getId())
+//                .nextWeek(sessionCreateView.getNextWeek())
+//                .content(sessionCreateView.getContent())
+//                .isPaid(sessionCreateView.getIsPaid())
+//                .isImportant(sessionCreateView.getIsImportant())
+//                .themes(sessionCreateView.getThemes())
+//                .sessionDate(LocalDate.parse(sessionCreateView.getSessionDate(), format))
+//                .build());
         return "redirect:/view/sessions/list";
     }
 

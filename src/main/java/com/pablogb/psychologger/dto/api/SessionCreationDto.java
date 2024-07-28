@@ -41,6 +41,7 @@ public class SessionCreationDto {
     @NonNull
     private List<Long> patients;
 
+
     public static SessionCreationDto createFromSessionCreateView(SessionCreateView sessionCreateView) {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
