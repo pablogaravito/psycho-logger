@@ -30,19 +30,14 @@ public class SessionViewController {
     private final SessionService sessionService;
     private final Mapper<PatientDto, PatientShort> patientDtoToPatientShortMapper;
     private final Mapper<SessionEntity, SessionCreateView> sessionViewMapper;
-    //    private final Mapper<SessionEntity, SessionEditView> sessionEditViewMapper;
-    private final Mapper<SessionEntity, SessionDto> sessionDtoMapper;
+            private final Mapper<SessionEntity, SessionDto> sessionDtoMapper;
 
     @GetMapping
     public String getSessionForm(Model model,
                                  @RequestParam(required = false) Long id) {
         if (Objects.isNull(id)) {
             SessionCreateView sessionCreateView = new SessionCreateView();
-            List<PatientShort> activePatients = patientService.getActivePatients().stream().map(patientDtoToPatientShortMapper::mapTo).toList();
-            for (PatientShort patient : activePatients) {
-                System.out.println(patient.getShortName());
-            }
-
+            List<PatientShort> activePatients = patientService.getActivePatients().stream().map(PatientShort::createFromDto).toList();
 
             model.addAttribute("activePatients", activePatients);
             model.addAttribute("formMethod", "post");

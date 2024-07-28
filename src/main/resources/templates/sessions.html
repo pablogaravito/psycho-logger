@@ -9,11 +9,19 @@
 <div class="main-container container-large">
     <h2 class="title mt-2 mb-3">Sesiones</h2>
     <div class="searchFormDiv">
-        <form th:action="@{/view/sessions/list}" id="searchForm">
+        <form th:action="@{/view/sessions/list}" id="searchForm" autocomplete="off">
             <div class="row g-0 search">
                 <div style="width:60%">
-                    <input id="keyword" type="search" name="keyword" th:value="${keyword}" required class="form-control"
-                           placeholder="Buscar en sesiones">
+                    <input
+                            id="keyword"
+                            type="search"
+                            name="keyword"
+                            th:value="${keyword}"
+                            class="form-control"
+                            placeholder="Buscar en sesiones"
+                            aria-label="Search"
+                            pattern=".{3,}" required title="3 caractéres como mínimo"
+                    >
                 </div>
                 <div class="btn-group" style="width:11%">
                     <button type="submit" class="box-btn">
