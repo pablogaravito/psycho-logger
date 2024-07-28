@@ -44,7 +44,8 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public Page<PatientDto> getPatientsPaginated(int page, int size) {
-        Page<PatientEntity> patientsPage = patientRepository.findByIsActiveTrue(PageRequest.of(page, size));
+//        Page<PatientEntity> patientsPage = patientRepository.findByIsActiveTrue(PageRequest.of(page, size));
+        Page<PatientEntity> patientsPage = patientRepository.findByIsActiveTrueOrderByCreatedAtDesc(PageRequest.of(page, size));
         return patientsPage.map(PatientDto::create);
     }
 

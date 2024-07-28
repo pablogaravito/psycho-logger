@@ -11,16 +11,19 @@ import java.util.List;
 
 public interface SessionRepository extends JpaRepository<SessionEntity, Long> {
 
-    @Query("select s from SessionEntity s join s.patients p where p.id = :patientId")
+    @Query("SELECT s FROM SessionEntity s JOIN s.patients p WHERE p.id = :patientId ORDER BY s.createdAt DESC")
     Page<SessionEntity> getSessionsFromPatientPaginated(Long patientId, Pageable pageable);
 
-    @Query("select s from SessionEntity s join s.patients p where p.id = :patientId")
+    @Query("SELECT s FROM SessionEntity s JOIN s.patients p WHERE p.id = :patientId ORDER BY s.createdAt DESC")
     List<SessionEntity> getSessionsFromPatient(Long patientId);
+
+    Page<SessionEntity> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
     @Query("SELECT s FROM SessionEntity s WHERE " +
             "LOWER(s.themes) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
             "LOWER(s.content) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(s.nextWeek) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+            "LOWER(s.nextWeek) LIKE LOWER(CONCAT('%', :keyword, '%'))" +
+            "ORDER BY s.createdAt DESC")
     Page<SessionEntity> findSessionsByKeyword(@Param("keyword") String keyword, Pageable pageable);
 }
 

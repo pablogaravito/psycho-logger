@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class EntityNotFoundException extends RuntimeException {
 
     public EntityNotFoundException(Long id, Class<?> entity) {
-        super("El " + filterEntityName(entity.getSimpleName().toLowerCase()) + " con ID '" + id + "' no existe en nuestros registros");
+        super("The " + filterEntityName(entity.getSimpleName().toLowerCase()) + " with id '" + id + "' does not exist in our records");
     }
 
     private static String filterEntityName(String entityName) {

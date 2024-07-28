@@ -12,7 +12,7 @@
         <div th:replace="~{fragments/general :: navbar('patients')}"></div>
         <div class="main-container container-medium">
             <h2 class="title mt-2 mb-3" th:text="${patient.id != null} ? 'Editar Paciente' : 'Registrar Paciente'"></h2>
-            <form method="post" th:object="${patient}" th:action="@{/view/patients}" autocomplete="off">
+            <form method="post" th:object="${patient}" th:action="@{/view/patients}" autocomplete="off" onsubmit="return validateForm()">
                 <div class="form-row mb-4">
                     <label for="first-names">Nombres</label>
                     <input type="text" class="form-control" id="first-names" th:field="*{firstNames}" required/>
@@ -61,7 +61,7 @@
                                     id="mujer-radio"
                                     value="F"
                                     th:field="*{sex}"
-                                    th:checked="${patient.sex == 'F'}"
+                                    th:checked="${patient.sex == 'F' or patient.sex == null}"
                             />
                             <label class="form-check-label" for="mujer-radio"> Mujer </label>
                         </div>
@@ -97,6 +97,16 @@
                 src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js">
         </script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <script>
+            function validateForm() {
+                var sexChecked = document.querySelector('input[name="sex"]:checked');
+                if (!sexChecked) {
+                    alert("Seleccione un sexo para el paciente");
+                    return false;
+                }
+                return true;
+            }
+        </script>
         <script>
             $(document).ready(function () {
               var date_input = $('input[name="date"]'); //our date input has the name "date"

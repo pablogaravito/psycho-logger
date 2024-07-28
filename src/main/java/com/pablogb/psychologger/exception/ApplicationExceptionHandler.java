@@ -29,14 +29,14 @@ public class ApplicationExceptionHandler {
     @ExceptionHandler(EmptyResultDataAccessException.class)
     @ResponseBody
     public ResponseEntity<Object> handleDataAccessException(EmptyResultDataAccessException ex) {
-        ErrorResponse error = new ErrorResponse(Arrays.asList("No se puede borrar un recurso que no existe"));
+        ErrorResponse error = new ErrorResponse(Arrays.asList("Cannot delete non-existing resource"));
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseBody
     public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
-        ErrorResponse error = new ErrorResponse(Arrays.asList("Data Integrity Violation: no podemos procesar su request.", ex.getMessage()));
+        ErrorResponse error = new ErrorResponse(Arrays.asList("Data Integrity Violation: we cannot process your request.", ex.getMessage()));
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 

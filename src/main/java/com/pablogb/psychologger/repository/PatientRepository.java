@@ -19,7 +19,8 @@ public interface PatientRepository extends JpaRepository<PatientEntity, Long> {
 
     List<PatientEntity> findByIsActiveTrue();
 
-    Page<PatientEntity> findByIsActiveTrue(Pageable pageable);
+//    Page<PatientEntity> findByIsActiveTrue(Pageable pageable);
+    Page<PatientEntity> findByIsActiveTrueOrderByCreatedAtDesc(Pageable pageable);
 
     @Query("SELECT p FROM PatientEntity p WHERE LOWER(p.shortName) LIKE LOWER(CONCAT('%', :name, '%')) OR LOWER(p.firstNames) LIKE LOWER(CONCAT('%', :name, '%')) OR LOWER(p.lastNames) LIKE LOWER(CONCAT('%', :name, '%'))")
     List<PatientEntity> searchPatientByName(@Param("name") String name);

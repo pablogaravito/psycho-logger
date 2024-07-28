@@ -102,9 +102,10 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public Page<SessionDto> getSessionsPaginated(int page, int size) {
-        Page<SessionEntity> sessionsPage = sessionRepository.findAll(PageRequest.of(page, size));
+        Page<SessionEntity> sessionsPage = sessionRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(page, size));
         return sessionsPage.map(SessionDto::create);
     }
+
 
     @Override
     public Page<SessionDto> getSessionsPaginated(String keyword, int page, int size) {

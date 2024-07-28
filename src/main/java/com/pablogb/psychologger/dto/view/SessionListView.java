@@ -33,7 +33,6 @@ public class SessionListView {
 //                .build();
 //    }
     public static SessionListView createFromDto(SessionDto sessionDto, Function<List<PatientDto>, List<PatientShort>> patientNameRetriever) {
-        System.out.println(sessionDto.getId());
         return SessionListView.builder()
                 .id(sessionDto.getId())
                 .sessionDate(DateUtils.formatIntermediateDate(sessionDto.getSessionDate()))

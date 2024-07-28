@@ -7,13 +7,13 @@ INSERT INTO patients (id, first_names, last_names, short_name, birth_date, sex, 
 VALUES (2, 'Sana', 'Minatozaki', 'Sana', '1996-12-29', 'F', TRUE);
 
 INSERT INTO patients (id, first_names, last_names, short_name, birth_date, sex, is_active)
-VALUES (3, 'Mina', 'Myoui', 'Minita', '1997-03-24', 'F', TRUE);
+VALUES (3, 'Mina', 'Myoui', 'Mina', '1997-03-24', 'F', TRUE);
 
 INSERT INTO patients (id, first_names, last_names, short_name, birth_date, sex, is_active)
 VALUES (4, 'Nayeon', 'Im', 'Nayeon', '1995-09-22', 'F', TRUE);
 
 INSERT INTO patients (id, first_names, last_names, short_name, birth_date, sex, is_active)
-VALUES (5, 'Tzuyu', 'Chou', 'Tzu', '1999-06-14', 'F', TRUE);
+VALUES (5, 'David Michael', 'Buss', 'David Buss', '1953-04-14', 'M', TRUE);
 
 INSERT INTO patients (id, first_names, last_names, short_name, birth_date, sex, is_active)
 VALUES (6, 'Airi', 'Suzuki', 'Airi', '1994-04-12', 'F', TRUE);
@@ -29,9 +29,6 @@ VALUES (9, 'Neal', 'Morse', 'Neal Morse', '1960-08-02', 'M', TRUE);
 
 INSERT INTO patients (id, first_names, last_names, short_name, birth_date, sex, is_active)
 VALUES (10, 'Hermann Karl', 'Hesse', 'Hermann Hesse', '1877-07-02', 'M', TRUE);
-
-INSERT INTO patients (id, first_names, last_names, short_name, birth_date, sex, is_active)
-VALUES (11, 'David Michael', 'Buss', 'David Buss', '1953-04-14', 'M', TRUE);
 
 -- SESSION DATA
 INSERT INTO sessions (id, themes, content, session_date, next_week, is_important, is_paid)
@@ -142,7 +139,7 @@ INSERT INTO patient_session (patient_id, session_id)
 VALUES (1, 14);
 
 INSERT INTO patient_session (patient_id, session_id)
-VALUES (11, 14);
+VALUES (5, 14);
 
 INSERT INTO patient_session (patient_id, session_id)
 VALUES (1, 15);
