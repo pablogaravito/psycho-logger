@@ -5,6 +5,7 @@ import com.pablogb.psychologger.model.enums.Sex;
 import com.pablogb.psychologger.util.DateUtils;
 import org.modelmapper.*;
 import org.modelmapper.convention.MatchingStrategies;
+import org.modelmapper.spi.MappingContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,116 +15,71 @@ import java.util.Optional;
 
 @Configuration
 public class MapperConfig {
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);
+
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
 
-        Provider<LocalDate> localDateProvider = new AbstractProvider<>() {
-            @Override
-            public LocalDate get() {
-                return LocalDate.now();
-            }
-        };
-
-        Provider<String> stringDateProvider = new AbstractProvider<>() {
-            @Override
-            public String get() {
-                return LocalDate.now().toString();
-            }
-        };
-
-        Provider<Character> defaultCharProvider = new AbstractProvider<Character>() {
-            @Override
-            protected Character get() {
-                return 'F';
-            }
-        };
-
-        Provider<Sex> sexCharProvider = new AbstractProvider<Sex>() {
-            @Override
-            protected Sex get() {
-                return Sex.FEMALE;
-            }
-        };
-
-        Provider<String> defaultStringProvider = new AbstractProvider<>() {
-            @Override
-            protected String get() {
-                return "";
-            }
-        };
-
-        Converter<String, String> fromStringToString = new AbstractConverter<>() {
-            @Override
-            protected String convert(String s) {
-                return Optional.ofNullable(s).orElse("");
-            }
-        };
-
-        Converter<Sex, Character> fromSexToChar = new AbstractConverter<>() {
-            @Override
-            protected Character convert(Sex sex) {
-                return (Optional.ofNullable(sex)).orElse(Sex.FEMALE).getCode();
-            }
-        };
-
-        Converter<Character, Sex> fromCharToSex = new AbstractConverter<>() {
-            @Override
-            protected Sex convert(Character s) {
-                return Sex.getSexFromCode(s);
-            }
-        };
-
-        Converter<String, LocalDate> toStringDate = new AbstractConverter<>() {
-            @Override
-            protected LocalDate convert(String source) {
-                DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                return Optional.ofNullable(source).isPresent() ? LocalDate.parse(source, format) : LocalDate.now();
-            }
-        };
-
-        Converter<LocalDate, String> toDateString = new AbstractConverter<>() {
-            @Override
-            protected String convert(LocalDate source) {
-                return Optional.ofNullable(source).isPresent() ? DateUtils.formatShortDate(source) : DateUtils.formatShortDate(LocalDate.now());
-            }
-        };
-
-        Converter<PatientEntity, String> patientEntToStr = new AbstractConverter<>() {
-            @Override
-            protected String convert(PatientEntity source) {
-                return source.getId().toString();
-            }
-        };
-
-        modelMapper.createTypeMap(String.class, LocalDate.class);
-        modelMapper.addConverter(toStringDate);
-        modelMapper.getTypeMap(String.class, LocalDate.class).setProvider(localDateProvider);
-
-        modelMapper.createTypeMap(LocalDate.class, String.class);
-        modelMapper.addConverter(toDateString);
-        modelMapper.getTypeMap(LocalDate.class, String.class).setProvider(stringDateProvider);
-
-        modelMapper.createTypeMap(String.class, String.class);
-        modelMapper.addConverter(fromStringToString);
-        modelMapper.getTypeMap(String.class, String.class).setProvider(defaultStringProvider);
-
-        modelMapper.createTypeMap(Sex.class, Character.class);
-        modelMapper.addConverter(fromSexToChar);
-        modelMapper.getTypeMap(Sex.class, Character.class).setProvider(defaultCharProvider);
-
-        modelMapper.createTypeMap(Character.class, Sex.class);
-        modelMapper.addConverter(fromCharToSex);
-        modelMapper.getTypeMap(Character.class, Sex.class).setProvider(sexCharProvider);
-
-        modelMapper.createTypeMap(PatientEntity.class, String.class);
-        modelMapper.addConverter(patientEntToStr);
-        modelMapper.getTypeMap(PatientEntity.class, String.class).setProvider(defaultStringProvider);
-
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
         modelMapper.getConfiguration()
+                .setMatchingStrategy(MatchingStrategies.LOOSE)
                 .setSkipNullEnabled(true)
                 .setPropertyCondition(Conditions.isNotNull());
+
+        modelMapper.addConverter(new Converter<String, LocalDate>() {
+            @Override
+            public LocalDate convert(MappingContext<String, LocalDate> context) {
+                String source = context.getSource();
+                return Optional.ofNullable(source)
+                        .map(s -> LocalDate.parse(s, DATE_FORMATTER))
+                        .orElseGet(LocalDate::now);
+            }
+        });
+
+        modelMapper.addConverter(new Converter<LocalDate, String>() {
+            @Override
+            public String convert(MappingContext<LocalDate, String> context) {
+                LocalDate source = context.getSource();
+                return Optional.ofNullable(source)
+                        .map(DateUtils::formatShortDate)
+                        .orElseGet(() -> DateUtils.formatShortDate(LocalDate.now()));
+            }
+        });
+
+        modelMapper.addConverter(new Converter<String, String>() {
+            @Override
+            public String convert(MappingContext<String, String> context) {
+                return Optional.ofNullable(context.getSource()).orElse("");
+            }
+        });
+
+        modelMapper.addConverter(new Converter<Sex, Character>() {
+            @Override
+            public Character convert(MappingContext<Sex, Character> context) {
+                Sex source = context.getSource();
+                return Optional.ofNullable(source).map(Sex::getCode).orElse('F');
+            }
+        });
+
+        modelMapper.addConverter(new Converter<Character, Sex>() {
+            @Override
+            public Sex convert(MappingContext<Character, Sex> context) {
+                Character source = context.getSource();
+                return Sex.getSexFromCode(source);
+            }
+        });
+
+        modelMapper.addConverter(new Converter<PatientEntity, String>() {
+            @Override
+            public String convert(MappingContext<PatientEntity, String> context) {
+                PatientEntity source = context.getSource();
+                return Optional.ofNullable(source)
+                        .map(PatientEntity::getId)
+                        .map(Object::toString)
+                        .orElse("");
+            }
+        });
         return modelMapper;
     }
 }
