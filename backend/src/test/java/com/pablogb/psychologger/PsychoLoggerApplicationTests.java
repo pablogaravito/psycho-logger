@@ -1,4 +1,4 @@
-package com.pablogb.psycho_logger;
+package com.pablogb.psychologger;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
