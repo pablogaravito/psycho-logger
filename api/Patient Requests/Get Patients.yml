@@ -9,7 +9,7 @@ http:
   auth:
     type: basic
     username: user
-    password: 48fd8802-9279-4efe-8bbe-4760fdde1500
+    password: a2cf2375-b8e9-4d52-8656-f4a31387b18b
 
 settings:
   encodeUrl: true
