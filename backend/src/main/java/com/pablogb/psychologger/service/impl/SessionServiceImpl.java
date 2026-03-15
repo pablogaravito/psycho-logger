@@ -3,14 +3,13 @@ package com.pablogb.psychologger.service.impl;
 import com.pablogb.psychologger.dto.request.SessionRequestDto;
 import com.pablogb.psychologger.dto.response.PatientSummaryDto;
 import com.pablogb.psychologger.dto.response.SessionResponseDto;
-import com.pablogb.psychologger.model.entity.Organization;
+import com.pablogb.psychologger.exception.ResourceNotFoundException;
 import com.pablogb.psychologger.model.entity.Patient;
 import com.pablogb.psychologger.model.entity.Session;
 import com.pablogb.psychologger.model.entity.User;
-import com.pablogb.psychologger.repository.OrganizationRepository;
 import com.pablogb.psychologger.repository.PatientRepository;
 import com.pablogb.psychologger.repository.SessionRepository;
-import com.pablogb.psychologger.repository.UserRepository;
+import com.pablogb.psychologger.security.SecurityUtils;
 import com.pablogb.psychologger.service.SessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,13 +25,13 @@ public class SessionServiceImpl implements SessionService {
 
     private final SessionRepository sessionRepository;
     private final PatientRepository patientRepository;
-    private final OrganizationRepository organizationRepository;
-    private final UserRepository userRepository;
+    private final SecurityUtils securityUtils;
 
     @Override
     @Transactional(readOnly = true)
     public List<SessionResponseDto> getAllSessions() {
-        return sessionRepository.findAll()
+        return sessionRepository.findByOrganizationIdOrderByScheduledAtDesc(
+                        securityUtils.getCurrentOrgId())
                 .stream()
                 .map(this::toResponseDto)
                 .toList();
@@ -41,6 +40,9 @@ public class SessionServiceImpl implements SessionService {
     @Override
     @Transactional(readOnly = true)
     public List<SessionResponseDto> getSessionsByPatient(Integer patientId) {
+        if (!patientRepository.existsById(patientId)) {
+            throw new ResourceNotFoundException("Patient not found with id: " + patientId);
+        }
         return sessionRepository.findByPatientsIdOrderByScheduledAtDesc(patientId)
                 .stream()
                 .map(this::toResponseDto)
@@ -51,26 +53,23 @@ public class SessionServiceImpl implements SessionService {
     @Transactional(readOnly = true)
     public SessionResponseDto getSessionById(Integer id) {
         Session session = sessionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Session not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Session not found with id: " + id));
         return toResponseDto(session);
     }
 
     @Override
     @Transactional
     public SessionResponseDto createSession(SessionRequestDto request) {
-        Organization org = organizationRepository.findById(1)
-                .orElseThrow(() -> new RuntimeException("Organization not found"));
-        User therapist = userRepository.findById(1)
-                .orElseThrow(() -> new RuntimeException("Therapist not found"));
+        User currentUser = securityUtils.getCurrentUser();
 
         Set<Patient> patients = request.getPatientIds().stream()
                 .map(pid -> patientRepository.findById(pid)
-                        .orElseThrow(() -> new RuntimeException("Patient not found with id: " + pid)))
+                        .orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + pid)))
                 .collect(Collectors.toSet());
 
         Session session = Session.builder()
-                .organization(org)
-                .therapist(therapist)
+                .organization(currentUser.getOrganization())
+                .therapist(currentUser)
                 .scheduledAt(request.getScheduledAt())
                 .durationMinutes(request.getDurationMinutes())
                 .mainThemes(request.getMainThemes())
@@ -89,11 +88,11 @@ public class SessionServiceImpl implements SessionService {
     @Transactional
     public SessionResponseDto updateSession(Integer id, SessionRequestDto request) {
         Session session = sessionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Session not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Session not found with id: " + id));
 
         Set<Patient> patients = request.getPatientIds().stream()
                 .map(pid -> patientRepository.findById(pid)
-                        .orElseThrow(() -> new RuntimeException("Patient not found with id: " + pid)))
+                        .orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + pid)))
                 .collect(Collectors.toSet());
 
         session.setScheduledAt(request.getScheduledAt());
@@ -113,7 +112,7 @@ public class SessionServiceImpl implements SessionService {
     @Transactional
     public void deleteSession(Integer id) {
         Session session = sessionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Session not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Session not found with id: " + id));
         sessionRepository.delete(session);
     }
 

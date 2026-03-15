@@ -2,6 +2,7 @@ package com.pablogb.psychologger.service.impl;
 
 import com.pablogb.psychologger.dto.request.PatientRequestDto;
 import com.pablogb.psychologger.dto.response.PatientResponseDto;
+import com.pablogb.psychologger.exception.ResourceNotFoundException;
 import com.pablogb.psychologger.model.entity.Organization;
 import com.pablogb.psychologger.model.entity.Patient;
 import com.pablogb.psychologger.model.entity.TherapistPatientAssignment;
@@ -10,6 +11,7 @@ import com.pablogb.psychologger.repository.OrganizationRepository;
 import com.pablogb.psychologger.repository.PatientRepository;
 import com.pablogb.psychologger.repository.TherapistPatientAssignmentRepository;
 import com.pablogb.psychologger.repository.UserRepository;
+import com.pablogb.psychologger.security.SecurityUtils;
 import com.pablogb.psychologger.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,11 +28,12 @@ public class PatientServiceImpl implements PatientService {
     private final OrganizationRepository organizationRepository;
     private final UserRepository userRepository;
     private final TherapistPatientAssignmentRepository assignmentRepository;
+    private final SecurityUtils securityUtils;
 
     @Override
     @Transactional(readOnly = true)
     public List<PatientResponseDto> getAllPatients() {
-        return patientRepository.findAll()
+        return patientRepository.findByOrganizationId(securityUtils.getCurrentOrgId())
                 .stream()
                 .map(this::toResponseDto)
                 .toList();
@@ -40,18 +43,16 @@ public class PatientServiceImpl implements PatientService {
     @Transactional(readOnly = true)
     public PatientResponseDto getPatientById(Integer id) {
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Patient not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + id));
         return toResponseDto(patient);
     }
 
     @Override
     @Transactional
     public PatientResponseDto createPatient(PatientRequestDto request) {
-        // hardcoded for now, will come from auth context later
-        Organization org = organizationRepository.findById(1)
-                .orElseThrow(() -> new RuntimeException("Organization not found"));
-        User therapist = userRepository.findById(1)
-                .orElseThrow(() -> new RuntimeException("Therapist not found"));
+
+        User currentUser = securityUtils.getCurrentUser();
+        Organization org = currentUser.getOrganization();
 
         Patient patient = Patient.builder()
                 .organization(org)
@@ -70,7 +71,7 @@ public class PatientServiceImpl implements PatientService {
 
         // create assignment to current therapist
         TherapistPatientAssignment assignment = TherapistPatientAssignment.builder()
-                .therapist(therapist)
+                .therapist(currentUser)
                 .patient(saved)
                 .assignedAt(LocalDateTime.now())
                 .build();
@@ -83,7 +84,7 @@ public class PatientServiceImpl implements PatientService {
     @Transactional
     public PatientResponseDto updatePatient(Integer id, PatientRequestDto request) {
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Patient not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + id));
 
         patient.setFirstName(request.getFirstName());
         patient.setLastName(request.getLastName());
@@ -101,7 +102,7 @@ public class PatientServiceImpl implements PatientService {
     @Transactional
     public void deactivatePatient(Integer id) {
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Patient not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + id));
         patient.setIsActive(false);
         patientRepository.save(patient);
     }

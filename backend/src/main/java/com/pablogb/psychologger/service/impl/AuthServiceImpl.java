@@ -3,6 +3,7 @@ package com.pablogb.psychologger.service.impl;
 import com.pablogb.psychologger.dto.request.LoginRequestDto;
 import com.pablogb.psychologger.dto.request.RegisterRequestDto;
 import com.pablogb.psychologger.dto.response.AuthResponseDto;
+import com.pablogb.psychologger.exception.ResourceNotFoundException;
 import com.pablogb.psychologger.model.entity.Organization;
 import com.pablogb.psychologger.model.entity.User;
 import com.pablogb.psychologger.repository.OrganizationRepository;
@@ -33,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
         );
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         String token = jwtService.generateToken(user);
         return toAuthResponse(user, token);

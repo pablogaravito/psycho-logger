@@ -2,12 +2,12 @@ package com.pablogb.psychologger.service.impl;
 
 import com.pablogb.psychologger.dto.request.PaymentPlanRequestDto;
 import com.pablogb.psychologger.dto.response.PaymentPlanResponseDto;
+import com.pablogb.psychologger.exception.ResourceNotFoundException;
 import com.pablogb.psychologger.model.entity.Patient;
 import com.pablogb.psychologger.model.entity.PaymentPlan;
-import com.pablogb.psychologger.model.entity.User;
 import com.pablogb.psychologger.repository.PatientRepository;
 import com.pablogb.psychologger.repository.PaymentPlanRepository;
-import com.pablogb.psychologger.repository.UserRepository;
+import com.pablogb.psychologger.security.SecurityUtils;
 import com.pablogb.psychologger.service.PaymentPlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class PaymentPlanServiceImpl implements PaymentPlanService {
 
     private final PaymentPlanRepository paymentPlanRepository;
     private final PatientRepository patientRepository;
-    private final UserRepository userRepository;
+    private final SecurityUtils securityUtils;
 
     @Override
     @Transactional(readOnly = true)
@@ -36,13 +36,11 @@ public class PaymentPlanServiceImpl implements PaymentPlanService {
     @Transactional
     public PaymentPlanResponseDto createPaymentPlan(PaymentPlanRequestDto request) {
         Patient patient = patientRepository.findById(request.getPatientId())
-                .orElseThrow(() -> new RuntimeException("Patient not found with id: " + request.getPatientId()));
-        User therapist = userRepository.findById(1)
-                .orElseThrow(() -> new RuntimeException("Therapist not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + request.getPatientId()));
 
         PaymentPlan plan = PaymentPlan.builder()
                 .patient(patient)
-                .therapist(therapist)
+                .therapist(securityUtils.getCurrentUser())
                 .totalSessions(request.getTotalSessions())
                 .sessionsUsed(0)
                 .pricePerSession(request.getPricePerSession())
@@ -57,7 +55,7 @@ public class PaymentPlanServiceImpl implements PaymentPlanService {
     @Transactional
     public PaymentPlanResponseDto updatePaymentPlan(Integer id, PaymentPlanRequestDto request) {
         PaymentPlan plan = paymentPlanRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Payment plan not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Payment plan not found with id: " + id));
 
         plan.setTotalSessions(request.getTotalSessions());
         plan.setPricePerSession(request.getPricePerSession());
