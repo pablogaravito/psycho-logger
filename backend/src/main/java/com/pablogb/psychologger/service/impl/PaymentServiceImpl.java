@@ -2,6 +2,7 @@ package com.pablogb.psychologger.service.impl;
 
 import com.pablogb.psychologger.dto.request.PaymentRequestDto;
 import com.pablogb.psychologger.dto.response.PaymentResponseDto;
+import com.pablogb.psychologger.exception.ResourceNotFoundException;
 import com.pablogb.psychologger.model.entity.Patient;
 import com.pablogb.psychologger.model.entity.Payment;
 import com.pablogb.psychologger.model.entity.PaymentPlan;
@@ -38,26 +39,30 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional(readOnly = true)
     public List<PaymentResponseDto> getPaymentsByPatient(Integer patientId) {
+        if (!patientRepository.existsById(patientId)) {
+            throw new ResourceNotFoundException("Patient not found with id: " + patientId);
+        }
         return paymentRepository.findByPatientId(patientId)
                 .stream()
                 .map(this::toResponseDto)
                 .toList();
     }
 
+
     @Override
     @Transactional
     public PaymentResponseDto createPayment(PaymentRequestDto request) {
         Patient patient = patientRepository.findById(request.getPatientId())
-                .orElseThrow(() -> new RuntimeException("Patient not found with id: " + request.getPatientId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + request.getPatientId()));
 
         Session session = request.getSessionId() != null
                 ? sessionRepository.findById(request.getSessionId())
-                .orElseThrow(() -> new RuntimeException("Session not found with id: " + request.getSessionId()))
+                .orElseThrow(() -> new ResourceNotFoundException("Session not found with id: " + request.getSessionId()))
                 : null;
 
         PaymentPlan plan = request.getPaymentPlanId() != null
                 ? paymentPlanRepository.findById(request.getPaymentPlanId())
-                .orElseThrow(() -> new RuntimeException("Payment plan not found with id: " + request.getPaymentPlanId()))
+                .orElseThrow(() -> new ResourceNotFoundException("Payment plan not found with id: " + request.getPaymentPlanId()))
                 : null;
 
         Payment payment = Payment.builder()
@@ -79,7 +84,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Transactional
     public PaymentResponseDto updatePayment(Integer id, PaymentRequestDto request) {
         Payment payment = paymentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Payment not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Payment not found with id: " + id));
 
         payment.setAmount(request.getAmount());
         payment.setStatus(request.getStatus());
