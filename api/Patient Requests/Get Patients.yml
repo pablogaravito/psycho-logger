@@ -7,9 +7,8 @@ http:
   method: GET
   url: http://localhost:8080/api/patients
   auth:
-    type: basic
-    username: user
-    password: a2cf2375-b8e9-4d52-8656-f4a31387b18b
+    type: bearer
+    token: eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJwYWJsby5nYXJhdml0b0BnbWFpbC5jb20iLCJpYXQiOjE3NzM1NjAyNDgsImV4cCI6MTc3MzY0NjY0OH0.PHYjTNvfmwue5h2MdDJUzexViS1RheU9Zx9ZcdF-zqzvt2DvQx8CTx0TS9GBNGmw
 
 settings:
   encodeUrl: true
