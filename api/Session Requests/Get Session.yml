@@ -5,8 +5,11 @@ info:
 
 http:
   method: GET
-  url: http://localhost:8080/api/sessions/1
-  auth: inherit
+  url: http://localhost:8080/api/sessions/111
+  auth:
+    type: basic
+    username: user
+    password: a2cf2375-b8e9-4d52-8656-f4a31387b18b
 
 settings:
   encodeUrl: true
