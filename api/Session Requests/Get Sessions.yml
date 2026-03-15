@@ -1,0 +1,18 @@
+info:
+  name: Get Sessions
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: http://localhost:8080/api/sessions
+  auth:
+    type: basic
+    username: user
+    password: 48fd8802-9279-4efe-8bbe-4760fdde1500
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

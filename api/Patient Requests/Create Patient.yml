@@ -1,0 +1,28 @@
+info:
+  name: Create Patient
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://localhost:8080/api/patients
+  body:
+    type: json
+    data: |-
+      {
+        "firstName": "Test",
+        "lastName": "Patient",
+        "shortName": "Test P.",
+        "email": "test@email.com",
+        "phone": "999999999",
+        "dateOfBirth": "1990-05-15",
+        "gender": "MALE",
+        "notes": "Test patient notes"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface SessionRepository extends JpaRepository<Session, Integer> {
     List<Session> findByTherapistIdOrderByScheduledAtDesc(Integer therapistId);
+    List<Session> findByPatientsIdOrderByScheduledAtDesc(Integer patientId);
     List<Session> findByOrganizationIdOrderByScheduledAtDesc(Integer orgId);
 }
