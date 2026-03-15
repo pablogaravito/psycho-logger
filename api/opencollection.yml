@@ -2,6 +2,22 @@ opencollection: 1.0.0
 
 info:
   name: api
+config:
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
+
+request:
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJwYWJsby5nYXJhdml0b0BnbWFpbC5jb20iLCJpYXQiOjE3NzM1NjAyNDgsImV4cCI6MTc3MzY0NjY0OH0.PHYjTNvfmwue5h2MdDJUzexViS1RheU9Zx9ZcdF-zqzvt2DvQx8CTx0TS9GBNGmw
 bundled: false
 extensions:
   bruno:
