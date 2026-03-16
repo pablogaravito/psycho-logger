@@ -6,9 +6,7 @@ info:
 http:
   method: GET
   url: http://localhost:8080/api/patients
-  auth:
-    type: bearer
-    token: eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJwYWJsby5nYXJhdml0b0BnbWFpbC5jb20iLCJpYXQiOjE3NzM1NjAyNDgsImV4cCI6MTc3MzY0NjY0OH0.PHYjTNvfmwue5h2MdDJUzexViS1RheU9Zx9ZcdF-zqzvt2DvQx8CTx0TS9GBNGmw
+  auth: inherit
 
 settings:
   encodeUrl: true

@@ -5,7 +5,7 @@ info:
 
 http:
   method: GET
-  url: http://localhost:8080/api/sessions/12
+  url: http://localhost:8080/api/sessions/18
   auth: inherit
 
 settings:
