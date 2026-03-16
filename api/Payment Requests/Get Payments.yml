@@ -6,10 +6,7 @@ info:
 http:
   method: GET
   url: http://localhost:8080/api/payments
-  auth:
-    type: basic
-    username: user
-    password: a3d34198-1b82-4335-bb0f-a364edb71e56
+  auth: inherit
 
 settings:
   encodeUrl: true
