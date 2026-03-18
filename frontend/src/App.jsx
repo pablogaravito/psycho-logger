@@ -42,6 +42,8 @@ export default function App() {
         <Route path="payments" element={<PaymentList />} />
         <Route path="queries/debts" element={<Debts />} />
         <Route path="queries/birthdays" element={<Birthdays />} />
+        <Route path="patients/:id/edit" element={<PatientForm />} />
+        <Route path="sessions/:id/edit" element={<SessionForm />} />
       </Route>
     </Routes>
   );

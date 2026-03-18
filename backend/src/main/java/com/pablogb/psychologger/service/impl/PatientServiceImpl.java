@@ -64,6 +64,7 @@ public class PatientServiceImpl implements PatientService {
                 .dateOfBirth(request.getDateOfBirth())
                 .gender(request.getGender())
                 .notes(request.getNotes())
+                .defaultPrice(request.getDefaultPrice())
                 .isActive(true)
                 .build();
 
@@ -94,6 +95,10 @@ public class PatientServiceImpl implements PatientService {
         patient.setDateOfBirth(request.getDateOfBirth());
         patient.setGender(request.getGender());
         patient.setNotes(request.getNotes());
+        patient.setDefaultPrice(request.getDefaultPrice());
+        if (request.getIsActive() != null) {
+            patient.setIsActive(request.getIsActive());
+        }
 
         return toResponseDto(patientRepository.save(patient));
     }
@@ -120,6 +125,7 @@ public class PatientServiceImpl implements PatientService {
                 .isActive(patient.getIsActive())
                 .notes(patient.getNotes())
                 .createdAt(patient.getCreatedAt())
+                .defaultPrice(patient.getDefaultPrice())
                 .build();
     }
 }

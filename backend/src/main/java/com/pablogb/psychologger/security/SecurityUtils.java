@@ -20,4 +20,8 @@ public class SecurityUtils {
     public Integer getCurrentOrgId() {
         return getCurrentUser().getOrganization().getId();
     }
+
+    public boolean isAdmin() {
+        return getCurrentUser().getIsAdmin();
+    }
 }
