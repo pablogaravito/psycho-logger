@@ -12,6 +12,7 @@ import SessionDetail from "./pages/sessions/SessionDetail";
 import PaymentList from "./pages/payments/PaymentList";
 import Debts from "./pages/queries/Debts";
 import Birthdays from "./pages/queries/Birthdays";
+import Settings from "./pages/Settings";
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -44,6 +45,7 @@ export default function App() {
         <Route path="queries/birthdays" element={<Birthdays />} />
         <Route path="patients/:id/edit" element={<PatientForm />} />
         <Route path="sessions/:id/edit" element={<SessionForm />} />
+        <Route path="settings" element={<Settings />} />
       </Route>
     </Routes>
   );

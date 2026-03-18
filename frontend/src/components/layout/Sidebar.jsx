@@ -8,6 +8,7 @@ const navigation = [
   { name: "Payments", path: "/payments", icon: "💰" },
   { name: "Debts", path: "/queries/debts", icon: "💸" },
   { name: "Birthdays", path: "/queries/birthdays", icon: "🎂" },
+  { name: "Settings", path: "/settings", icon: "⚙️" },
 ];
 
 export default function Sidebar() {
