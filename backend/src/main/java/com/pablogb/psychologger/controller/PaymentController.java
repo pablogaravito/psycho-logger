@@ -39,4 +39,9 @@ public class PaymentController {
             @Valid @RequestBody PaymentRequestDto request) {
         return ResponseEntity.ok(paymentService.updatePayment(id, request));
     }
+
+    @GetMapping("/session/{sessionId}")
+    public ResponseEntity<List<PaymentResponseDto>> getPaymentsBySession(@PathVariable Integer sessionId) {
+        return ResponseEntity.ok(paymentService.getPaymentsBySession(sessionId));
+    }
 }
