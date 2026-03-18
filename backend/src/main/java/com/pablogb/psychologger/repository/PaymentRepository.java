@@ -9,4 +9,5 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
     List<Payment> findByPatientId(Integer patientId);
     List<Payment> findBySessionId(Integer sessionId);
     long countByPatientOrganizationIdAndStatus(Integer orgId, PaymentStatus status);
+    void deleteBySessionId(Integer sessionId);
 }

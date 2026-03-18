@@ -95,6 +95,15 @@ public class PaymentServiceImpl implements PaymentService {
         return toResponseDto(paymentRepository.save(payment));
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<PaymentResponseDto> getPaymentsBySession(Integer sessionId) {
+        return paymentRepository.findBySessionId(sessionId)
+                .stream()
+                .map(this::toResponseDto)
+                .toList();
+    }
+
     private PaymentResponseDto toResponseDto(Payment payment) {
         return PaymentResponseDto.builder()
                 .id(payment.getId())

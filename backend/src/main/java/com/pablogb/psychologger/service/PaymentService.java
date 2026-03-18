@@ -9,4 +9,5 @@ public interface PaymentService {
     List<PaymentResponseDto> getPaymentsByPatient(Integer patientId);
     PaymentResponseDto createPayment(PaymentRequestDto request);
     PaymentResponseDto updatePayment(Integer id, PaymentRequestDto request);
+    List<PaymentResponseDto> getPaymentsBySession(Integer sessionId);
 }

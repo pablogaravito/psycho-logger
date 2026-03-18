@@ -26,6 +26,11 @@ export default function SessionForm() {
     patientIds: preselectedPatientId ? [parseInt(preselectedPatientId)] : [],
   });
 
+  const [isPaid, setIsPaid] = useState(false);
+  const [paymentAmount, setPaymentAmount] = useState("");
+  const [paymentCurrency, setPaymentCurrency] = useState("SOL");
+  const [originalPatientIds, setOriginalPatientIds] = useState([]);
+
   const { data: patients } = useQuery({
     queryKey: ["patients"],
     queryFn: () => api.get("/patients").then((r) => r.data),
@@ -37,8 +42,42 @@ export default function SessionForm() {
     enabled: isEditing,
   });
 
+  // fetch existing payments for this session when editing
+  const { data: existingPayments } = useQuery({
+    queryKey: ["payments", "session", id],
+    queryFn: () => api.get(`/payments/session/${id}`).then((r) => r.data),
+    enabled: isEditing,
+  });
+
+  const singlePatientId =
+    form.patientIds.length === 1 ? form.patientIds[0] : null;
+
+  const { data: sessionDefaults } = useQuery({
+    queryKey: ["session-defaults", singlePatientId],
+    queryFn: () =>
+      api
+        .get(`/settings/user/session-defaults/${singlePatientId}`)
+        .then((r) => r.data),
+    enabled: Boolean(singlePatientId) && !isEditing,
+  });
+
+  useEffect(() => {
+    if (sessionDefaults && !isEditing) {
+      setForm((prev) => ({
+        ...prev,
+        durationMinutes: sessionDefaults.defaultSessionDuration || 50,
+      }));
+      setPaymentCurrency(sessionDefaults.defaultCurrency || "SOL");
+      if (sessionDefaults.defaultSessionPrice != null) {
+        setPaymentAmount(sessionDefaults.defaultSessionPrice.toString());
+      }
+    }
+  }, [sessionDefaults, isEditing]);
+
   useEffect(() => {
     if (session) {
+      const ids = session.patients?.map((p) => p.id) || [];
+      setOriginalPatientIds(ids);
       setForm({
         scheduledAt: session.scheduledAt?.slice(0, 16) || "",
         durationMinutes: session.durationMinutes || 50,
@@ -48,7 +87,7 @@ export default function SessionForm() {
         isRelevant: session.isRelevant || false,
         sessionType: session.sessionType || "INDIVIDUAL",
         status: session.status || "COMPLETED",
-        patientIds: session.patients?.map((p) => p.id) || [],
+        patientIds: ids,
       });
     }
   }, [session]);
@@ -68,6 +107,9 @@ export default function SessionForm() {
     [activePatients, form.patientIds],
   );
 
+  const isOriginalPatient = (patientId) =>
+    originalPatientIds.includes(patientId);
+
   const addPatient = (patientId) => {
     if (!patientId) return;
     setForm((prev) => ({
@@ -77,6 +119,7 @@ export default function SessionForm() {
   };
 
   const removePatient = (patientId) => {
+    if (isEditing && isOriginalPatient(patientId)) return;
     setForm((prev) => ({
       ...prev,
       patientIds: prev.patientIds.filter((id) => id !== patientId),
@@ -84,12 +127,28 @@ export default function SessionForm() {
   };
 
   const mutation = useMutation({
-    mutationFn: (data) =>
-      isEditing
-        ? api.put(`/sessions/${id}`, data)
-        : api.post("/sessions", data),
+    mutationFn: async (data) => {
+      const sessionRes = isEditing
+        ? await api.put(`/sessions/${id}`, data.session)
+        : await api.post("/sessions", data.session);
+
+      if (data.payment && !isEditing) {
+        await api.post("/payments", {
+          patientId: data.session.patientIds[0],
+          sessionId: sessionRes.data.id,
+          amount: data.payment.amount,
+          currency: data.payment.currency,
+          status: "PAID",
+          paidAt: new Date().toISOString(),
+        });
+      }
+
+      return sessionRes;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(["sessions"]);
+      queryClient.invalidateQueries(["payments"]);
+      queryClient.invalidateQueries(["dashboard-stats"]);
       navigate("/sessions");
     },
   });
@@ -105,8 +164,16 @@ export default function SessionForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     mutation.mutate({
-      ...form,
-      durationMinutes: parseInt(form.durationMinutes),
+      session: {
+        ...form,
+        durationMinutes: parseInt(form.durationMinutes),
+      },
+      payment: isPaid
+        ? {
+            amount: parseFloat(paymentAmount) || 0,
+            currency: paymentCurrency,
+          }
+        : null,
     });
   };
 
@@ -130,17 +197,49 @@ export default function SessionForm() {
             <label className="block text-sm text-gray-400 mb-2">
               Patients *
             </label>
-            <div className="flex gap-2 mb-2">
+
+            {/* selected patients */}
+            {selectedPatients.length > 0 && (
+              <div className="space-y-1 mb-2">
+                {selectedPatients.map((p) => {
+                  const locked = isEditing && isOriginalPatient(p.id);
+                  return (
+                    <div
+                      key={p.id}
+                      className="flex items-center justify-between bg-gray-800 px-4 py-2 rounded-lg"
+                    >
+                      <span className="text-white text-sm">
+                        {p.firstName} {p.lastName}
+                      </span>
+                      {locked ? (
+                        <span className="text-gray-600 text-xs">locked</span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => removePatient(p.id)}
+                          className="text-red-400 hover:text-red-300 text-xs font-medium"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* add patient dropdown */}
+            {availablePatients.length > 0 && (
               <select
                 onChange={(e) => {
                   addPatient(e.target.value);
                   e.target.value = "";
                 }}
-                className="flex-1 bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition"
+                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition"
                 defaultValue=""
               >
                 <option value="" disabled>
-                  Add a patient...
+                  {isEditing ? "Add another patient..." : "Add a patient..."}
                 </option>
                 {availablePatients.map((p) => (
                   <option key={p.id} value={p.id}>
@@ -149,27 +248,13 @@ export default function SessionForm() {
                   </option>
                 ))}
               </select>
-            </div>
-            {selectedPatients.length > 0 && (
-              <div className="space-y-1">
-                {selectedPatients.map((p) => (
-                  <div
-                    key={p.id}
-                    className="flex items-center justify-between bg-gray-800 px-4 py-2 rounded-lg"
-                  >
-                    <span className="text-white text-sm">
-                      {p.firstName} {p.lastName}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => removePatient(p.id)}
-                      className="text-red-400 hover:text-red-300 text-xs font-medium"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ))}
-              </div>
+            )}
+
+            {isEditing && originalPatientIds.length > 0 && (
+              <p className="text-gray-600 text-xs mt-1">
+                Original patients are locked and cannot be removed. You can
+                still add more patients.
+              </p>
             )}
           </div>
 
@@ -294,6 +379,72 @@ export default function SessionForm() {
               Mark as relevant / important session
             </label>
           </div>
+
+          {/* Payment section — new sessions only */}
+          {!isEditing && (
+            <div className="border-t border-gray-800 pt-5">
+              <label className="flex items-center gap-2 text-sm text-white font-medium cursor-pointer mb-3">
+                <input
+                  type="checkbox"
+                  checked={isPaid}
+                  onChange={(e) => setIsPaid(e.target.checked)}
+                  className="accent-indigo-500"
+                />
+                Mark session as paid
+              </label>
+
+              {isPaid && (
+                <div className="grid grid-cols-2 gap-4 mt-3 pl-5">
+                  <div>
+                    <label className="block text-sm text-gray-400 mb-1">
+                      Amount
+                    </label>
+                    <input
+                      type="number"
+                      value={paymentAmount}
+                      onChange={(e) => setPaymentAmount(e.target.value)}
+                      min={0}
+                      step="0.01"
+                      placeholder="0.00"
+                      className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm text-gray-400 mb-1">
+                      Currency
+                    </label>
+                    <input
+                      type="text"
+                      value={paymentCurrency}
+                      onChange={(e) => setPaymentCurrency(e.target.value)}
+                      className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Existing payment notice when editing */}
+          {isEditing && existingPayments?.length > 0 && (
+            <div className="border-t border-gray-800 pt-5">
+              <div className="bg-yellow-900/20 border border-yellow-800 rounded-lg px-4 py-3">
+                <p className="text-yellow-400 text-sm font-medium mb-1">
+                  ⚠️ This session has a linked payment
+                </p>
+                {existingPayments.map((payment) => (
+                  <p key={payment.id} className="text-yellow-300 text-xs">
+                    {payment.patientName} — {payment.amount} {payment.currency}{" "}
+                    ({payment.status})
+                  </p>
+                ))}
+                <p className="text-yellow-600 text-xs mt-1">
+                  Adding more patients won't affect the existing payment. Manage
+                  payments from the patient profile.
+                </p>
+              </div>
+            </div>
+          )}
 
           {mutation.isError && (
             <p className="text-red-400 text-sm">

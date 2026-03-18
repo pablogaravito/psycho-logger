@@ -8,6 +8,7 @@ import com.pablogb.psychologger.model.entity.Patient;
 import com.pablogb.psychologger.model.entity.Session;
 import com.pablogb.psychologger.model.entity.User;
 import com.pablogb.psychologger.repository.PatientRepository;
+import com.pablogb.psychologger.repository.PaymentRepository;
 import com.pablogb.psychologger.repository.SessionRepository;
 import com.pablogb.psychologger.security.SecurityUtils;
 import com.pablogb.psychologger.service.SessionService;
@@ -25,6 +26,7 @@ public class SessionServiceImpl implements SessionService {
 
     private final SessionRepository sessionRepository;
     private final PatientRepository patientRepository;
+    private final PaymentRepository paymentRepository;
     private final SecurityUtils securityUtils;
 
     @Override
@@ -113,8 +115,11 @@ public class SessionServiceImpl implements SessionService {
     public void deleteSession(Integer id) {
         Session session = sessionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Session not found with id: " + id));
+        paymentRepository.deleteBySessionId(session.getId());
         sessionRepository.delete(session);
     }
+
+
 
     private SessionResponseDto toResponseDto(Session session) {
         Set<PatientSummaryDto> patientSummaries = session.getPatients().stream()

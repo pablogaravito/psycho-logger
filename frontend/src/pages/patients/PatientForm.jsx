@@ -20,6 +20,7 @@ export default function PatientForm() {
     dateOfBirth: "",
     gender: "",
     notes: "",
+    defaultPrice: "",
   });
 
   const { data: patient } = useQuery({
@@ -40,6 +41,7 @@ export default function PatientForm() {
         dateOfBirth: patient.dateOfBirth || "",
         gender: patient.gender || "",
         notes: patient.notes || "",
+        defaultPrice: patient.defaultPrice ?? "",
       });
     }
   }, [patient]);
@@ -61,7 +63,11 @@ export default function PatientForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    mutation.mutate(form);
+    mutation.mutate({
+      ...form,
+      defaultPrice:
+        form.defaultPrice !== "" ? parseFloat(form.defaultPrice) : null,
+    });
   };
 
   return (
@@ -178,6 +184,25 @@ export default function PatientForm() {
               className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition resize-none"
               placeholder="General intake notes..."
             />
+          </div>
+
+          <div>
+            <label className="block text-sm text-gray-400 mb-1">
+              Custom Session Price
+            </label>
+            <input
+              type="number"
+              name="defaultPrice"
+              value={form.defaultPrice}
+              onChange={handleChange}
+              min={0}
+              step="0.01"
+              placeholder="Leave empty to use global default"
+              className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition"
+            />
+            <p className="text-gray-500 text-xs mt-1">
+              Overrides the global default price for this patient
+            </p>
           </div>
 
           {mutation.isError && (
