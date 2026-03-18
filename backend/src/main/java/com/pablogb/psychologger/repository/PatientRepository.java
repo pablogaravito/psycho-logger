@@ -7,4 +7,6 @@ import java.util.List;
 public interface PatientRepository extends JpaRepository<Patient, Integer> {
     List<Patient> findByOrganizationIdAndIsActiveTrue(Integer orgId);
     List<Patient> findByOrganizationId(Integer orgId);
+    long countByOrganizationIdAndIsActiveTrue(Integer orgId);
 }
+

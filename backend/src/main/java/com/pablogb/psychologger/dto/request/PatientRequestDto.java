@@ -4,6 +4,7 @@ import com.pablogb.psychologger.model.enums.Gender;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -24,4 +25,6 @@ public class PatientRequestDto {
     private LocalDate dateOfBirth;
     private Gender gender;
     private String notes;
+    private Boolean isActive;
+    private BigDecimal defaultPrice;
 }

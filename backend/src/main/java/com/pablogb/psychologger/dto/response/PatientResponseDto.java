@@ -3,6 +3,7 @@ package com.pablogb.psychologger.dto.response;
 import com.pablogb.psychologger.model.enums.Gender;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -24,4 +25,5 @@ public class PatientResponseDto {
     private Boolean isActive;
     private String notes;
     private LocalDateTime createdAt;
+    private BigDecimal defaultPrice;
 }

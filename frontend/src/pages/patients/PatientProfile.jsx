@@ -1,3 +1,225 @@
+import { useParams, useNavigate } from "react-router-dom";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import api from "../../api/axios";
+
 export default function PatientProfile() {
-  return <div>Patient Profile</div>;
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const { data: patient, isLoading: loadingPatient } = useQuery({
+    queryKey: ["patient", id],
+    queryFn: () => api.get(`/patients/${id}`).then((r) => r.data),
+  });
+
+  const { data: sessions, isLoading: loadingSessions } = useQuery({
+    queryKey: ["sessions", "patient", id],
+    queryFn: () => api.get(`/sessions/patient/${id}`).then((r) => r.data),
+  });
+
+  const { data: payments, isLoading: loadingPayments } = useQuery({
+    queryKey: ["payments", "patient", id],
+    queryFn: () => api.get(`/payments/patient/${id}`).then((r) => r.data),
+  });
+
+  const toggleActiveMutation = useMutation({
+    mutationFn: () =>
+      patient.isActive
+        ? api.delete(`/patients/${id}`)
+        : api.put(`/patients/${id}`, { ...patient, isActive: true }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["patient", id]);
+      queryClient.invalidateQueries(["patients"]);
+    },
+  });
+
+  if (loadingPatient) return <div className="text-gray-400">Loading...</div>;
+
+  return (
+    <div className="max-w-4xl mx-auto">
+      {/* Header */}
+      <div className="flex items-start justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-white">
+            {patient?.firstName} {patient?.lastName}
+          </h1>
+          {patient?.shortName && (
+            <p className="text-gray-400 text-sm mt-0.5">
+              "{patient.shortName}"
+            </p>
+          )}
+          <span
+            className={`inline-block mt-2 text-xs font-semibold px-2 py-1 rounded-full ${
+              patient?.isActive
+                ? "bg-green-900 text-green-400"
+                : "bg-gray-800 text-gray-500"
+            }`}
+          >
+            {patient?.isActive ? "Active" : "Inactive"}
+          </span>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => navigate(`/sessions/new?patientId=${id}`)}
+            className="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-4 py-2 rounded-lg transition"
+          >
+            + New Session
+          </button>
+          <button
+            onClick={() => navigate(`/patients/${id}/edit`)}
+            className="bg-gray-800 hover:bg-gray-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => toggleActiveMutation.mutate()}
+            disabled={toggleActiveMutation.isPending}
+            className={`text-sm font-semibold px-4 py-2 rounded-lg transition ${
+              patient?.isActive
+                ? "bg-red-900 hover:bg-red-800 text-red-400"
+                : "bg-green-900 hover:bg-green-800 text-green-400"
+            }`}
+          >
+            {patient?.isActive ? "Deactivate" : "Reactivate"}
+          </button>
+        </div>
+      </div>
+
+      {/* Patient Info */}
+      <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
+        <h2 className="text-white font-semibold mb-4">Patient Information</h2>
+        <div className="grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <span className="text-gray-400">Date of Birth</span>
+            <p className="text-white mt-0.5">{patient?.dateOfBirth || "—"}</p>
+          </div>
+          <div>
+            <span className="text-gray-400">Gender</span>
+            <p className="text-white mt-0.5">{patient?.gender || "—"}</p>
+          </div>
+          <div>
+            <span className="text-gray-400">Email</span>
+            <p className="text-white mt-0.5">{patient?.email || "—"}</p>
+          </div>
+          <div>
+            <span className="text-gray-400">Phone</span>
+            <p className="text-white mt-0.5">{patient?.phone || "—"}</p>
+          </div>
+          {patient?.notes && (
+            <div className="col-span-2">
+              <span className="text-gray-400">Notes</span>
+              <p className="text-white mt-0.5">{patient.notes}</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Sessions */}
+      <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-white font-semibold">
+            Sessions
+            <span className="text-gray-500 font-normal text-sm ml-2">
+              ({sessions?.length || 0})
+            </span>
+          </h2>
+        </div>
+
+        {loadingSessions ? (
+          <p className="text-gray-400 text-sm">Loading sessions...</p>
+        ) : sessions?.length === 0 ? (
+          <p className="text-gray-500 text-sm">No sessions yet.</p>
+        ) : (
+          <div className="space-y-2">
+            {sessions?.map((session) => (
+              <div
+                key={session.id}
+                onClick={() => navigate(`/sessions/${session.id}`)}
+                className="flex items-center justify-between px-4 py-3 bg-gray-800 rounded-lg cursor-pointer hover:bg-gray-750 transition"
+              >
+                <div>
+                  <p className="text-white text-sm font-medium">
+                    {new Date(session.scheduledAt).toLocaleDateString("es-PE", {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </p>
+                  {session.mainThemes && (
+                    <p className="text-gray-400 text-xs mt-0.5 truncate max-w-md">
+                      {session.mainThemes}
+                    </p>
+                  )}
+                </div>
+                <div className="flex items-center gap-3">
+                  {session.isRelevant && (
+                    <span className="text-yellow-400 text-xs">⭐ Relevant</span>
+                  )}
+                  <span
+                    className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                      session.status === "COMPLETED"
+                        ? "bg-green-900 text-green-400"
+                        : session.status === "SCHEDULED"
+                          ? "bg-blue-900 text-blue-400"
+                          : "bg-gray-700 text-gray-400"
+                    }`}
+                  >
+                    {session.status}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Payments */}
+      <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
+        <h2 className="text-white font-semibold mb-4">
+          Payments
+          <span className="text-gray-500 font-normal text-sm ml-2">
+            ({payments?.length || 0})
+          </span>
+        </h2>
+
+        {loadingPayments ? (
+          <p className="text-gray-400 text-sm">Loading payments...</p>
+        ) : payments?.length === 0 ? (
+          <p className="text-gray-500 text-sm">No payments yet.</p>
+        ) : (
+          <div className="space-y-2">
+            {payments?.map((payment) => (
+              <div
+                key={payment.id}
+                className="flex items-center justify-between px-4 py-3 bg-gray-800 rounded-lg"
+              >
+                <div>
+                  <p className="text-white text-sm font-medium">
+                    {payment.amount} {payment.currency}
+                  </p>
+                  {payment.paidAt && (
+                    <p className="text-gray-400 text-xs mt-0.5">
+                      {new Date(payment.paidAt).toLocaleDateString()}
+                    </p>
+                  )}
+                </div>
+                <span
+                  className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                    payment.status === "PAID"
+                      ? "bg-green-900 text-green-400"
+                      : payment.status === "PENDING"
+                        ? "bg-yellow-900 text-yellow-400"
+                        : "bg-gray-700 text-gray-400"
+                  }`}
+                >
+                  {payment.status}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }

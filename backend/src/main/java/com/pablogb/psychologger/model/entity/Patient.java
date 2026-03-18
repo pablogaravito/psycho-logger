@@ -4,6 +4,7 @@ import com.pablogb.psychologger.model.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -49,4 +50,7 @@ public class Patient extends BaseEntity {
 
     @Column(columnDefinition = "TEXT")
     private String notes;
+
+    @Column(name = "default_price", precision = 10, scale = 2)
+    private BigDecimal defaultPrice;
 }
