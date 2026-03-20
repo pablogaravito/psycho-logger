@@ -87,7 +87,16 @@ export default function PatientList() {
                 onClick={() => navigate(`/patients/${patient.id}`)}
               >
                 <td className="px-6 py-4 text-white font-medium">
-                  {patient.firstName} {patient.lastName}
+                  <div className="flex items-center gap-2">
+                    {patient.hasDebtFlag && (
+                      <span
+                        title={patient.debtFlagNote || "Has outstanding debt"}
+                      >
+                        🚩
+                      </span>
+                    )}
+                    {patient.firstName} {patient.lastName}
+                  </div>
                 </td>
                 <td className="px-6 py-4 text-gray-400">
                   {patient.shortName || "—"}

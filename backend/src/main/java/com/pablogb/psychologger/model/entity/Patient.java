@@ -53,4 +53,13 @@ public class Patient extends BaseEntity {
 
     @Column(name = "default_price", precision = 10, scale = 2)
     private BigDecimal defaultPrice;
+
+    @Column(name = "has_debt_flag")
+    private Boolean hasDebtFlag = false;
+
+    @Column(name = "debt_flag_note", columnDefinition = "TEXT")
+    private String debtFlagNote;
+
+    @Column(name = "handover_notes", columnDefinition = "TEXT")
+    private String handoverNotes;
 }

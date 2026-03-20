@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../../api/axios";
+import { useAuth } from "../../hooks/useAuth";
 
 const GENDER_OPTIONS = ["MALE", "FEMALE", "OTHER", "PREFER_NOT_TO_SAY"];
 
@@ -10,6 +11,7 @@ export default function PatientForm() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const isEditing = Boolean(id);
+  const { user } = useAuth();
 
   const [form, setForm] = useState({
     firstName: "",
@@ -21,6 +23,7 @@ export default function PatientForm() {
     gender: "",
     notes: "",
     defaultPrice: "",
+    handoverNotes: "",
   });
 
   const { data: patient } = useQuery({
@@ -41,6 +44,7 @@ export default function PatientForm() {
         dateOfBirth: patient.dateOfBirth || "",
         gender: patient.gender || "",
         notes: patient.notes || "",
+        handoverNotes: patient.handoverNotes || "",
         defaultPrice: patient.defaultPrice ?? "",
       });
     }
@@ -185,6 +189,25 @@ export default function PatientForm() {
               placeholder="General intake notes..."
             />
           </div>
+
+          {user?.isAdmin && (
+            <div>
+              <label className="block text-sm text-gray-400 mb-1">
+                Handover Notes
+              </label>
+              <textarea
+                name="handoverNotes"
+                value={form.handoverNotes || ""}
+                onChange={handleChange}
+                rows={3}
+                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition resize-none"
+                placeholder="Non-confidential notes for future therapists..."
+              />
+              <p className="text-gray-500 text-xs mt-1">
+                Only visible to therapists assigned to this patient
+              </p>
+            </div>
+          )}
 
           <div>
             <label className="block text-sm text-gray-400 mb-1">

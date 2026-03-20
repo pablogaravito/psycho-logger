@@ -11,6 +11,8 @@ const navigation = [
   { name: "Settings", path: "/settings", icon: "⚙️" },
 ];
 
+const adminNavigation = [{ name: "Team", path: "/admin/team", icon: "👥" }];
+
 export default function Sidebar() {
   const { user, logout } = useAuth();
 
@@ -45,6 +47,33 @@ export default function Sidebar() {
             {item.name}
           </NavLink>
         ))}
+
+        {/* Admin only section */}
+        {user?.isAdmin && (
+          <>
+            <div className="pt-4 pb-1 px-3">
+              <p className="text-gray-600 text-xs font-medium uppercase tracking-wider">
+                Admin
+              </p>
+            </div>
+            {adminNavigation.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition ${
+                    isActive
+                      ? "bg-indigo-600 text-white"
+                      : "text-gray-400 hover:bg-gray-800 hover:text-white"
+                  }`
+                }
+              >
+                <span>{item.icon}</span>
+                {item.name}
+              </NavLink>
+            ))}
+          </>
+        )}
       </nav>
 
       {/* User / Logout */}

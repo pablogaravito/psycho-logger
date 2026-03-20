@@ -2,6 +2,8 @@ package com.pablogb.psychologger.dto.response;
 
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,4 +14,6 @@ public class StatsResponseDto {
     private long sessionsThisMonth;
     private long pendingPayments;
     private long upcomingSessions;
+    private BigDecimal collectedThisMonth;
+    private long birthdaysThisMonth;
 }

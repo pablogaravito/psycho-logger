@@ -27,4 +27,7 @@ public class PatientRequestDto {
     private String notes;
     private Boolean isActive;
     private BigDecimal defaultPrice;
+    private Boolean hasDebtFlag;
+    private String debtFlagNote;
+    private String handoverNotes;
 }

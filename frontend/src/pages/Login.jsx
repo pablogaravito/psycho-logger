@@ -1,15 +1,29 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
 import api from "../api/axios";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [sessionExpired, setSessionExpired] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // if user was logged in before but token is gone, session expired
+    const hadUser = localStorage.getItem("session_expired");
+    if (hadUser) {
+      setSessionExpired(true);
+      localStorage.removeItem("session_expired");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user) navigate("/");
+  }, [user]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,6 +49,14 @@ export default function Login() {
           </h1>
           <p className="text-gray-400 mt-2 text-sm">Sign in to your account</p>
         </div>
+
+        {sessionExpired && (
+          <div className="bg-yellow-900/30 border border-yellow-800 rounded-lg px-4 py-3 mb-5">
+            <p className="text-yellow-400 text-sm text-center">
+              ⏱ Your session expired. Please sign in again.
+            </p>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
@@ -70,6 +92,16 @@ export default function Login() {
           >
             {loading ? "Signing in..." : "Sign in"}
           </button>
+
+          <p className="text-gray-500 text-sm text-center mt-6">
+            New to PsychoLogger?{" "}
+            <Link
+              to="/register"
+              className="text-indigo-400 hover:text-indigo-300"
+            >
+              Create your practice
+            </Link>
+          </p>
         </form>
       </div>
     </div>

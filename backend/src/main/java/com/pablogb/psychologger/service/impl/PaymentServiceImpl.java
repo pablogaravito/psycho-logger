@@ -12,10 +12,12 @@ import com.pablogb.psychologger.repository.PaymentPlanRepository;
 import com.pablogb.psychologger.repository.PaymentRepository;
 import com.pablogb.psychologger.repository.SessionRepository;
 import com.pablogb.psychologger.service.PaymentService;
+import com.pablogb.psychologger.model.enums.PaymentStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -30,7 +32,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional(readOnly = true)
     public List<PaymentResponseDto> getAllPayments() {
-        return paymentRepository.findAll()
+        return paymentRepository.findAllByOrderByCreatedAtDesc()
                 .stream()
                 .map(this::toResponseDto)
                 .toList();
@@ -42,7 +44,7 @@ public class PaymentServiceImpl implements PaymentService {
         if (!patientRepository.existsById(patientId)) {
             throw new ResourceNotFoundException("Patient not found with id: " + patientId);
         }
-        return paymentRepository.findByPatientId(patientId)
+        return paymentRepository.findByPatientIdOrderByCreatedAtDesc(patientId)
                 .stream()
                 .map(this::toResponseDto)
                 .toList();
@@ -80,17 +82,57 @@ public class PaymentServiceImpl implements PaymentService {
         return toResponseDto(paymentRepository.save(payment));
     }
 
+//    @Override
+//    @Transactional
+//    public PaymentResponseDto updatePayment(Integer id, PaymentRequestDto request) {
+//        Payment payment = paymentRepository.findById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException("Payment not found with id: " + id));
+//
+//        payment.setAmount(request.getAmount());
+//        payment.setStatus(request.getStatus());
+//        payment.setPaymentMethod(request.getPaymentMethod());
+//        payment.setPaidAt(request.getPaidAt());
+//        payment.setNotes(request.getNotes());
+//
+//        return toResponseDto(paymentRepository.save(payment));
+//    }
+
     @Override
     @Transactional
     public PaymentResponseDto updatePayment(Integer id, PaymentRequestDto request) {
         Payment payment = paymentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Payment not found with id: " + id));
 
-        payment.setAmount(request.getAmount());
-        payment.setStatus(request.getStatus());
-        payment.setPaymentMethod(request.getPaymentMethod());
-        payment.setPaidAt(request.getPaidAt());
-        payment.setNotes(request.getNotes());
+        if (request.getAmount() != null)
+            payment.setAmount(request.getAmount());
+        if (request.getStatus() != null) {
+            payment.setStatus(request.getStatus());
+            // auto flag patient when writing off
+            if (request.getStatus() == PaymentStatus.WRITTEN_OFF) {
+                Patient patient = payment.getPatient();
+                patient.setHasDebtFlag(true);
+                patient.setDebtFlagNote("Unpaid session written off on " +
+                        LocalDate.now());
+                patientRepository.save(patient);
+            }
+            // auto clear flag when paying off a written off payment
+            if (request.getStatus() == PaymentStatus.PAID) {
+                Patient patient = payment.getPatient();
+                boolean stillHasWrittenOff = paymentRepository
+                        .existsByPatientIdAndStatus(patient.getId(),
+                                PaymentStatus.WRITTEN_OFF);
+                if (!stillHasWrittenOff) {
+                    patient.setHasDebtFlag(false);
+                    patientRepository.save(patient);
+                }
+            }
+        }
+        if (request.getPaymentMethod() != null)
+            payment.setPaymentMethod(request.getPaymentMethod());
+        if (request.getPaidAt() != null)
+            payment.setPaidAt(request.getPaidAt());
+        if (request.getNotes() != null)
+            payment.setNotes(request.getNotes());
 
         return toResponseDto(paymentRepository.save(payment));
     }
