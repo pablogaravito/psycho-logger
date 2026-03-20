@@ -26,4 +26,7 @@ public class PatientResponseDto {
     private String notes;
     private LocalDateTime createdAt;
     private BigDecimal defaultPrice;
+    private Boolean hasDebtFlag;
+    private String debtFlagNote;
+    private String handoverNotes;
 }

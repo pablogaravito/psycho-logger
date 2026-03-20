@@ -1,5 +1,5 @@
 package com.pablogb.psychologger.model.enums;
 
 public enum PaymentStatus {
-    PENDING, PAID, PARTIAL, REFUNDED
+    PENDING, PAID, PARTIAL, REFUNDED, WRITTEN_OFF
 }

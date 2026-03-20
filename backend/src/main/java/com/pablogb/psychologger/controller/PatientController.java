@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,6 +44,42 @@ public class PatientController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deactivatePatient(@PathVariable Integer id) {
         patientService.deactivatePatient(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<PatientResponseDto>> searchPatients(
+            @RequestParam String name) {
+        return ResponseEntity.ok(patientService.searchPatientsOrgWide(name));
+    }
+
+    @PutMapping("/{id}/flag")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<PatientResponseDto> flagPatient(
+            @PathVariable Integer id,
+            @RequestParam(required = false) String note) {
+        return ResponseEntity.ok(patientService.flagPatient(id, note));
+    }
+
+    @PutMapping("/{id}/clear-flag")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<PatientResponseDto> clearFlag(@PathVariable Integer id) {
+        return ResponseEntity.ok(patientService.clearFlag(id));
+    }
+
+    @PutMapping("/{id}/assign")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<PatientResponseDto> assignPatient(
+            @PathVariable Integer id,
+            @RequestParam Integer therapistId) {
+        return ResponseEntity.ok(patientService.assignPatient(id, therapistId));
+    }
+
+    @PutMapping("/{id}/unassign")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> unassignPatient(@PathVariable Integer id) {
+        patientService.unassignPatient(id);
         return ResponseEntity.noContent().build();
     }
 }

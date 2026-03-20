@@ -9,4 +9,7 @@ public interface TherapistPatientAssignmentRepository extends JpaRepository<Ther
     List<TherapistPatientAssignment> findByTherapistId(Integer therapistId);
     List<TherapistPatientAssignment> findByPatientId(Integer patientId);
     Optional<TherapistPatientAssignment> findByTherapistIdAndPatientIdAndUnassignedAtIsNull(Integer therapistId, Integer patientId);
+    List<TherapistPatientAssignment> findByTherapistIdAndUnassignedAtIsNull(Integer therapistId);
+    List<TherapistPatientAssignment> findByPatientIdOrderByAssignedAtDesc(Integer patientId);
+    List<TherapistPatientAssignment> findByPatientOrganizationId(Integer orgId);
 }

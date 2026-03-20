@@ -1,11 +1,13 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../../api/axios";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function PatientProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const { data: patient, isLoading: loadingPatient } = useQuery({
     queryKey: ["patient", id],
@@ -84,6 +86,47 @@ export default function PatientProfile() {
           </button>
         </div>
       </div>
+
+      {/* Debt flag banner */}
+      {patient?.hasDebtFlag && (
+        <div className="bg-red-900/30 border border-red-800 rounded-xl px-5 py-4 mb-6">
+          <div className="flex items-start justify-between">
+            <div>
+              <p className="text-red-400 font-semibold text-sm">
+                🚩 Outstanding Debt Flag
+              </p>
+              {patient.debtFlagNote && (
+                <p className="text-red-300 text-xs mt-1">
+                  {patient.debtFlagNote}
+                </p>
+              )}
+            </div>
+            {user?.isAdmin && (
+              <button
+                onClick={() =>
+                  api
+                    .put(`/patients/${id}/clear-flag`)
+                    .then(() => queryClient.invalidateQueries(["patient", id]))
+                }
+                className="text-xs text-red-400 hover:text-red-300 border border-red-800 px-3 py-1 rounded-lg"
+              >
+                Clear Flag
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {patient?.handoverNotes && (
+        <div className="bg-yellow-900/20 border border-yellow-800 rounded-xl p-6 mb-6">
+          <h2 className="text-yellow-400 font-semibold mb-2">
+            📋 Handover Notes
+          </h2>
+          <p className="text-yellow-200 text-sm whitespace-pre-wrap">
+            {patient.handoverNotes}
+          </p>
+        </div>
+      )}
 
       {/* Patient Info */}
       <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
