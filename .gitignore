@@ -48,3 +48,4 @@ Thumbs.db
 .vscode/
 
 backend/src/main/resources/application-local.yaml
+backend/src/main/resources/application-test.yaml
