@@ -27,6 +27,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       <Route
         path="/"
         element={
@@ -36,7 +37,6 @@ export default function App() {
         }
       >
         <Route index element={<Dashboard />} />
-        <Route path="/register" element={<Register />} />
         <Route path="patients" element={<PatientList />} />
         <Route path="patients/new" element={<PatientForm />} />
         <Route path="patients/:id" element={<PatientProfile />} />
