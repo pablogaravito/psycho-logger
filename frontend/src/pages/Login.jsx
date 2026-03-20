@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import api from "../api/axios";
-import { useNavigate, Link } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -23,7 +23,7 @@ export default function Login() {
 
   useEffect(() => {
     if (user) navigate("/");
-  }, [user]);
+  }, [user, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,7 +33,7 @@ export default function Login() {
       const res = await api.post("/auth/login", { email, password });
       login(res.data, res.data.token);
       navigate("/");
-    } catch (err) {
+    } catch {
       setError("Invalid email or password");
     } finally {
       setLoading(false);
@@ -92,7 +92,6 @@ export default function Login() {
           >
             {loading ? "Signing in..." : "Sign in"}
           </button>
-
           <p className="text-gray-500 text-sm text-center mt-6">
             New to PsychoLogger?{" "}
             <Link
