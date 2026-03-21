@@ -1,6 +1,7 @@
 package com.pablogb.psychologger.service.impl;
 
 import com.pablogb.psychologger.dto.request.PaymentRequestDto;
+import com.pablogb.psychologger.dto.response.PatientDebtDto;
 import com.pablogb.psychologger.dto.response.PaymentResponseDto;
 import com.pablogb.psychologger.exception.ResourceNotFoundException;
 import com.pablogb.psychologger.model.entity.Patient;
@@ -11,12 +12,15 @@ import com.pablogb.psychologger.repository.PatientRepository;
 import com.pablogb.psychologger.repository.PaymentPlanRepository;
 import com.pablogb.psychologger.repository.PaymentRepository;
 import com.pablogb.psychologger.repository.SessionRepository;
+import com.pablogb.psychologger.security.SecurityUtils;
 import com.pablogb.psychologger.service.PaymentService;
 import com.pablogb.psychologger.model.enums.PaymentStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.pablogb.psychologger.dto.response.DebtPaymentDto;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -28,6 +32,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PatientRepository patientRepository;
     private final SessionRepository sessionRepository;
     private final PaymentPlanRepository paymentPlanRepository;
+    private final SecurityUtils securityUtils;
 
     @Override
     @Transactional(readOnly = true)
@@ -143,6 +148,63 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentRepository.findBySessionId(sessionId)
                 .stream()
                 .map(this::toResponseDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PatientDebtDto> getDebts() {
+        Integer orgId = securityUtils.getCurrentOrgId();
+
+        // get all pending payments for this org
+        List<Payment> pending = paymentRepository
+                .findByPatientOrganizationIdAndStatus(orgId, PaymentStatus.PENDING);
+
+        // group by patient
+        return pending.stream()
+                .collect(java.util.stream.Collectors.groupingBy(Payment::getPatient))
+                .entrySet().stream()
+                .map(entry -> {
+                    Patient patient = entry.getKey();
+                    List<Payment> payments = entry.getValue();
+
+                    List<DebtPaymentDto> paymentDtos = payments.stream()
+                            .map(p -> DebtPaymentDto.builder()
+                                    .paymentId(p.getId())
+                                    .sessionId(p.getSession() != null
+                                            ? p.getSession().getId() : null)
+                                    .sessionDate(p.getSession() != null
+                                            ? p.getSession().getScheduledAt() : null)
+                                    .amount(p.getAmount())
+                                    .currency(p.getCurrency())
+                                    .build())
+                            .sorted(java.util.Comparator.comparing(
+                                    DebtPaymentDto::getSessionDate,
+                                    java.util.Comparator.nullsLast(
+                                            java.util.Comparator.reverseOrder())))
+                            .toList();
+
+                    BigDecimal total = payments.stream()
+                            .map(Payment::getAmount)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                    return PatientDebtDto.builder()
+                            .patientId(patient.getId())
+                            .patientName(patient.getFirstName() + " "
+                                    + patient.getLastName())
+                            .shortName(patient.getShortName())
+                            .hasDebtFlag(patient.getHasDebtFlag())
+                            .isActive(patient.getIsActive())
+                            .pendingCount(payments.size())
+                            .totalPending(total)
+                            .pendingPayments(paymentDtos)
+                            .build();
+                })
+                // active patients first, then by total pending descending
+                .sorted(java.util.Comparator
+                        .comparing(PatientDebtDto::getIsActive).reversed()
+                        .thenComparing(java.util.Comparator
+                                .comparing(PatientDebtDto::getTotalPending).reversed()))
                 .toList();
     }
 

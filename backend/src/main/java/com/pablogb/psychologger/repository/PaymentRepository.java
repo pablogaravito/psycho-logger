@@ -31,4 +31,6 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
             @Param("status") PaymentStatus status);
 
     boolean existsByPatientIdAndStatus(Integer patientId, PaymentStatus status);
+
+    List<Payment> findByPatientOrganizationIdAndStatus(Integer orgId, PaymentStatus status);
 }
