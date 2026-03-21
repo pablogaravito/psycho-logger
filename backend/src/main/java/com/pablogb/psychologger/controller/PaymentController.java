@@ -1,6 +1,7 @@
 package com.pablogb.psychologger.controller;
 
 import com.pablogb.psychologger.dto.request.PaymentRequestDto;
+import com.pablogb.psychologger.dto.response.PatientDebtDto;
 import com.pablogb.psychologger.dto.response.PaymentResponseDto;
 import com.pablogb.psychologger.service.PaymentService;
 import jakarta.validation.Valid;
@@ -43,5 +44,10 @@ public class PaymentController {
     @GetMapping("/session/{sessionId}")
     public ResponseEntity<List<PaymentResponseDto>> getPaymentsBySession(@PathVariable Integer sessionId) {
         return ResponseEntity.ok(paymentService.getPaymentsBySession(sessionId));
+    }
+
+    @GetMapping("/debts")
+    public ResponseEntity<List<PatientDebtDto>> getDebts() {
+        return ResponseEntity.ok(paymentService.getDebts());
     }
 }
