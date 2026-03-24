@@ -29,4 +29,6 @@ public class PatientResponseDto {
     private Boolean hasDebtFlag;
     private String debtFlagNote;
     private String handoverNotes;
+    private String assignedTherapistName;
+    private Integer assignedTherapistId;
 }

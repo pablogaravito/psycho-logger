@@ -12,4 +12,5 @@ public class UserSettingsResponseDto {
     private Integer id;
     private Integer defaultSessionDuration;
     private BigDecimal defaultSessionPrice;
+    private Boolean showInactiveBirthdays;
 }

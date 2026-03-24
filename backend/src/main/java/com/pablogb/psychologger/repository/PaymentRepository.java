@@ -13,7 +13,7 @@ import java.util.List;
 public interface PaymentRepository extends JpaRepository<Payment, Integer> {
     List<Payment> findAllByOrderByCreatedAtDesc();
     List<Payment> findByPatientIdOrderByCreatedAtDesc(Integer patientId);
-    //List<Payment> findByPatientId(Integer patientId);
+    List<Payment> findByPatientId(Integer patientId);
     List<Payment> findBySessionId(Integer sessionId);
     long countByPatientOrganizationIdAndStatus(Integer orgId, PaymentStatus status);
     void deleteBySessionId(Integer sessionId);
@@ -33,4 +33,20 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
     boolean existsByPatientIdAndStatus(Integer patientId, PaymentStatus status);
 
     List<Payment> findByPatientOrganizationIdAndStatus(Integer orgId, PaymentStatus status);
+
+    List<Payment> findBySessionTherapistId(Integer therapistId);
+    List<Payment> findByPatientOrganizationId(Integer orgId);
+    List<Payment> findBySessionTherapistIdAndStatus(
+            Integer therapistId, PaymentStatus status);
+
+    long countBySessionTherapistIdAndStatus(
+            Integer therapistId, PaymentStatus status);
+
+    @Query("SELECT SUM(p.amount) FROM Payment p WHERE p.patient.organization.id = :orgId " +
+            "AND p.status = :status AND p.paidAt BETWEEN :start AND :end")
+    BigDecimal sumAmountByOrgIdAndStatusAndPaidAtBetween(
+            @Param("orgId") Integer orgId,
+            @Param("status") PaymentStatus status,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end);
 }

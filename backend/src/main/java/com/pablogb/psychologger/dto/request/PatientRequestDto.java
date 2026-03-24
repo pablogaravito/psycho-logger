@@ -30,4 +30,5 @@ public class PatientRequestDto {
     private Boolean hasDebtFlag;
     private String debtFlagNote;
     private String handoverNotes;
+    private Boolean assignToMe = true;
 }

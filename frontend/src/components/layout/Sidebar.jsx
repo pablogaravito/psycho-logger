@@ -1,20 +1,23 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
-const navigation = [
-  { name: "Dashboard", path: "/", icon: "⊞" },
-  { name: "Patients", path: "/patients", icon: "👤" },
-  { name: "Sessions", path: "/sessions", icon: "📋" },
-  { name: "Payments", path: "/payments", icon: "💰" },
-  { name: "Debts", path: "/queries/debts", icon: "💸" },
-  { name: "Birthdays", path: "/queries/birthdays", icon: "🎂" },
-  { name: "Settings", path: "/settings", icon: "⚙️" },
-];
-
-const adminNavigation = [{ name: "Team", path: "/admin/team", icon: "👥" }];
-
 export default function Sidebar() {
   const { user, logout } = useAuth();
+
+  const navigation = [
+    { name: "Dashboard", path: "/", icon: "⊞" },
+    { name: "Patients", path: "/patients", icon: "👤" },
+    // sessions only for therapists
+    ...(user?.isTherapist
+      ? [{ name: "Sessions", path: "/sessions", icon: "📋" }]
+      : []),
+    { name: "Payments", path: "/payments", icon: "💰" },
+    { name: "Debts", path: "/queries/debts", icon: "💸" },
+    { name: "Birthdays", path: "/queries/birthdays", icon: "🎂" },
+    { name: "Settings", path: "/settings", icon: "⚙️" },
+  ];
+
+  const adminNavigation = [{ name: "Team", path: "/admin/team", icon: "👥" }];
 
   return (
     <div className="w-64 bg-gray-900 border-r border-gray-800 flex flex-col h-screen fixed left-0 top-0">

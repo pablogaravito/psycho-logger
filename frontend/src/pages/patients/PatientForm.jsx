@@ -24,6 +24,7 @@ export default function PatientForm() {
     notes: "",
     defaultPrice: "",
     handoverNotes: "",
+    assignToMe: true,
   });
 
   const { data: patient } = useQuery({
@@ -46,6 +47,7 @@ export default function PatientForm() {
         notes: patient.notes || "",
         handoverNotes: patient.handoverNotes || "",
         defaultPrice: patient.defaultPrice ?? "",
+        assignToMe: true,
       });
     }
   }, [patient]);
@@ -227,6 +229,32 @@ export default function PatientForm() {
               Overrides the global default price for this patient
             </p>
           </div>
+
+          {!isEditing && user?.isTherapist && (
+            <div className="border-t border-gray-800 pt-4">
+              <label className="flex items-center gap-2 text-sm text-white cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="assignToMe"
+                  checked={form.assignToMe}
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      assignToMe: e.target.checked,
+                    }))
+                  }
+                  className="accent-indigo-500"
+                />
+                Assign this patient to me
+              </label>
+              {!form.assignToMe && (
+                <p className="text-gray-500 text-xs mt-1 ml-5">
+                  Patient will be created unassigned. You can assign them later
+                  from Team Management.
+                </p>
+              )}
+            </div>
+          )}
 
           {mutation.isError && (
             <p className="text-red-400 text-sm">

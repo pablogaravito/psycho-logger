@@ -32,8 +32,16 @@ public class SessionServiceImpl implements SessionService {
     @Override
     @Transactional(readOnly = true)
     public List<SessionResponseDto> getAllSessions() {
-        return sessionRepository.findByOrganizationIdOrderByScheduledAtDesc(
-                        securityUtils.getCurrentOrgId())
+        User currentUser = securityUtils.getCurrentUser();
+
+        // only therapists can see sessions, and only their own
+        if (!currentUser.getIsTherapist()) {
+            throw new ResourceNotFoundException(
+                    "Access denied — sessions are only visible to therapists");
+        }
+
+        return sessionRepository
+                .findByTherapistIdOrderByScheduledAtDesc(currentUser.getId())
                 .stream()
                 .map(this::toResponseDto)
                 .toList();
@@ -42,22 +50,42 @@ public class SessionServiceImpl implements SessionService {
     @Override
     @Transactional(readOnly = true)
     public List<SessionResponseDto> getSessionsByPatient(Integer patientId) {
+        User currentUser = securityUtils.getCurrentUser();
+
         if (!patientRepository.existsById(patientId)) {
-            throw new ResourceNotFoundException("Patient not found with id: " + patientId);
+            throw new ResourceNotFoundException(
+                    "Patient not found with id: " + patientId);
         }
-        return sessionRepository.findByPatientsIdOrderByScheduledAtDesc(patientId)
+
+        // only return sessions where this therapist is the therapist
+        return sessionRepository
+                .findByPatientsIdOrderByScheduledAtDesc(patientId)
                 .stream()
+                .filter(s -> s.getTherapist().getId().equals(currentUser.getId()))
                 .map(this::toResponseDto)
                 .toList();
     }
 
+
+
     @Override
     @Transactional(readOnly = true)
     public SessionResponseDto getSessionById(Integer id) {
+        User currentUser = securityUtils.getCurrentUser();
         Session session = sessionRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Session not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Session not found with id: " + id));
+
+        // only the session's therapist can see it
+        if (!session.getTherapist().getId().equals(currentUser.getId())) {
+            throw new ResourceNotFoundException(
+                    "Access denied — you can only view your own sessions");
+        }
+
         return toResponseDto(session);
     }
+
+
 
     @Override
     @Transactional

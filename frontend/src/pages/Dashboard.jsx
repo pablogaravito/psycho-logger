@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import api from "../api/axios";
 import { useAuth } from "../hooks/useAuth";
+import { useState } from "react";
 
 const MONTH_NAMES = [
   "January",
@@ -33,10 +34,20 @@ function StatCard({ title, value, icon, color, subtitle }) {
 export default function Dashboard() {
   const { user } = useAuth();
 
+  const [birthdayDismissed, setBirthdayDismissed] = useState(false);
+
   const { data: stats } = useQuery({
     queryKey: ["dashboard-stats"],
     queryFn: () => api.get("/dashboard/stats").then((r) => r.data),
   });
+
+  const { data: birthdayData } = useQuery({
+    queryKey: ["birthdays", false],
+    queryFn: () =>
+      api.get("/patients/birthdays?includeInactive=false").then((r) => r.data),
+  });
+
+  const todayBirthdays = birthdayData?.filter((b) => b.daysUntil === 0) || [];
 
   const { data: snapshots } = useQuery({
     queryKey: ["dashboard-snapshots"],
@@ -56,6 +67,26 @@ export default function Dashboard() {
           Here's what's going on in your practice
         </p>
       </div>
+
+      {/* Birthday banner */}
+      {todayBirthdays?.length > 0 && !birthdayDismissed && (
+        <div className="bg-yellow-900/30 border border-yellow-800 rounded-xl px-5 py-4 mb-6 flex items-center justify-between">
+          <div>
+            <p className="text-yellow-400 font-semibold">
+              🎂 Birthday{todayBirthdays.length > 1 ? "s" : ""} today!
+            </p>
+            <p className="text-yellow-300 text-sm mt-0.5">
+              {todayBirthdays.map((b) => b.patientName).join(", ")}
+            </p>
+          </div>
+          <button
+            onClick={() => setBirthdayDismissed(true)}
+            className="text-yellow-600 hover:text-yellow-400 text-sm ml-4"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* Current month stats */}
       <h2 className="text-white font-semibold mb-4">{currentMonth} Overview</h2>

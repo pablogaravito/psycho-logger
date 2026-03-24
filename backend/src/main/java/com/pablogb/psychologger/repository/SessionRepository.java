@@ -20,4 +20,7 @@ public interface SessionRepository extends JpaRepository<Session, Integer> {
 
     @Query("SELECT MIN(s.scheduledAt) FROM Session s WHERE s.therapist.id = :therapistId")
     LocalDateTime findEarliestScheduledAtByTherapistId(@Param("therapistId") Integer therapistId);
+
+    long countByTherapistIdAndScheduledAtBetween(
+            Integer therapistId, LocalDateTime start, LocalDateTime end);
 }

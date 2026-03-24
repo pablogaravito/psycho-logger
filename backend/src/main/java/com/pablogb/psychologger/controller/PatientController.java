@@ -1,6 +1,7 @@
 package com.pablogb.psychologger.controller;
 
 import com.pablogb.psychologger.dto.request.PatientRequestDto;
+import com.pablogb.psychologger.dto.response.BirthdayPatientDto;
 import com.pablogb.psychologger.dto.response.PatientResponseDto;
 import com.pablogb.psychologger.service.PatientService;
 import jakarta.validation.Valid;
@@ -45,6 +46,12 @@ public class PatientController {
     public ResponseEntity<Void> deactivatePatient(@PathVariable Integer id) {
         patientService.deactivatePatient(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/birthdays")
+    public ResponseEntity<List<BirthdayPatientDto>> getUpcomingBirthdays(
+            @RequestParam(defaultValue = "false") boolean includeInactive) {
+        return ResponseEntity.ok(patientService.getUpcomingBirthdays(includeInactive));
     }
 
     @GetMapping("/search")

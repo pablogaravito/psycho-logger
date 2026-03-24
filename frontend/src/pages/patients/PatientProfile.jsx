@@ -61,12 +61,14 @@ export default function PatientProfile() {
           </span>
         </div>
         <div className="flex gap-2">
-          <button
-            onClick={() => navigate(`/sessions/new?patientId=${id}`)}
-            className="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-4 py-2 rounded-lg transition"
-          >
-            + New Session
-          </button>
+          {user?.isTherapist && (
+            <button
+              onClick={() => navigate(`/sessions/new?patientId=${id}`)}
+              className="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-4 py-2 rounded-lg transition"
+            >
+              + New Session
+            </button>
+          )}
           <button
             onClick={() => navigate(`/patients/${id}/edit`)}
             className="bg-gray-800 hover:bg-gray-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition"
@@ -148,6 +150,14 @@ export default function PatientProfile() {
             <span className="text-gray-400">Phone</span>
             <p className="text-white mt-0.5">{patient?.phone || "—"}</p>
           </div>
+          <div>
+            <span className="text-gray-400">Assigned Therapist</span>
+            <p className="text-white mt-0.5">
+              {patient?.assignedTherapistName || (
+                <span className="text-gray-500">Unassigned</span>
+              )}
+            </p>
+          </div>
           {patient?.notes && (
             <div className="col-span-2">
               <span className="text-gray-400">Notes</span>
@@ -158,64 +168,71 @@ export default function PatientProfile() {
       </div>
 
       {/* Sessions */}
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-white font-semibold">
-            Sessions
-            <span className="text-gray-500 font-normal text-sm ml-2">
-              ({sessions?.length || 0})
-            </span>
-          </h2>
-        </div>
-
-        {loadingSessions ? (
-          <p className="text-gray-400 text-sm">Loading sessions...</p>
-        ) : sessions?.length === 0 ? (
-          <p className="text-gray-500 text-sm">No sessions yet.</p>
-        ) : (
-          <div className="space-y-2">
-            {sessions?.map((session) => (
-              <div
-                key={session.id}
-                onClick={() => navigate(`/sessions/${session.id}`)}
-                className="flex items-center justify-between px-4 py-3 bg-gray-800 rounded-lg cursor-pointer hover:bg-gray-750 transition"
-              >
-                <div>
-                  <p className="text-white text-sm font-medium">
-                    {new Date(session.scheduledAt).toLocaleDateString("es-PE", {
-                      weekday: "long",
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
-                  {session.mainThemes && (
-                    <p className="text-gray-400 text-xs mt-0.5 truncate max-w-md">
-                      {session.mainThemes}
-                    </p>
-                  )}
-                </div>
-                <div className="flex items-center gap-3">
-                  {session.isRelevant && (
-                    <span className="text-yellow-400 text-xs">⭐ Relevant</span>
-                  )}
-                  <span
-                    className={`text-xs font-semibold px-2 py-1 rounded-full ${
-                      session.status === "COMPLETED"
-                        ? "bg-green-900 text-green-400"
-                        : session.status === "SCHEDULED"
-                          ? "bg-blue-900 text-blue-400"
-                          : "bg-gray-700 text-gray-400"
-                    }`}
-                  >
-                    {session.status}
-                  </span>
-                </div>
-              </div>
-            ))}
+      {user?.isTherapist && (
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-white font-semibold">
+              Sessions
+              <span className="text-gray-500 font-normal text-sm ml-2">
+                ({sessions?.length || 0})
+              </span>
+            </h2>
           </div>
-        )}
-      </div>
+
+          {loadingSessions ? (
+            <p className="text-gray-400 text-sm">Loading sessions...</p>
+          ) : sessions?.length === 0 ? (
+            <p className="text-gray-500 text-sm">No sessions yet.</p>
+          ) : (
+            <div className="space-y-2">
+              {sessions?.map((session) => (
+                <div
+                  key={session.id}
+                  onClick={() => navigate(`/sessions/${session.id}`)}
+                  className="flex items-center justify-between px-4 py-3 bg-gray-800 rounded-lg cursor-pointer hover:bg-gray-750 transition"
+                >
+                  <div>
+                    <p className="text-white text-sm font-medium">
+                      {new Date(session.scheduledAt).toLocaleDateString(
+                        "es-PE",
+                        {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        },
+                      )}
+                    </p>
+                    {session.mainThemes && (
+                      <p className="text-gray-400 text-xs mt-0.5 truncate max-w-md">
+                        {session.mainThemes}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {session.isRelevant && (
+                      <span className="text-yellow-400 text-xs">
+                        ⭐ Relevant
+                      </span>
+                    )}
+                    <span
+                      className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                        session.status === "COMPLETED"
+                          ? "bg-green-900 text-green-400"
+                          : session.status === "SCHEDULED"
+                            ? "bg-blue-900 text-blue-400"
+                            : "bg-gray-700 text-gray-400"
+                      }`}
+                    >
+                      {session.status}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Payments */}
       <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
