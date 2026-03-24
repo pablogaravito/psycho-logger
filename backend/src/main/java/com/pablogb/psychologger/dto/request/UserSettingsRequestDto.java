@@ -11,4 +11,5 @@ import java.math.BigDecimal;
 public class UserSettingsRequestDto {
     private Integer defaultSessionDuration;
     private BigDecimal defaultSessionPrice;
+    private Boolean showInactiveBirthdays;
 }

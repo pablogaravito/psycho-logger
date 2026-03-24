@@ -27,4 +27,7 @@ public class UserSettings extends BaseEntity {
 
     @Column(name = "default_session_price", precision = 10, scale = 2)
     private BigDecimal defaultSessionPrice;
+
+    @Column(name = "show_inactive_birthdays")
+    private Boolean showInactiveBirthdays = false;
 }

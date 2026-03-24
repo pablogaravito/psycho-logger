@@ -4,14 +4,8 @@ import com.pablogb.psychologger.dto.request.PaymentRequestDto;
 import com.pablogb.psychologger.dto.response.PatientDebtDto;
 import com.pablogb.psychologger.dto.response.PaymentResponseDto;
 import com.pablogb.psychologger.exception.ResourceNotFoundException;
-import com.pablogb.psychologger.model.entity.Patient;
-import com.pablogb.psychologger.model.entity.Payment;
-import com.pablogb.psychologger.model.entity.PaymentPlan;
-import com.pablogb.psychologger.model.entity.Session;
-import com.pablogb.psychologger.repository.PatientRepository;
-import com.pablogb.psychologger.repository.PaymentPlanRepository;
-import com.pablogb.psychologger.repository.PaymentRepository;
-import com.pablogb.psychologger.repository.SessionRepository;
+import com.pablogb.psychologger.model.entity.*;
+import com.pablogb.psychologger.repository.*;
 import com.pablogb.psychologger.security.SecurityUtils;
 import com.pablogb.psychologger.service.PaymentService;
 import com.pablogb.psychologger.model.enums.PaymentStatus;
@@ -33,11 +27,25 @@ public class PaymentServiceImpl implements PaymentService {
     private final SessionRepository sessionRepository;
     private final PaymentPlanRepository paymentPlanRepository;
     private final SecurityUtils securityUtils;
+    private final TherapistPatientAssignmentRepository assignmentRepository;
 
     @Override
     @Transactional(readOnly = true)
     public List<PaymentResponseDto> getAllPayments() {
-        return paymentRepository.findAllByOrderByCreatedAtDesc()
+        User currentUser = securityUtils.getCurrentUser();
+
+        if (currentUser.getIsAdmin() && !currentUser.getIsTherapist()) {
+            // pure admin sees all org payments for billing purposes
+            return paymentRepository
+                    .findByPatientOrganizationId(currentUser.getOrganization().getId())
+                    .stream()
+                    .map(this::toResponseDto)
+                    .toList();
+        }
+
+        // therapist sees only their patients' payments
+        return paymentRepository
+                .findBySessionTherapistId(currentUser.getId())
                 .stream()
                 .map(this::toResponseDto)
                 .toList();
@@ -46,10 +54,33 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional(readOnly = true)
     public List<PaymentResponseDto> getPaymentsByPatient(Integer patientId) {
+        User currentUser = securityUtils.getCurrentUser();
+
         if (!patientRepository.existsById(patientId)) {
-            throw new ResourceNotFoundException("Patient not found with id: " + patientId);
+            throw new ResourceNotFoundException(
+                    "Patient not found with id: " + patientId);
         }
-        return paymentRepository.findByPatientIdOrderByCreatedAtDesc(patientId)
+
+        // admin can see all payments for billing
+        if (currentUser.getIsAdmin()) {
+            return paymentRepository.findByPatientId(patientId)
+                    .stream()
+                    .map(this::toResponseDto)
+                    .toList();
+        }
+
+        // therapist only sees payments for their assigned patients
+        boolean isAssigned = assignmentRepository
+                .findByTherapistIdAndUnassignedAtIsNull(currentUser.getId())
+                .stream()
+                .anyMatch(a -> a.getPatient().getId().equals(patientId));
+
+        if (!isAssigned) {
+            throw new ResourceNotFoundException(
+                    "Access denied — patient not assigned to you");
+        }
+
+        return paymentRepository.findByPatientId(patientId)
                 .stream()
                 .map(this::toResponseDto)
                 .toList();
@@ -154,11 +185,29 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional(readOnly = true)
     public List<PatientDebtDto> getDebts() {
-        Integer orgId = securityUtils.getCurrentOrgId();
+//        Integer orgId = securityUtils.getCurrentOrgId();
+//
+//        // get all pending payments for this org
+//        List<Payment> pending = paymentRepository
+//                .findByPatientOrganizationIdAndStatus(orgId, PaymentStatus.PENDING);
 
-        // get all pending payments for this org
-        List<Payment> pending = paymentRepository
-                .findByPatientOrganizationIdAndStatus(orgId, PaymentStatus.PENDING);
+        User currentUser = securityUtils.getCurrentUser();
+
+        List<Payment> pending;
+
+        if (currentUser.getIsAdmin() && !currentUser.getIsTherapist()) {
+            // pure admin sees all org debts
+            pending = paymentRepository
+                    .findByPatientOrganizationIdAndStatus(
+                            currentUser.getOrganization().getId(),
+                            PaymentStatus.PENDING);
+        } else {
+            // therapist sees only their patients' debts
+            pending = paymentRepository
+                    .findBySessionTherapistIdAndStatus(
+                            currentUser.getId(),
+                            PaymentStatus.PENDING);
+        }
 
         // group by patient
         return pending.stream()

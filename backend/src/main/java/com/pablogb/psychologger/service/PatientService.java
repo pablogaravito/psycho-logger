@@ -1,6 +1,7 @@
 package com.pablogb.psychologger.service;
 
 import com.pablogb.psychologger.dto.request.PatientRequestDto;
+import com.pablogb.psychologger.dto.response.BirthdayPatientDto;
 import com.pablogb.psychologger.dto.response.PatientResponseDto;
 import java.util.List;
 
@@ -15,4 +16,5 @@ public interface PatientService {
     PatientResponseDto clearFlag(Integer id);
     PatientResponseDto assignPatient(Integer patientId, Integer therapistId);
     void unassignPatient(Integer patientId);
+    List<BirthdayPatientDto> getUpcomingBirthdays(boolean includeInactive);
 }

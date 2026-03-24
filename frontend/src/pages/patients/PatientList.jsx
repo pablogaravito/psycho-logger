@@ -74,6 +74,9 @@ export default function PatientList() {
               <th className="text-left text-gray-400 font-medium px-6 py-3">
                 Status
               </th>
+              <th className="text-left text-gray-400 font-medium px-6 py-3">
+                Therapist
+              </th>
               <th className="px-6 py-3"></th>
             </tr>
           </thead>
@@ -117,6 +120,11 @@ export default function PatientList() {
                   >
                     {patient.isActive ? "Active" : "Inactive"}
                   </span>
+                </td>
+                <td className="px-6 py-4 text-gray-400 text-sm">
+                  {patient.assignedTherapistName || (
+                    <span className="text-gray-600">Unassigned</span>
+                  )}
                 </td>
                 <td className="px-6 py-4 text-right">
                   <button

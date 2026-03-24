@@ -3,6 +3,7 @@ package com.pablogb.psychologger.service.impl;
 import com.pablogb.psychologger.dto.request.UserSettingsRequestDto;
 import com.pablogb.psychologger.dto.response.SessionDefaultsDto;
 import com.pablogb.psychologger.dto.response.UserSettingsResponseDto;
+import com.pablogb.psychologger.exception.ResourceNotFoundException;
 import com.pablogb.psychologger.model.entity.OrgSettings;
 import com.pablogb.psychologger.model.entity.Patient;
 import com.pablogb.psychologger.model.entity.User;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -28,22 +30,31 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     private final PatientRepository patientRepository;
     private final SecurityUtils securityUtils;
 
+//    @Override
+//    @Transactional(readOnly = true)
+//    public UserSettingsResponseDto getUserSettings() {
+//        UserSettings settings = getOrCreate();
+//        return toResponseDto(settings);
+//    }
+
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true)  // now safely read-only
     public UserSettingsResponseDto getUserSettings() {
-        UserSettings settings = getOrCreate();
+        UserSettings settings = getUserSettingsEntity();
         return toResponseDto(settings);
     }
 
     @Override
     @Transactional
     public UserSettingsResponseDto updateUserSettings(UserSettingsRequestDto request) {
-        UserSettings settings = getOrCreate();
+        UserSettings settings = getUserSettingsEntity();
 
         if (request.getDefaultSessionDuration() != null)
             settings.setDefaultSessionDuration(request.getDefaultSessionDuration());
         if (request.getDefaultSessionPrice() != null)
             settings.setDefaultSessionPrice(request.getDefaultSessionPrice());
+        if (request.getShowInactiveBirthdays() != null)
+            settings.setShowInactiveBirthdays(request.getShowInactiveBirthdays());
 
         return toResponseDto(userSettingsRepository.save(settings));
     }
@@ -52,7 +63,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     @Transactional(readOnly = true)
     public SessionDefaultsDto getSessionDefaults(Integer patientId) {
         User currentUser = securityUtils.getCurrentUser();
-        UserSettings userSettings = getOrCreate();
+        UserSettings userSettings = getUserSettingsEntity();
 
         // get org currency
         OrgSettings orgSettings = orgSettingsRepository
@@ -63,7 +74,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
         // price priority: patient override > user default > null
         BigDecimal price = patientRepository.findById(patientId)
                 .map(Patient::getDefaultPrice)
-                .filter(p -> p != null)
+                .filter(Objects::nonNull)
                 .orElse(userSettings.getDefaultSessionPrice());
 
         return SessionDefaultsDto.builder()
@@ -73,15 +84,22 @@ public class UserSettingsServiceImpl implements UserSettingsService {
                 .build();
     }
 
-    private UserSettings getOrCreate() {
+//    private UserSettings getOrCreate() {
+//        User currentUser = securityUtils.getCurrentUser();
+//        return userSettingsRepository.findByUserId(currentUser.getId())
+//                .orElseGet(() -> userSettingsRepository.save(
+//                        UserSettings.builder()
+//                                .user(currentUser)
+//                                .defaultSessionDuration(50)
+//                                .build()
+//                ));
+//    }
+
+    private UserSettings getUserSettingsEntity() {
         User currentUser = securityUtils.getCurrentUser();
         return userSettingsRepository.findByUserId(currentUser.getId())
-                .orElseGet(() -> userSettingsRepository.save(
-                        UserSettings.builder()
-                                .user(currentUser)
-                                .defaultSessionDuration(50)
-                                .build()
-                ));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User settings not found — please contact support"));
     }
 
     private UserSettingsResponseDto toResponseDto(UserSettings settings) {
@@ -89,6 +107,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
                 .id(settings.getId())
                 .defaultSessionDuration(settings.getDefaultSessionDuration())
                 .defaultSessionPrice(settings.getDefaultSessionPrice())
+                .showInactiveBirthdays(settings.getShowInactiveBirthdays())
                 .build();
     }
 }

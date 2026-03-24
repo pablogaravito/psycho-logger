@@ -152,6 +152,26 @@ export default function Settings() {
             </p>
           </div>
 
+          <div>
+            <label className="flex items-center gap-2 text-sm text-white cursor-pointer">
+              <input
+                type="checkbox"
+                checked={userForm.showInactiveBirthdays || false}
+                onChange={(e) =>
+                  setUserForm((prev) => ({
+                    ...prev,
+                    showInactiveBirthdays: e.target.checked,
+                  }))
+                }
+                className="accent-indigo-500"
+              />
+              Show inactive patient birthdays
+            </label>
+            <p className="text-gray-500 text-xs mt-1 ml-5">
+              Include inactive patients in the birthdays section
+            </p>
+          </div>
+
           <button
             type="submit"
             disabled={userMutation.isPending}

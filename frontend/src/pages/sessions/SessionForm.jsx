@@ -132,15 +132,27 @@ export default function SessionForm() {
         ? await api.put(`/sessions/${id}`, data.session)
         : await api.post("/sessions", data.session);
 
-      if (data.payment && !isEditing) {
-        await api.post("/payments", {
-          patientId: data.session.patientIds[0],
-          sessionId: sessionRes.data.id,
-          amount: data.payment.amount,
-          currency: data.payment.currency,
-          status: "PAID",
-          paidAt: new Date().toISOString(),
-        });
+      if (!isEditing) {
+        if (data.payment) {
+          // marked as paid — create PAID payment
+          await api.post("/payments", {
+            patientId: data.session.patientIds[0],
+            sessionId: sessionRes.data.id,
+            amount: data.payment.amount,
+            currency: data.payment.currency,
+            status: "PAID",
+            paidAt: new Date().toISOString(),
+          });
+        } else {
+          // not marked as paid — create PENDING payment
+          await api.post("/payments", {
+            patientId: data.session.patientIds[0],
+            sessionId: sessionRes.data.id,
+            amount: data.defaultAmount || 0,
+            currency: data.defaultCurrency || "SOL",
+            status: "PENDING",
+          });
+        }
       }
 
       return sessionRes;
@@ -174,6 +186,8 @@ export default function SessionForm() {
             currency: paymentCurrency,
           }
         : null,
+      defaultAmount: parseFloat(paymentAmount) || 0,
+      defaultCurrency: paymentCurrency,
     });
   };
 
