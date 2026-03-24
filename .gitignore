@@ -47,5 +47,8 @@ Thumbs.db
 *.iml
 .vscode/
 
+
+native-bin/
+tmp/
 backend/src/main/resources/application-local.yaml
 backend/src/main/resources/application-test.yaml
