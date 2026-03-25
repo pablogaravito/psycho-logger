@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import TranscribeButton from "../../components/TranscribeButton.jsx";
 import api from "../../api/axios";
 
 const SESSION_TYPES = ["INDIVIDUAL", "COUPLE", "FAMILY", "GROUP"];
@@ -353,9 +354,19 @@ export default function SessionForm() {
 
           {/* Content */}
           <div>
-            <label className="block text-sm text-gray-400 mb-1">
-              Session Content
-            </label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-sm text-gray-400">
+                Session Content
+              </label>
+              <TranscribeButton
+                onTranscribed={(text) =>
+                  setForm((prev) => ({
+                    ...prev,
+                    content: prev.content ? prev.content + "\n\n" + text : text,
+                  }))
+                }
+              />
+            </div>
             <textarea
               name="content"
               value={form.content}
