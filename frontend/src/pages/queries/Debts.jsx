@@ -10,6 +10,8 @@ export default function Debts() {
   const [expanded, setExpanded] = useState(null);
   const [editingPayment, setEditingPayment] = useState(null);
   const [editAmount, setEditAmount] = useState("");
+  const [writingOffPayment, setWritingOffPayment] = useState(null);
+  const [writeOffAmount, setWriteOffAmount] = useState("");
 
   const { data: debts, isLoading } = useQuery({
     queryKey: ["debts"],
@@ -54,9 +56,10 @@ export default function Debts() {
   });
 
   const writeOffMutation = useMutation({
-    mutationFn: (paymentId) =>
+    mutationFn: ({ paymentId, amount }) =>
       api.put(`/payments/${paymentId}`, {
         status: "WRITTEN_OFF",
+        amount: parseFloat(amount),
         paidAt: new Date().toISOString(),
       }),
     onSuccess: () => {
@@ -72,6 +75,7 @@ export default function Debts() {
         payments.map((p) =>
           api.put(`/payments/${p.paymentId}`, {
             status: "WRITTEN_OFF",
+            amount: parseFloat(p.amount) || 0,
             paidAt: new Date().toISOString(),
           }),
         ),
@@ -313,15 +317,50 @@ export default function Debts() {
                               >
                                 Paid
                               </button>
-                              <button
-                                onClick={() =>
-                                  writeOffMutation.mutate(payment.paymentId)
-                                }
-                                disabled={writeOffMutation.isPending}
-                                className="bg-red-900 hover:bg-red-800 text-red-400 text-xs px-2 py-1 rounded-lg"
-                              >
-                                Write Off
-                              </button>
+                              {writingOffPayment === payment.paymentId ? (
+                                <>
+                                  <input
+                                    type="number"
+                                    value={writeOffAmount}
+                                    onChange={(e) =>
+                                      setWriteOffAmount(e.target.value)
+                                    }
+                                    className="w-20 bg-gray-700 border border-red-500 text-white rounded px-2 py-1 text-xs focus:outline-none"
+                                    autoFocus
+                                  />
+                                  <button
+                                    onClick={() => {
+                                      writeOffMutation.mutate({
+                                        paymentId: payment.paymentId,
+                                        amount: writeOffAmount,
+                                      });
+                                      setWritingOffPayment(null);
+                                    }}
+                                    disabled={writeOffMutation.isPending}
+                                    className="bg-red-700 hover:bg-red-600 text-white text-xs px-2 py-1 rounded-lg"
+                                  >
+                                    ✓
+                                  </button>
+                                  <button
+                                    onClick={() => setWritingOffPayment(null)}
+                                    className="text-gray-400 text-xs px-1"
+                                  >
+                                    ✕
+                                  </button>
+                                </>
+                              ) : (
+                                <button
+                                  onClick={() => {
+                                    setWritingOffPayment(payment.paymentId);
+                                    setWriteOffAmount(
+                                      payment.amount?.toString() || "",
+                                    );
+                                  }}
+                                  className="bg-red-900 hover:bg-red-800 text-red-400 text-xs px-2 py-1 rounded-lg"
+                                >
+                                  Write Off
+                                </button>
+                              )}
                             </>
                           )}
                         </div>

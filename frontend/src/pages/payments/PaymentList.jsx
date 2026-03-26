@@ -44,14 +44,16 @@ export default function PaymentList() {
   });
 
   const writeOffMutation = useMutation({
-    mutationFn: (id) =>
+    mutationFn: ({ id, amount }) =>
       api.put(`/payments/${id}`, {
         status: "WRITTEN_OFF",
+        amount: parseFloat(amount),
         paidAt: new Date().toISOString(),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries(["payments"]);
       queryClient.invalidateQueries(["dashboard-stats"]);
+      setEditingId(null);
     },
   });
 
@@ -208,6 +210,13 @@ export default function PaymentList() {
                         <>
                           {editingId === payment.id ? (
                             <>
+                              <input
+                                type="number"
+                                value={editAmount}
+                                onChange={(e) => setEditAmount(e.target.value)}
+                                className="w-24 bg-gray-700 border border-indigo-500 text-white rounded px-2 py-1 text-sm focus:outline-none"
+                                autoFocus
+                              />
                               <button
                                 onClick={() =>
                                   markPaidMutation.mutate({
@@ -218,7 +227,19 @@ export default function PaymentList() {
                                 disabled={markPaidMutation.isPending}
                                 className="bg-green-700 hover:bg-green-600 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition"
                               >
-                                Confirm
+                                ✓ Paid
+                              </button>
+                              <button
+                                onClick={() =>
+                                  writeOffMutation.mutate({
+                                    id: payment.id,
+                                    amount: editAmount,
+                                  })
+                                }
+                                disabled={writeOffMutation.isPending}
+                                className="bg-red-700 hover:bg-red-600 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition"
+                              >
+                                ✓ Write Off
                               </button>
                               <button
                                 onClick={() => setEditingId(null)}
@@ -236,10 +257,7 @@ export default function PaymentList() {
                                 Mark Paid
                               </button>
                               <button
-                                onClick={() =>
-                                  writeOffMutation.mutate(payment.id)
-                                }
-                                disabled={writeOffMutation.isPending}
+                                onClick={() => startEditing(payment)}
                                 className="bg-red-900 hover:bg-red-800 text-red-400 text-xs font-medium px-3 py-1.5 rounded-lg transition"
                               >
                                 Write Off
