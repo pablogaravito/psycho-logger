@@ -7,6 +7,7 @@ export default function TranscribeButton({ onTranscribed }) {
   const [error, setError] = useState(null);
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
+  const pollIntervalRef = useRef(null);
 
   const startRecording = async () => {
     setError(null);
@@ -44,17 +45,41 @@ export default function TranscribeButton({ onTranscribed }) {
       const formData = new FormData();
       formData.append("audio", blob, "recording.webm");
 
+      // post audio — returns jobId immediately
       const res = await api.post("/transcription/transcribe", formData, {
         headers: { "Content-Type": "multipart/form-data" },
-        timeout: 120000, // 2 min timeout for long recordings
       });
 
-      onTranscribed(res.data.text);
+      const { jobId } = res.data;
+      startPolling(jobId);
     } catch {
-      setError("Transcription failed. Please try again.");
-    } finally {
+      setError("Failed to start transcription. Please try again.");
       setTranscribing(false);
     }
+  };
+
+  const startPolling = (jobId) => {
+    pollIntervalRef.current = setInterval(async () => {
+      try {
+        const res = await api.get(`/transcription/status/${jobId}`);
+        const { status, text, error: jobError } = res.data;
+
+        if (status === "DONE") {
+          clearInterval(pollIntervalRef.current);
+          setTranscribing(false);
+          onTranscribed(text);
+        } else if (status === "FAILED") {
+          clearInterval(pollIntervalRef.current);
+          setTranscribing(false);
+          setError(jobError || "Transcription failed");
+        }
+        // if PROCESSING — keep polling
+      } catch {
+        clearInterval(pollIntervalRef.current);
+        setTranscribing(false);
+        setError("Lost connection while transcribing");
+      }
+    }, 2000); // poll every 2 seconds
   };
 
   return (
