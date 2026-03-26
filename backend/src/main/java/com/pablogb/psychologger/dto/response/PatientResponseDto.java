@@ -32,4 +32,6 @@ public class PatientResponseDto {
     private String assignedTherapistName;
     private Integer assignedTherapistId;
     private Integer calendarColor;
+    private BigDecimal writtenOffAmount;
+    private LocalDateTime oldestWrittenOffDate;
 }

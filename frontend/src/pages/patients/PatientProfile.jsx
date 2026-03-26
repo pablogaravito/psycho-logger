@@ -106,13 +106,30 @@ export default function PatientProfile() {
           <div className="flex items-start justify-between">
             <div>
               <p className="text-red-400 font-semibold text-sm">
-                🚩 Outstanding Debt Flag
+                🚩 Outstanding Debt
               </p>
-              {patient.debtFlagNote && (
-                <p className="text-red-300 text-xs mt-1">
-                  {patient.debtFlagNote}
-                </p>
-              )}
+              <p className="text-red-300 text-sm mt-1">
+                {patient.writtenOffAmount != null ? (
+                  <>
+                    <span className="font-semibold">
+                      {patient.writtenOffAmount} SOL
+                    </span>
+                    {patient.oldestWrittenOffDate && (
+                      <span className="text-red-400 ml-1">
+                        · since{" "}
+                        {new Date(
+                          patient.oldestWrittenOffDate,
+                        ).toLocaleDateString("es-PE", {
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  patient.debtFlagNote
+                )}
+              </p>
             </div>
             {user?.isAdmin && (
               <button

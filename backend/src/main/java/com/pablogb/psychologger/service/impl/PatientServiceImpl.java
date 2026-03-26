@@ -3,14 +3,9 @@ package com.pablogb.psychologger.service.impl;
 import com.pablogb.psychologger.dto.request.PatientRequestDto;
 import com.pablogb.psychologger.dto.response.PatientResponseDto;
 import com.pablogb.psychologger.exception.ResourceNotFoundException;
-import com.pablogb.psychologger.model.entity.Organization;
-import com.pablogb.psychologger.model.entity.Patient;
-import com.pablogb.psychologger.model.entity.TherapistPatientAssignment;
-import com.pablogb.psychologger.model.entity.User;
-import com.pablogb.psychologger.repository.OrganizationRepository;
-import com.pablogb.psychologger.repository.PatientRepository;
-import com.pablogb.psychologger.repository.TherapistPatientAssignmentRepository;
-import com.pablogb.psychologger.repository.UserRepository;
+import com.pablogb.psychologger.model.entity.*;
+import com.pablogb.psychologger.model.enums.PaymentStatus;
+import com.pablogb.psychologger.repository.*;
 import com.pablogb.psychologger.security.SecurityUtils;
 import com.pablogb.psychologger.service.PatientService;
 import com.pablogb.psychologger.dto.response.BirthdayPatientDto;
@@ -18,9 +13,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +29,7 @@ public class PatientServiceImpl implements PatientService {
     private final UserRepository userRepository;
     private final TherapistPatientAssignmentRepository assignmentRepository;
     private final SecurityUtils securityUtils;
+    private final PaymentRepository paymentRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -334,6 +333,20 @@ public class PatientServiceImpl implements PatientService {
         String assignedTherapistName = null;
         Integer assignedTherapistId = null;
 
+        List<Payment> writtenOff = paymentRepository
+                .findByPatientIdAndStatus(patient.getId(), PaymentStatus.WRITTEN_OFF);
+
+        BigDecimal writtenOffAmount = writtenOff.stream()
+                .map(Payment::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        LocalDateTime oldestWrittenOffDate = writtenOff.stream()
+                .map(p -> p.getSession() != null
+                        ? p.getSession().getScheduledAt() : null)
+                .filter(Objects::nonNull)
+                .min(Comparator.naturalOrder())
+                .orElse(null);
+
         var activeAssignment = assignmentRepository
                 .findByPatientIdOrderByAssignedAtDesc(patient.getId())
                 .stream()
@@ -364,6 +377,9 @@ public class PatientServiceImpl implements PatientService {
                 .assignedTherapistName(assignedTherapistName)
                 .assignedTherapistId(assignedTherapistId)
                 .createdAt(patient.getCreatedAt())
+                .writtenOffAmount(writtenOffAmount.compareTo(BigDecimal.ZERO) > 0
+                        ? writtenOffAmount : null)
+                .oldestWrittenOffDate(oldestWrittenOffDate)
                 .build();
     }
 }

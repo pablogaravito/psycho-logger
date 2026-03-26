@@ -49,4 +49,6 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
             @Param("status") PaymentStatus status,
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end);
+
+    List<Payment> findByPatientIdAndStatus(Integer patientId, PaymentStatus status);
 }
