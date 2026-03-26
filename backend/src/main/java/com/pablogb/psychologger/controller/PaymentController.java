@@ -1,6 +1,7 @@
 package com.pablogb.psychologger.controller;
 
 import com.pablogb.psychologger.dto.request.PaymentRequestDto;
+import com.pablogb.psychologger.dto.request.PaymentUpdateDto;
 import com.pablogb.psychologger.dto.response.PatientDebtDto;
 import com.pablogb.psychologger.dto.response.PaymentResponseDto;
 import com.pablogb.psychologger.service.PaymentService;
@@ -37,7 +38,7 @@ public class PaymentController {
     @PutMapping("/{id}")
     public ResponseEntity<PaymentResponseDto> updatePayment(
             @PathVariable Integer id,
-            @Valid @RequestBody PaymentRequestDto request) {
+            @RequestBody PaymentUpdateDto request) {
         return ResponseEntity.ok(paymentService.updatePayment(id, request));
     }
 

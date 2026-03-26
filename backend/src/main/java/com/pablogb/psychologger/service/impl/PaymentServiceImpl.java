@@ -1,6 +1,7 @@
 package com.pablogb.psychologger.service.impl;
 
 import com.pablogb.psychologger.dto.request.PaymentRequestDto;
+import com.pablogb.psychologger.dto.request.PaymentUpdateDto;
 import com.pablogb.psychologger.dto.response.PatientDebtDto;
 import com.pablogb.psychologger.dto.response.PaymentResponseDto;
 import com.pablogb.psychologger.exception.ResourceNotFoundException;
@@ -118,45 +119,29 @@ public class PaymentServiceImpl implements PaymentService {
         return toResponseDto(paymentRepository.save(payment));
     }
 
-//    @Override
-//    @Transactional
-//    public PaymentResponseDto updatePayment(Integer id, PaymentRequestDto request) {
-//        Payment payment = paymentRepository.findById(id)
-//                .orElseThrow(() -> new ResourceNotFoundException("Payment not found with id: " + id));
-//
-//        payment.setAmount(request.getAmount());
-//        payment.setStatus(request.getStatus());
-//        payment.setPaymentMethod(request.getPaymentMethod());
-//        payment.setPaidAt(request.getPaidAt());
-//        payment.setNotes(request.getNotes());
-//
-//        return toResponseDto(paymentRepository.save(payment));
-//    }
-
     @Override
     @Transactional
-    public PaymentResponseDto updatePayment(Integer id, PaymentRequestDto request) {
+    public PaymentResponseDto updatePayment(Integer id, PaymentUpdateDto request) {
         Payment payment = paymentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Payment not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Payment not found with id: " + id));
 
         if (request.getAmount() != null)
             payment.setAmount(request.getAmount());
         if (request.getStatus() != null) {
             payment.setStatus(request.getStatus());
-            // auto flag patient when writing off
             if (request.getStatus() == PaymentStatus.WRITTEN_OFF) {
                 Patient patient = payment.getPatient();
                 patient.setHasDebtFlag(true);
-                patient.setDebtFlagNote("Unpaid session written off on " +
-                        LocalDate.now());
+                patient.setDebtFlagNote("Unpaid session written off on "
+                        + LocalDate.now());
                 patientRepository.save(patient);
             }
-            // auto clear flag when paying off a written off payment
             if (request.getStatus() == PaymentStatus.PAID) {
                 Patient patient = payment.getPatient();
                 boolean stillHasWrittenOff = paymentRepository
-                        .existsByPatientIdAndStatus(patient.getId(),
-                                PaymentStatus.WRITTEN_OFF);
+                        .existsByPatientIdAndStatus(
+                                patient.getId(), PaymentStatus.WRITTEN_OFF);
                 if (!stillHasWrittenOff) {
                     patient.setHasDebtFlag(false);
                     patientRepository.save(patient);
@@ -185,11 +170,6 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional(readOnly = true)
     public List<PatientDebtDto> getDebts() {
-//        Integer orgId = securityUtils.getCurrentOrgId();
-//
-//        // get all pending payments for this org
-//        List<Payment> pending = paymentRepository
-//                .findByPatientOrganizationIdAndStatus(orgId, PaymentStatus.PENDING);
 
         User currentUser = securityUtils.getCurrentUser();
 
