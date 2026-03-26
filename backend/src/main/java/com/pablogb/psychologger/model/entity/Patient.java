@@ -62,4 +62,7 @@ public class Patient extends BaseEntity {
 
     @Column(name = "handover_notes", columnDefinition = "TEXT")
     private String handoverNotes;
+
+    @Column(name = "calendar_color")
+    private Integer calendarColor = 7;
 }

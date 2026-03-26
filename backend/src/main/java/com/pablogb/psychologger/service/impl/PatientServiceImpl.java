@@ -116,6 +116,7 @@ public class PatientServiceImpl implements PatientService {
                 .defaultPrice(request.getDefaultPrice())
                 .hasDebtFlag(false)
                 .isActive(true)
+                .calendarColor(request.getCalendarColor() != null ? request.getCalendarColor() : 7)
                 .build();
 
         Patient saved = patientRepository.save(patient);
@@ -149,6 +150,9 @@ public class PatientServiceImpl implements PatientService {
 
         if (request.getIsActive() != null)
             patient.setIsActive(request.getIsActive());
+
+        if (request.getCalendarColor() != null)
+            patient.setCalendarColor(request.getCalendarColor());
 
         // only allow flag changes through explicit flag endpoint
         return toResponseDto(patientRepository.save(patient));
@@ -321,6 +325,7 @@ public class PatientServiceImpl implements PatientService {
                 .debtFlagNote(patient.getDebtFlagNote())
                 .isActive(patient.getIsActive())
                 .createdAt(patient.getCreatedAt())
+                .calendarColor(patient.getCalendarColor())
                 .build();
     }
 

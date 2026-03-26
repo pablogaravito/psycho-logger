@@ -31,4 +31,5 @@ public class PatientResponseDto {
     private String handoverNotes;
     private String assignedTherapistName;
     private Integer assignedTherapistId;
+    private Integer calendarColor;
 }

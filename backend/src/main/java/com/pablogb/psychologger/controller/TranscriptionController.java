@@ -2,8 +2,10 @@ package com.pablogb.psychologger.controller;
 
 import com.pablogb.psychologger.repository.OrgSettingsRepository;
 import com.pablogb.psychologger.security.SecurityUtils;
-import com.pablogb.psychologger.transcription.AudioConversionService;
-import com.pablogb.psychologger.transcription.WhisperCppService;
+import com.pablogb.psychologger.transcription.TranscriptionJob;
+import com.pablogb.psychologger.transcription.TranscriptionJobStore;
+import com.pablogb.psychologger.transcription.TranscriptionService;
+import com.pablogb.psychologger.model.entity.OrgSettings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,14 +16,15 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/transcription")
 @RequiredArgsConstructor
 public class TranscriptionController {
 
-    private final AudioConversionService audioConversionService;
-    private final WhisperCppService whisperCppService;
+    private final TranscriptionService transcriptionService;
+    private final TranscriptionJobStore jobStore;
     private final OrgSettingsRepository orgSettingsRepository;
     private final SecurityUtils securityUtils;
 
@@ -32,9 +35,10 @@ public class TranscriptionController {
         // get language from org settings
         String language = orgSettingsRepository
                 .findByOrganizationId(securityUtils.getCurrentOrgId())
-                .map(s -> s.getPreferredLanguage())
+                .map(OrgSettings::getPreferredLanguage)
                 .orElse("auto");
 
+        // save uploaded file
         File tempDir = new File("tmp").getAbsoluteFile();
         if (!tempDir.exists()) tempDir.mkdirs();
 
@@ -42,24 +46,52 @@ public class TranscriptionController {
                 "upload_" + System.currentTimeMillis() + "_"
                         + audioFile.getOriginalFilename());
 
-        // use Files.copy instead of transferTo — more reliable
         try (InputStream inputStream = audioFile.getInputStream()) {
             Files.copy(inputStream, tempInput.toPath(),
                     StandardCopyOption.REPLACE_EXISTING);
         }
 
-        try {
-            File wavFile = audioConversionService.convertToWav(tempInput);
-            String transcription = whisperCppService.transcribe(wavFile, language);
+        // create job and start async processing
+        String jobId = UUID.randomUUID().toString();
+        String userId = securityUtils.getCurrentUserId().toString();
 
-            Files.deleteIfExists(tempInput.toPath());
-            Files.deleteIfExists(wavFile.toPath());
+        TranscriptionJob job = new TranscriptionJob(jobId, userId);
+        jobStore.put(job);
 
-            return ResponseEntity.ok(Map.of("text", transcription));
+        // this returns immediately — processing happens on background thread
+        transcriptionService.processAsync(jobId, tempInput, language);
 
-        } catch (Exception e) {
-            Files.deleteIfExists(tempInput.toPath());
-            throw e;
+        return ResponseEntity.ok(Map.of("jobId", jobId));
+    }
+
+    @GetMapping("/status/{jobId}")
+    public ResponseEntity<?> getStatus(@PathVariable String jobId) {
+        TranscriptionJob job = jobStore.get(jobId);
+
+        if (job == null) {
+            return ResponseEntity.notFound().build();
         }
+
+        // security check — only the user who started the job can poll it
+        String currentUserId = securityUtils.getCurrentUserId().toString();
+        if (!job.getUserId().equals(currentUserId)) {
+            return ResponseEntity.status(403).build();
+        }
+
+        return switch (job.getStatus()) {
+            case PROCESSING -> ResponseEntity.ok(Map.of(
+                    "status", "PROCESSING"
+            ));
+            case DONE -> ResponseEntity.ok(Map.of(
+                    "status", "DONE",
+                    "text", job.getText()
+            ));
+            case FAILED -> ResponseEntity.ok(Map.of(
+                    "status", "FAILED",
+                    "error", job.getErrorMessage() != null
+                            ? job.getErrorMessage()
+                            : "Unknown error"
+            ));
+        };
     }
 }

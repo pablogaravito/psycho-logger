@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../../api/axios";
 import { useAuth } from "../../hooks/useAuth";
+import CalendarColorPicker from "../../components/CalendarColorPicker.jsx";
 
 const GENDER_OPTIONS = ["MALE", "FEMALE", "OTHER", "PREFER_NOT_TO_SAY"];
 
@@ -25,6 +26,7 @@ export default function PatientForm() {
     defaultPrice: "",
     handoverNotes: "",
     assignToMe: true,
+    calendarColor: 7,
   });
 
   const { data: patient } = useQuery({
@@ -48,6 +50,7 @@ export default function PatientForm() {
         handoverNotes: patient.handoverNotes || "",
         defaultPrice: patient.defaultPrice ?? "",
         assignToMe: true,
+        calendarColor: patient.calendarColor ?? 7,
       });
     }
   }, [patient]);
@@ -229,6 +232,16 @@ export default function PatientForm() {
               Overrides the global default price for this patient
             </p>
           </div>
+
+          <CalendarColorPicker
+            value={form.calendarColor}
+            onChange={(colorId) =>
+              setForm((prev) => ({
+                ...prev,
+                calendarColor: colorId,
+              }))
+            }
+          />
 
           {!isEditing && user?.isTherapist && (
             <div className="border-t border-gray-800 pt-4">

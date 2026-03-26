@@ -31,4 +31,5 @@ public class PatientRequestDto {
     private String debtFlagNote;
     private String handoverNotes;
     private Boolean assignToMe = true;
+    private Integer calendarColor;
 }

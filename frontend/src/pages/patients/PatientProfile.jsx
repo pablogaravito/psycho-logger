@@ -2,12 +2,15 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../../api/axios";
 import { useAuth } from "../../hooks/useAuth";
+import { useState } from "react";
+import ScheduleAppointmentModal from "../../components/ScheduleAppointmentModal.jsx";
 
 export default function PatientProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const [showSchedule, setShowSchedule] = useState(false);
 
   const { data: patient, isLoading: loadingPatient } = useQuery({
     queryKey: ["patient", id],
@@ -62,12 +65,20 @@ export default function PatientProfile() {
         </div>
         <div className="flex gap-2">
           {user?.isTherapist && (
-            <button
-              onClick={() => navigate(`/sessions/new?patientId=${id}`)}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-4 py-2 rounded-lg transition"
-            >
-              + New Session
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => navigate(`/sessions/new?patientId=${id}`)}
+                className="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-4 py-2 rounded-lg transition"
+              >
+                + New Session
+              </button>
+              <button
+                onClick={() => setShowSchedule(true)}
+                className="bg-gray-800 hover:bg-gray-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition"
+              >
+                📅 Schedule
+              </button>
+            </div>
           )}
           <button
             onClick={() => navigate(`/patients/${id}/edit`)}
@@ -280,6 +291,12 @@ export default function PatientProfile() {
           </div>
         )}
       </div>
+      {showSchedule && (
+        <ScheduleAppointmentModal
+          patient={patient}
+          onClose={() => setShowSchedule(false)}
+        />
+      )}
     </div>
   );
 }
