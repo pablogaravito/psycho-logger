@@ -4,12 +4,19 @@ import api from "../../api/axios";
 import { useAuth } from "../../hooks/useAuth";
 import { useState } from "react";
 import ScheduleAppointmentModal from "../../components/ScheduleAppointmentModal.jsx";
+import {
+  formatDateMedium,
+  formatDateLong,
+  formatTimestamp,
+  formatMonthYear,
+} from "../../utils/dateUtils";
 
 export default function PatientProfile() {
   const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user } = useAuth();
+  const { user, preferences } = useAuth();
+  const { dateFormat, uiLanguage } = preferences || {};
   const [showSchedule, setShowSchedule] = useState(false);
 
   const { data: patient, isLoading: loadingPatient } = useQuery({
@@ -116,13 +123,11 @@ export default function PatientProfile() {
                     </span>
                     {patient.oldestWrittenOffDate && (
                       <span className="text-red-400 ml-1">
-                        · since{" "}
-                        {new Date(
+                        · {uiLanguage === "es" ? "desde" : "since"}{" "}
+                        {formatMonthYear(
                           patient.oldestWrittenOffDate,
-                        ).toLocaleDateString("es-PE", {
-                          month: "long",
-                          year: "numeric",
-                        })}
+                          uiLanguage,
+                        )}
                       </span>
                     )}
                   </>
@@ -164,7 +169,11 @@ export default function PatientProfile() {
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <span className="text-gray-400">Date of Birth</span>
-            <p className="text-white mt-0.5">{patient?.dateOfBirth || "—"}</p>
+            <p className="text-white mt-0.5">
+              {patient?.dateOfBirth
+                ? formatDateLong(patient.dateOfBirth, uiLanguage)
+                : "—"}
+            </p>
           </div>
           <div>
             <span className="text-gray-400">Gender</span>
@@ -221,21 +230,16 @@ export default function PatientProfile() {
                 >
                   <div>
                     <p className="text-white text-sm font-medium">
-                      {new Date(session.scheduledAt).toLocaleDateString(
-                        "es-PE",
-                        {
-                          weekday: "long",
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        },
+                      {session?.mainThemes || "--"}
+                    </p>
+
+                    <p className="text-gray-400 text-xs mt-0.5 truncate max-w-md">
+                      {formatDateMedium(
+                        session.scheduledAt,
+                        dateFormat,
+                        uiLanguage,
                       )}
                     </p>
-                    {session.mainThemes && (
-                      <p className="text-gray-400 text-xs mt-0.5 truncate max-w-md">
-                        {session.mainThemes}
-                      </p>
-                    )}
                   </div>
                   <div className="flex items-center gap-3">
                     {session.isRelevant && (

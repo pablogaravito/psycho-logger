@@ -2,6 +2,8 @@ import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/axios";
+import { formatDateShort } from "../../utils/dateUtils";
+import { useAuth } from "../../hooks/useAuth";
 
 const STATUS_COLORS = {
   PAID: "bg-green-900 text-green-400",
@@ -17,6 +19,8 @@ export default function PaymentList() {
   const [filter, setFilter] = useState("PENDING");
   const [editingId, setEditingId] = useState(null);
   const [editAmount, setEditAmount] = useState("");
+  const { preferences } = useAuth();
+  const { dateFormat } = preferences || {};
 
   const { data: payments, isLoading } = useQuery({
     queryKey: ["payments"],
@@ -199,7 +203,7 @@ export default function PaymentList() {
                   {/* Paid at */}
                   <td className="px-6 py-4 text-gray-400 text-xs">
                     {payment.paidAt
-                      ? new Date(payment.paidAt).toLocaleDateString()
+                      ? formatDateShort(payment.paidAt, dateFormat)
                       : "—"}
                   </td>
 

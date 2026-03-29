@@ -34,8 +34,12 @@ public class OrgSettingsServiceImpl implements OrgSettingsService {
 
         if (request.getDefaultCurrency() != null)
             settings.setDefaultCurrency(request.getDefaultCurrency());
-        if (request.getPreferredLanguage() != null)
-            settings.setPreferredLanguage(request.getPreferredLanguage());
+        if (request.getTranscriptionLanguage() != null)
+            settings.setTranscriptionLanguage(request.getTranscriptionLanguage());
+        if (request.getUiLanguage() != null)
+            settings.setUiLanguage(request.getUiLanguage());
+        if (request.getDateFormat() != null)
+            settings.setDateFormat(request.getDateFormat());
 
         settings.setUpdatedBy(currentUser);
         return toResponseDto(orgSettingsRepository.save(settings));
@@ -47,8 +51,10 @@ public class OrgSettingsServiceImpl implements OrgSettingsService {
                 .orElseGet(() -> orgSettingsRepository.save(
                         OrgSettings.builder()
                                 .organization(securityUtils.getCurrentUser().getOrganization())
-                                .defaultCurrency("USD")
-                                .preferredLanguage("en")
+                                .defaultCurrency("SOL")
+                                .transcriptionLanguage("es")
+                                .uiLanguage("es")
+                                .dateFormat("DD/MM/YYYY")
                                 .build()
                 ));
     }
@@ -60,7 +66,9 @@ public class OrgSettingsServiceImpl implements OrgSettingsService {
         return OrgSettingsResponseDto.builder()
                 .id(settings.getId())
                 .defaultCurrency(settings.getDefaultCurrency())
-                .preferredLanguage(settings.getPreferredLanguage())
+                .transcriptionLanguage(settings.getTranscriptionLanguage())
+                .uiLanguage(settings.getUiLanguage())
+                .dateFormat(settings.getDateFormat())
                 .updatedByName(updatedByName)
                 .build();
     }

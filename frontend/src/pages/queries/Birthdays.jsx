@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/axios";
+import { formatDayMonth } from "../../utils/dateUtils";
+import { useAuth } from "../../hooks/useAuth";
 
 function getDaysLabel(daysUntil) {
   if (daysUntil === 0) return { label: "Today! 🎂", color: "text-yellow-400" };
@@ -108,6 +110,8 @@ export default function Birthdays() {
 
 function BirthdayCard({ birthday, navigate }) {
   const { label, color } = getDaysLabel(birthday.daysUntil);
+  const { preferences } = useAuth();
+  const { uiLanguage } = preferences || {};
 
   return (
     <div
@@ -133,11 +137,8 @@ function BirthdayCard({ birthday, navigate }) {
           )}
         </p>
         <p className="text-gray-400 text-xs mt-0.5">
-          {new Date(birthday.dateOfBirth).toLocaleDateString("es-PE", {
-            month: "long",
-            day: "numeric",
-          })}{" "}
-          · Turns {birthday.age}
+          {formatDayMonth(birthday.dateOfBirth, uiLanguage)} · Turns{" "}
+          {birthday.age}
         </p>
       </div>
       <span className={`text-sm font-medium ${color}`}>{label}</span>

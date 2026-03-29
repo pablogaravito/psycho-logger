@@ -100,7 +100,8 @@ public class AuthServiceImpl implements AuthService {
         OrgSettings orgSettings = OrgSettings.builder()
                 .organization(org)
                 .defaultCurrency("USD")
-                .preferredLanguage("en")
+                .uiLanguage("en")
+                .transcriptionLanguage("en")
                 .build();
         orgSettingsRepository.save(orgSettings);
 
@@ -113,6 +114,7 @@ public class AuthServiceImpl implements AuthService {
                 .user(user)
                 .defaultSessionDuration(50)
                 .showInactiveBirthdays(false)
+                .timeFormat("24h")
                 .build();
         userSettingsRepository.save(settings);
     }

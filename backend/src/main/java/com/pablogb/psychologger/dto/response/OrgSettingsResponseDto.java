@@ -10,6 +10,8 @@ import lombok.*;
 public class OrgSettingsResponseDto {
     private Integer id;
     private String defaultCurrency;
-    private String preferredLanguage;
     private String updatedByName;
+    private String transcriptionLanguage;
+    private String uiLanguage;
+    private String dateFormat;
 }

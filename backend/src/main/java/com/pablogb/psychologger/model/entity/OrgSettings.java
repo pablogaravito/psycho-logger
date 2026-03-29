@@ -24,10 +24,16 @@ public class OrgSettings extends BaseEntity {
     @Column(name = "default_currency", length = 10)
     private String defaultCurrency = "USD";
 
-    @Column(name = "preferred_language", length = 10)
-    private String preferredLanguage = "en";
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "updated_by")
     private User updatedBy;
+
+    @Column(name = "transcription_language", length = 10)
+    private String transcriptionLanguage = "es";
+
+    @Column(name = "ui_language", length = 10)
+    private String uiLanguage = "es";
+
+    @Column(name = "date_format", length = 20)
+    private String dateFormat = "DD/MM/YYYY";
 }

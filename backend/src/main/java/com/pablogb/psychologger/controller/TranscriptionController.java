@@ -2,6 +2,7 @@ package com.pablogb.psychologger.controller;
 
 import com.pablogb.psychologger.repository.OrgSettingsRepository;
 import com.pablogb.psychologger.security.SecurityUtils;
+import com.pablogb.psychologger.service.UserPreferencesService;
 import com.pablogb.psychologger.transcription.TranscriptionJob;
 import com.pablogb.psychologger.transcription.TranscriptionJobStore;
 import com.pablogb.psychologger.transcription.TranscriptionService;
@@ -25,7 +26,7 @@ public class TranscriptionController {
 
     private final TranscriptionService transcriptionService;
     private final TranscriptionJobStore jobStore;
-    private final OrgSettingsRepository orgSettingsRepository;
+    private final UserPreferencesService userPreferencesService;
     private final SecurityUtils securityUtils;
 
     @PostMapping("/transcribe")
@@ -33,10 +34,12 @@ public class TranscriptionController {
             @RequestParam("audio") MultipartFile audioFile) throws Exception {
 
         // get language from org settings
-        String language = orgSettingsRepository
-                .findByOrganizationId(securityUtils.getCurrentOrgId())
-                .map(OrgSettings::getPreferredLanguage)
-                .orElse("auto");
+//        String language = orgSettingsRepository
+//                .findByOrganizationId(securityUtils.getCurrentOrgId())
+//                .map(OrgSettings::getPreferredLanguage)
+//                .orElse("auto");
+
+        String language = userPreferencesService.getEffectiveTranscriptionLanguage();
 
         // save uploaded file
         File tempDir = new File("tmp").getAbsoluteFile();

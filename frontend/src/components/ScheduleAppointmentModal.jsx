@@ -2,6 +2,8 @@ import { useState } from "react";
 import { GOOGLE_COLORS } from "./CalendarColorPicker";
 import { useQuery } from "@tanstack/react-query";
 import api from "../api/axios";
+import { formatDateShort } from "../utils/dateUtils";
+import { useAuth } from "../hooks/useAuth";
 
 export default function ScheduleAppointmentModal({ patient, onClose }) {
   const today = new Date();
@@ -11,6 +13,8 @@ export default function ScheduleAppointmentModal({ patient, onClose }) {
   const [date, setDate] = useState(defaultDate);
   const [time, setTime] = useState(defaultTime);
   const [duration, setDuration] = useState(50);
+  const { preferences } = useAuth();
+  const { dateFormat } = preferences || {};
 
   const { data: userSettings } = useQuery({
     queryKey: ["user-settings"],
@@ -179,13 +183,7 @@ export default function ScheduleAppointmentModal({ patient, onClose }) {
               </p>
             </div>
             <p className="text-gray-400 mt-1 ml-5">
-              {new Date(`${date}T${time}`).toLocaleDateString("es-PE", {
-                weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}{" "}
-              · {time} · {duration} min
+              {formatDateShort(date, dateFormat)} · {time} · {duration} min
             </p>
           </div>
         </div>

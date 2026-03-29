@@ -55,6 +55,14 @@ public class UserSettingsServiceImpl implements UserSettingsService {
             settings.setDefaultSessionPrice(request.getDefaultSessionPrice());
         if (request.getShowInactiveBirthdays() != null)
             settings.setShowInactiveBirthdays(request.getShowInactiveBirthdays());
+        if (request.getTranscriptionLanguage() != null)
+            settings.setTranscriptionLanguage(request.getTranscriptionLanguage().isBlank() ? null : request.getTranscriptionLanguage());
+        if (request.getUiLanguage() != null)
+            settings.setUiLanguage(request.getUiLanguage().isBlank() ? null : request.getUiLanguage());
+        if (request.getDateFormat() != null)
+            settings.setDateFormat(request.getDateFormat().isBlank() ? null : request.getDateFormat());
+        if (request.getTimeFormat() != null)
+            settings.setTimeFormat(request.getTimeFormat());
 
         return toResponseDto(userSettingsRepository.save(settings));
     }
@@ -84,17 +92,6 @@ public class UserSettingsServiceImpl implements UserSettingsService {
                 .build();
     }
 
-//    private UserSettings getOrCreate() {
-//        User currentUser = securityUtils.getCurrentUser();
-//        return userSettingsRepository.findByUserId(currentUser.getId())
-//                .orElseGet(() -> userSettingsRepository.save(
-//                        UserSettings.builder()
-//                                .user(currentUser)
-//                                .defaultSessionDuration(50)
-//                                .build()
-//                ));
-//    }
-
     private UserSettings getUserSettingsEntity() {
         User currentUser = securityUtils.getCurrentUser();
         return userSettingsRepository.findByUserId(currentUser.getId())
@@ -108,6 +105,10 @@ public class UserSettingsServiceImpl implements UserSettingsService {
                 .defaultSessionDuration(settings.getDefaultSessionDuration())
                 .defaultSessionPrice(settings.getDefaultSessionPrice())
                 .showInactiveBirthdays(settings.getShowInactiveBirthdays())
+                .transcriptionLanguage(settings.getTranscriptionLanguage())
+                .uiLanguage(settings.getUiLanguage())
+                .dateFormat(settings.getDateFormat())
+                .timeFormat(settings.getTimeFormat())
                 .build();
     }
 }

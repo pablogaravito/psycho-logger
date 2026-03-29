@@ -1,4 +1,4 @@
-package com.pablogb.psychologger.dto.request;
+package com.pablogb.psychologger.dto.response;
 
 import lombok.*;
 
@@ -7,9 +7,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OrgSettingsRequestDto {
-    private String defaultCurrency;
+public class EffectivePreferencesDto {
     private String transcriptionLanguage;
     private String uiLanguage;
     private String dateFormat;
+    private String timeFormat;
 }
