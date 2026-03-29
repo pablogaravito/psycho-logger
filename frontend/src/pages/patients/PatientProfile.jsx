@@ -7,8 +7,8 @@ import ScheduleAppointmentModal from "../../components/ScheduleAppointmentModal.
 import {
   formatDateMedium,
   formatDateLong,
-  formatTimestamp,
   formatMonthYear,
+  formatDateShort,
 } from "../../utils/dateUtils";
 
 export default function PatientProfile() {
@@ -292,7 +292,7 @@ export default function PatientProfile() {
                   </p>
                   {payment.paidAt && (
                     <p className="text-gray-400 text-xs mt-0.5">
-                      {new Date(payment.paidAt).toLocaleDateString()}
+                      {formatDateShort(payment.paidAt, dateFormat)}
                     </p>
                   )}
                 </div>

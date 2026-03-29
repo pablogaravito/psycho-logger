@@ -2,10 +2,14 @@ import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/axios";
+import { formatDateMedium } from "../../utils/dateUtils";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function SessionList() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
+  const { preferences } = useAuth();
+  const { dateFormat, uiLanguage } = preferences || {};
 
   const { data: sessions, isLoading } = useQuery({
     queryKey: ["sessions"],
@@ -82,12 +86,11 @@ export default function SessionList() {
                 onClick={() => navigate(`/sessions/${session.id}`)}
               >
                 <td className="px-6 py-4 text-white whitespace-nowrap">
-                  {new Date(session.scheduledAt).toLocaleDateString("es-PE", {
-                    weekday: "short",
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}
+                  {formatDateMedium(
+                    session.scheduledAt,
+                    dateFormat,
+                    uiLanguage,
+                  )}
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex flex-col gap-1">
