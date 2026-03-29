@@ -30,4 +30,16 @@ public class UserSettings extends BaseEntity {
 
     @Column(name = "show_inactive_birthdays")
     private Boolean showInactiveBirthdays = false;
+
+    @Column(name = "transcription_language", length = 10)
+    private String transcriptionLanguage;
+
+    @Column(name = "ui_language", length = 10)
+    private String uiLanguage;
+
+    @Column(name = "date_format", length = 20)
+    private String dateFormat;
+
+    @Column(name = "time_format", length = 5)
+    private String timeFormat = "24h";
 }

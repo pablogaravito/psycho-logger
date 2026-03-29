@@ -13,4 +13,8 @@ public class UserSettingsResponseDto {
     private Integer defaultSessionDuration;
     private BigDecimal defaultSessionPrice;
     private Boolean showInactiveBirthdays;
+    private String transcriptionLanguage;
+    private String uiLanguage;
+    private String dateFormat;
+    private String timeFormat;
 }

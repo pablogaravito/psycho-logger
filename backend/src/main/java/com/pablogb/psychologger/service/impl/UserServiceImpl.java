@@ -151,6 +151,7 @@ public class UserServiceImpl implements UserService {
                 .user(user)
                 .defaultSessionDuration(50)
                 .showInactiveBirthdays(false)
+                .timeFormat("24h")
                 .build();
         userSettingsRepository.save(settings);
     }

@@ -2,6 +2,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../../api/axios";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { formatTimestamp, formatDateLong } from "../../utils/dateUtils";
+import { useAuth } from "../../hooks/useAuth";
 
 const STATUS_COLORS = {
   PAID: "bg-green-900 text-green-400",
@@ -14,6 +16,8 @@ const STATUS_COLORS = {
 export default function SessionDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { preferences } = useAuth();
+  const { dateFormat, timeFormat, uiLanguage } = preferences || {};
 
   const { data: session, isLoading } = useQuery({
     queryKey: ["session", id],
@@ -60,12 +64,7 @@ export default function SessionDetail() {
       <div className="flex items-start justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-white">
-            {new Date(session?.scheduledAt).toLocaleDateString("es-PE", {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
+            {formatDateLong(session?.scheduledAt, uiLanguage)}
           </h1>
           <div className="flex items-center gap-2 mt-2">
             <span
@@ -256,11 +255,12 @@ export default function SessionDetail() {
       <div className="text-xs text-gray-600 mt-4">
         Created:{" "}
         {session?.createdAt
-          ? new Date(session.createdAt).toLocaleString()
+          ? formatTimestamp(session.createdAt, dateFormat, timeFormat)
           : "—"}
         {session?.updatedAt && (
           <span className="ml-4">
-            Updated: {new Date(session.updatedAt).toLocaleString()}
+            Updated:{" "}
+            {formatTimestamp(session.updatedAt, dateFormat, timeFormat)}
           </span>
         )}
       </div>

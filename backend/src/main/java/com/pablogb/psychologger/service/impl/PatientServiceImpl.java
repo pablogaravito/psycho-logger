@@ -35,16 +35,36 @@ public class PatientServiceImpl implements PatientService {
     @Transactional(readOnly = true)
     public List<PatientResponseDto> getAllPatients() {
         User currentUser = securityUtils.getCurrentUser();
+        Integer orgId = currentUser.getOrganization().getId();
 
-        if (currentUser.getIsAdmin()) {
-            // admin sees all org patients but basic info only
+        if (currentUser.getIsAdmin() && currentUser.getIsTherapist()) {
+            // admin+therapist sees ALL org patients
+            // their own assigned patients get full info
+            // other patients get basic info
+            List<Integer> assignedPatientIds = assignmentRepository
+                    .findByTherapistIdAndUnassignedAtIsNull(currentUser.getId())
+                    .stream()
+                    .map(a -> a.getPatient().getId())
+                    .toList();
+
             return patientRepository
-                    .findByOrganizationId(currentUser.getOrganization().getId())
+                    .findByOrganizationId(orgId)
+                    .stream()
+                    .map(p -> assignedPatientIds.contains(p.getId())
+                            ? toResponseDto(p)
+                            : toBasicResponseDto(p))
+                    .toList();
+
+        } else if (currentUser.getIsAdmin()) {
+            // pure admin sees all but basic info only
+            return patientRepository
+                    .findByOrganizationId(orgId)
                     .stream()
                     .map(this::toBasicResponseDto)
                     .toList();
+
         } else {
-            // therapist sees only their assigned patients with full info
+            // pure therapist sees only assigned patients with full info
             return assignmentRepository
                     .findByTherapistIdAndUnassignedAtIsNull(currentUser.getId())
                     .stream()
@@ -305,7 +325,20 @@ public class PatientServiceImpl implements PatientService {
                             .build();
                 })
                 .filter(java.util.Objects::nonNull)
-                .sorted(java.util.Comparator.comparingInt(BirthdayPatientDto::getDaysUntil))
+                //.sorted(java.util.Comparator.comparingInt(BirthdayPatientDto::getDaysUntil))
+                .sorted((a, b) -> {
+                    int daysA = a.getDaysUntil();
+                    int daysB = b.getDaysUntil();
+
+                    // both past — more recent first (less negative = closer to today)
+                    if (daysA < 0 && daysB < 0) return Integer.compare(daysB, daysA);
+
+                    // both future or today — sooner first
+                    if (daysA >= 0 && daysB >= 0) return Integer.compare(daysA, daysB);
+
+                    // today/future always comes before past
+                    return daysA >= 0 ? -1 : 1;
+                })
                 .toList();
     }
 
@@ -380,6 +413,7 @@ public class PatientServiceImpl implements PatientService {
                 .writtenOffAmount(writtenOffAmount.compareTo(BigDecimal.ZERO) > 0
                         ? writtenOffAmount : null)
                 .oldestWrittenOffDate(oldestWrittenOffDate)
+                .calendarColor(patient.getCalendarColor())
                 .build();
     }
 }
