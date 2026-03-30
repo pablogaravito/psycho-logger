@@ -9,6 +9,7 @@ import {
   formatDateLong,
   formatMonthYear,
   formatDateShort,
+  formatAge,
 } from "../../utils/dateUtils";
 
 export default function PatientProfile() {
@@ -170,9 +171,16 @@ export default function PatientProfile() {
           <div>
             <span className="text-gray-400">Date of Birth</span>
             <p className="text-white mt-0.5">
-              {patient?.dateOfBirth
-                ? formatDateLong(patient.dateOfBirth, uiLanguage)
-                : "—"}
+              {patient?.dateOfBirth ? (
+                <>
+                  {formatDateLong(patient.dateOfBirth, uiLanguage)}
+                  <span className="text-gray-400 text-sm ml-2">
+                    ({formatAge(patient.dateOfBirth, uiLanguage)})
+                  </span>
+                </>
+              ) : (
+                "—"
+              )}
             </p>
           </div>
           <div>

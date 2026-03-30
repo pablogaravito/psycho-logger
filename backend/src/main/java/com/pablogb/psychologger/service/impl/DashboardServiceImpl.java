@@ -3,6 +3,7 @@ package com.pablogb.psychologger.service.impl;
 import com.pablogb.psychologger.dto.response.MonthlySnapshotDto;
 import com.pablogb.psychologger.dto.response.StatsResponseDto;
 import com.pablogb.psychologger.model.entity.User;
+import com.pablogb.psychologger.model.entity.UserSettings;
 import com.pablogb.psychologger.model.enums.PaymentStatus;
 import com.pablogb.psychologger.repository.*;
 import com.pablogb.psychologger.security.SecurityUtils;
@@ -27,32 +28,7 @@ public class DashboardServiceImpl implements DashboardService {
     private final SecurityUtils securityUtils;
     private final PatientService patientService;
     private final TherapistPatientAssignmentRepository assignmentRepository;
-
-//    @Override
-//    @Transactional(readOnly = true)
-//    public StatsResponseDto getStats() {
-//        Integer orgId = securityUtils.getCurrentOrgId();
-//        LocalDateTime now = LocalDateTime.now();
-//        LocalDateTime startOfMonth = now.withDayOfMonth(1).withHour(0).withMinute(0);
-//        LocalDateTime sevenDaysFromNow = now.plusDays(7);
-//
-//        return StatsResponseDto.builder()
-//                .activePatients(patientRepository.countByOrganizationIdAndIsActiveTrue(orgId))
-//                .sessionsThisMonth(sessionRepository.countByOrganizationIdAndScheduledAtBetween(orgId, startOfMonth, now))
-//                .pendingPayments(paymentRepository.countByPatientOrganizationIdAndStatus (orgId, PaymentStatus.PENDING))
-//                .upcomingSessions(sessionRepository.countByOrganizationIdAndScheduledAtBetween(orgId, now, sevenDaysFromNow))
-//                .collectedThisMonth(paymentRepository
-//                        .sumAmountByUserIdAndStatusAndPaidAtBetween(
-//                                securityUtils.getCurrentUserId(),
-//                                PaymentStatus.PAID,
-//                                startOfMonth,
-//                                now))
-//                .birthdaysThisMonth(patientService.getUpcomingBirthdays(false)
-//                        .stream()
-//                        .filter(b -> b.getDaysUntil() >= 0 && b.getDaysUntil() <= 7)
-//                        .count())
-//                .build();
-//    }
+    private final UserSettingsRepository userSettingsRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -104,8 +80,13 @@ public class DashboardServiceImpl implements DashboardService {
                             userId, PaymentStatus.PENDING);
         }
 
+        boolean includeInactive = userSettingsRepository
+                .findByUserId(securityUtils.getCurrentUserId())
+                .map(UserSettings::getShowInactiveBirthdays)
+                .orElse(false);
+
         long birthdaysThisWeek = patientService
-                .getUpcomingBirthdays(false)
+                .getUpcomingBirthdays(includeInactive)
                 .stream()
                 .filter(b -> b.getDaysUntil() >= 0 && b.getDaysUntil() <= 7)
                 .count();

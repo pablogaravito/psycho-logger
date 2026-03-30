@@ -62,6 +62,7 @@ export default function PatientForm() {
         : api.post("/patients", data),
     onSuccess: () => {
       queryClient.invalidateQueries(["patients"]);
+      queryClient.invalidateQueries(["dashboard-stats"]);
       navigate("/patients");
     },
   });
