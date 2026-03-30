@@ -127,10 +127,11 @@ export default function Dashboard() {
           color="text-yellow-400"
         />
         <StatCard
-          title="Birthdays This Month"
+          title="Birthdays This Week" // ← was "Birthdays This Month"
           value={stats?.birthdaysThisMonth}
           icon="🎂"
           color="text-pink-400"
+          subtitle="Next 7 days"
         />
       </div>
 
