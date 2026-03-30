@@ -2,15 +2,28 @@ import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/axios";
+import { calculateAge } from "../../utils/dateUtils";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function PatientList() {
   const navigate = useNavigate();
   const [showInactive, setShowInactive] = useState(false);
+  const { user } = useAuth();
 
   const { data: patients, isLoading } = useQuery({
     queryKey: ["patients"],
     queryFn: () => api.get("/patients").then((r) => r.data),
   });
+
+  const { data: users } = useQuery({
+    queryKey: ["users"],
+    queryFn: () => api.get("/users").then((r) => r.data),
+    enabled: user?.isAdmin, // only fetch if admin, therapists don't need this
+  });
+
+  const activeTherapists =
+    users?.filter((u) => u.isTherapist && u.isActive) || [];
+  const showTherapistColumn = user?.isAdmin && activeTherapists.length > 1;
 
   const filtered = useMemo(() => {
     if (!patients) return [];
@@ -66,7 +79,7 @@ export default function PatientList() {
                 Short Name
               </th>
               <th className="text-left text-gray-400 font-medium px-6 py-3">
-                Date of Birth
+                Age
               </th>
               <th className="text-left text-gray-400 font-medium px-6 py-3">
                 Gender
@@ -74,9 +87,11 @@ export default function PatientList() {
               <th className="text-left text-gray-400 font-medium px-6 py-3">
                 Status
               </th>
-              <th className="text-left text-gray-400 font-medium px-6 py-3">
-                Therapist
-              </th>
+              {showTherapistColumn && (
+                <th className="text-left text-gray-400 font-medium px-6 py-3">
+                  Therapist
+                </th>
+              )}
               <th className="px-6 py-3"></th>
             </tr>
           </thead>
@@ -105,10 +120,18 @@ export default function PatientList() {
                   {patient.shortName || "—"}
                 </td>
                 <td className="px-6 py-4 text-gray-400">
-                  {patient.dateOfBirth || "—"}
+                  {patient.dateOfBirth
+                    ? calculateAge(patient.dateOfBirth)
+                    : "—"}
                 </td>
                 <td className="px-6 py-4 text-gray-400">
-                  {patient.gender || "—"}
+                  {patient?.gender
+                    ? patient.gender === "FEMALE"
+                      ? "F"
+                      : patient.gender === "MALE"
+                        ? "M"
+                        : "?"
+                    : "—"}
                 </td>
                 <td className="px-6 py-4">
                   <span
@@ -121,11 +144,13 @@ export default function PatientList() {
                     {patient.isActive ? "Active" : "Inactive"}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-gray-400 text-sm">
-                  {patient.assignedTherapistName || (
-                    <span className="text-gray-600">Unassigned</span>
-                  )}
-                </td>
+                {showTherapistColumn && (
+                  <td className="px-6 py-4 text-gray-400 text-sm">
+                    {patient.assignedTherapistName || (
+                      <span className="text-gray-600">Unassigned</span>
+                    )}
+                  </td>
+                )}
                 <td className="px-6 py-4 text-right">
                   <button
                     onClick={(e) => {

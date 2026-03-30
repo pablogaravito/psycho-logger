@@ -17,7 +17,9 @@ api.interceptors.request.use((config) => {
         window.location.href = "/login";
         return Promise.reject(new Error("Token expired"));
       }
-    } catch (e) {}
+    } catch (e) {
+      console.warn("Invalid token:", e);
+    }
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
