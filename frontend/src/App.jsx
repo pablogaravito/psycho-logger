@@ -50,6 +50,7 @@ export default function App() {
         <Route path="sessions/:id/edit" element={<SessionForm />} />
         <Route path="settings" element={<Settings />} />
         <Route path="admin/team" element={<TeamManagement />} />
+        <Route path="admin/audit" element={<AuditLog />} />
       </Route>
     </Routes>
   );
