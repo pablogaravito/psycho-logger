@@ -17,7 +17,10 @@ export default function Sidebar() {
     { name: "Settings", path: "/settings", icon: "⚙️" },
   ];
 
-  const adminNavigation = [{ name: "Team", path: "/admin/team", icon: "👥" }];
+  const adminNavigation = [
+    { name: "Team", path: "/admin/team", icon: "👥" },
+    { name: "Audit Log", path: "/admin/audit", icon: "🔍" },
+  ];
 
   return (
     <div className="w-64 bg-gray-900 border-r border-gray-800 flex flex-col h-screen fixed left-0 top-0">
