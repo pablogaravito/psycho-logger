@@ -6,6 +6,7 @@ import com.pablogb.psychologger.dto.response.PatientDebtDto;
 import com.pablogb.psychologger.dto.response.PaymentResponseDto;
 import com.pablogb.psychologger.exception.ResourceNotFoundException;
 import com.pablogb.psychologger.model.entity.*;
+import com.pablogb.psychologger.model.enums.AuditAction;
 import com.pablogb.psychologger.repository.*;
 import com.pablogb.psychologger.security.SecurityUtils;
 import com.pablogb.psychologger.service.AuditService;
@@ -118,7 +119,9 @@ public class PaymentServiceImpl implements PaymentService {
                 .notes(request.getNotes())
                 .build();
 
-        return toResponseDto(paymentRepository.save(payment));
+        Payment savedPayment = paymentRepository.save(payment);
+        auditService.log(AuditAction.CREATE, "Payment", savedPayment.getId());
+        return toResponseDto(savedPayment);
     }
 
     @Override
@@ -128,8 +131,10 @@ public class PaymentServiceImpl implements PaymentService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Payment not found with id: " + id));
 
+        // apply changes first
         if (request.getAmount() != null)
             payment.setAmount(request.getAmount());
+
         if (request.getStatus() != null) {
             payment.setStatus(request.getStatus());
             if (request.getStatus() == PaymentStatus.WRITTEN_OFF) {
@@ -150,6 +155,7 @@ public class PaymentServiceImpl implements PaymentService {
                 }
             }
         }
+
         if (request.getPaymentMethod() != null)
             payment.setPaymentMethod(request.getPaymentMethod());
         if (request.getPaidAt() != null)
@@ -157,7 +163,28 @@ public class PaymentServiceImpl implements PaymentService {
         if (request.getNotes() != null)
             payment.setNotes(request.getNotes());
 
-        return toResponseDto(paymentRepository.save(payment));
+        // save
+        Payment saved = paymentRepository.save(payment);
+
+        // log after save
+        if (request.getStatus() != null) {
+            if (request.getStatus() == PaymentStatus.PAID) {
+                auditService.log(AuditAction.MARK_PAID, "Payment", id,
+                        "Amount: " + saved.getAmount() + " " + saved.getCurrency());
+            } else if (request.getStatus() == PaymentStatus.WRITTEN_OFF) {
+                auditService.log(AuditAction.WRITE_OFF, "Payment", id,
+                        "Amount: " + saved.getAmount() + " " + saved.getCurrency());
+            } else if (request.getStatus() == PaymentStatus.PENDING) {
+                auditService.log(AuditAction.REACTIVATE, "Payment", id);
+            } else {
+                auditService.log(AuditAction.UPDATE, "Payment", id);
+            }
+        } else {
+            // status didn't change, just a general update
+            auditService.log(AuditAction.UPDATE, "Payment", id);
+        }
+
+        return toResponseDto(saved);
     }
 
     @Override

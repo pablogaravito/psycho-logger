@@ -1,6 +1,7 @@
 package com.pablogb.psychologger.service.impl;
 
 import com.pablogb.psychologger.model.entity.AuditLog;
+import com.pablogb.psychologger.model.entity.User;
 import com.pablogb.psychologger.model.enums.AuditAction;
 import com.pablogb.psychologger.repository.AuditLogRepository;
 import com.pablogb.psychologger.security.SecurityUtils;
@@ -43,6 +44,26 @@ public class AuditServiceImpl implements AuditService {
             auditLogRepository.save(auditLog);
         } catch (Exception e) {
             // never let audit logging break the main flow
+            log.error("Failed to save audit log: {}", e.getMessage());
+        }
+    }
+
+    @Override
+    @Async
+    public void logWithUser(AuditAction action, String entityType,
+                            Integer entityId, String details, User user) {
+        try {
+            AuditLog auditLog = AuditLog.builder()
+                    .organization(user.getOrganization())
+                    .user(user)
+                    .action(action.name())
+                    .entityType(entityType)
+                    .entityId(entityId)
+                    .details(details)
+                    .createdAt(LocalDateTime.now())
+                    .build();
+            auditLogRepository.save(auditLog);
+        } catch (Exception e) {
             log.error("Failed to save audit log: {}", e.getMessage());
         }
     }

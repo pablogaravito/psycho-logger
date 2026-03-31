@@ -8,11 +8,13 @@ import com.pablogb.psychologger.model.entity.OrgSettings;
 import com.pablogb.psychologger.model.entity.Organization;
 import com.pablogb.psychologger.model.entity.User;
 import com.pablogb.psychologger.model.entity.UserSettings;
+import com.pablogb.psychologger.model.enums.AuditAction;
 import com.pablogb.psychologger.repository.OrgSettingsRepository;
 import com.pablogb.psychologger.repository.OrganizationRepository;
 import com.pablogb.psychologger.repository.UserRepository;
 import com.pablogb.psychologger.repository.UserSettingsRepository;
 import com.pablogb.psychologger.security.JwtService;
+import com.pablogb.psychologger.service.AuditService;
 import com.pablogb.psychologger.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -34,6 +36,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserSettingsRepository userSettingsRepository;
     private final OrgSettingsRepository orgSettingsRepository;
+    private final AuditService auditService;
 
     @Override
     public AuthResponseDto login(LoginRequestDto request) {
@@ -45,33 +48,10 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         String token = jwtService.generateToken(user);
+        //auditService.log(AuditAction.LOGIN, "User", user.getId());
+        auditService.logWithUser(AuditAction.LOGIN, "User", user.getId(), "Login: " + user.getEmail(), user);
         return toAuthResponse(user, token);
     }
-
-//    @Override
-//    @Transactional
-//    public AuthResponseDto register(RegisterRequestDto request) {
-//        Organization org = Organization.builder()
-//                .name(request.getOrganizationName())
-//                .build();
-//        organizationRepository.save(org);
-//
-//        User user = User.builder()
-//                .organization(org)
-//                .firstName(request.getFirstName())
-//                .lastName(request.getLastName())
-//                .email(request.getEmail())
-//                .passwordHash(passwordEncoder.encode(request.getPassword()))
-//                .isTherapist(true)
-//                .isAdmin(true)
-//                .isActive(true)
-//                .build();
-//        userRepository.save(user);
-//
-//        String token = jwtService.generateToken(user);
-//        return toAuthResponse(user, token);
-//    }
-
 
     @Override
     @Transactional
@@ -79,7 +59,7 @@ public class AuthServiceImpl implements AuthService {
         Organization org = Organization.builder()
                 .name(request.getOrganizationName())
                 .build();
-        organizationRepository.save(org);;
+        Organization newOrganization = organizationRepository.save(org);
 
         User user = User.builder()
                 .organization(org)
@@ -91,10 +71,15 @@ public class AuthServiceImpl implements AuthService {
                 .isAdmin(true)
                 .isActive(true)
                 .build();
-        userRepository.save(user);
+
+        //userRepository.save(user);
+        User newUser = userRepository.save(user);
+
+        auditService.logWithUser(AuditAction.CREATE, "User", newUser.getId(),
+                "New org registered: " + newOrganization.getName(), newUser);
 
         // seed user settings
-        seedUserSettings(user);
+        seedUserSettings(newUser);
 
         // seed org settings
         OrgSettings orgSettings = OrgSettings.builder()
@@ -103,7 +88,8 @@ public class AuthServiceImpl implements AuthService {
                 .uiLanguage("en")
                 .transcriptionLanguage("en")
                 .build();
-        orgSettingsRepository.save(orgSettings);
+
+         orgSettingsRepository.save(orgSettings);
 
         String token = jwtService.generateToken(user);
         return toAuthResponse(user, token);
