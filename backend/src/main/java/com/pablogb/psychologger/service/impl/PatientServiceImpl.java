@@ -4,9 +4,11 @@ import com.pablogb.psychologger.dto.request.PatientRequestDto;
 import com.pablogb.psychologger.dto.response.PatientResponseDto;
 import com.pablogb.psychologger.exception.ResourceNotFoundException;
 import com.pablogb.psychologger.model.entity.*;
+import com.pablogb.psychologger.model.enums.AuditAction;
 import com.pablogb.psychologger.model.enums.PaymentStatus;
 import com.pablogb.psychologger.repository.*;
 import com.pablogb.psychologger.security.SecurityUtils;
+import com.pablogb.psychologger.service.AuditService;
 import com.pablogb.psychologger.service.PatientService;
 import com.pablogb.psychologger.dto.response.BirthdayPatientDto;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -30,6 +33,7 @@ public class PatientServiceImpl implements PatientService {
     private final TherapistPatientAssignmentRepository assignmentRepository;
     private final SecurityUtils securityUtils;
     private final PaymentRepository paymentRepository;
+    private final AuditService auditService;
 
     @Override
     @Transactional(readOnly = true)
@@ -81,19 +85,16 @@ public class PatientServiceImpl implements PatientService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Patient not found with id: " + id));
 
-        // check org matches
         if (!patient.getOrganization().getId()
                 .equals(currentUser.getOrganization().getId())) {
             throw new ResourceNotFoundException("Patient not found with id: " + id);
         }
 
-        // admin gets basic info only
-        if (currentUser.getIsAdmin() && !currentUser.getIsTherapist()) {
-            return toBasicResponseDto(patient);
-        }
+        PatientResponseDto result;
 
-        // therapist must be assigned to this patient
-        if (currentUser.getIsTherapist()) {
+        if (currentUser.getIsAdmin() && !currentUser.getIsTherapist()) {
+            result = toBasicResponseDto(patient);
+        } else if (currentUser.getIsTherapist()) {
             boolean isAssigned = assignmentRepository
                     .findByTherapistIdAndUnassignedAtIsNull(currentUser.getId())
                     .stream()
@@ -103,17 +104,13 @@ public class PatientServiceImpl implements PatientService {
                 throw new ResourceNotFoundException(
                         "Access denied — patient not assigned to you");
             }
-
-            // admin+therapist gets full info for their patients
-            // pure admin gets basic info
-            if (isAssigned) {
-                return toResponseDto(patient);
-            } else {
-                return toBasicResponseDto(patient);
-            }
+            result = isAssigned ? toResponseDto(patient) : toBasicResponseDto(patient);
+        } else {
+            result = toBasicResponseDto(patient);
         }
 
-        return toBasicResponseDto(patient);
+        auditService.log(AuditAction.VIEW, "Patient", id);
+        return result;
     }
 
     @Override
@@ -140,6 +137,8 @@ public class PatientServiceImpl implements PatientService {
 
         Patient saved = patientRepository.save(patient);
 
+        auditService.log(AuditAction.CREATE, "Patient", saved.getId());
+
         boolean shouldAssign = currentUser.getIsTherapist()
                 && Boolean.TRUE.equals(request.getAssignToMe());
 
@@ -154,27 +153,60 @@ public class PatientServiceImpl implements PatientService {
     @Transactional
     public PatientResponseDto updatePatient(Integer id, PatientRequestDto request) {
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Patient not found with id: " + id));
 
-        patient.setFirstName(request.getFirstName());
-        patient.setLastName(request.getLastName());
-        patient.setShortName(request.getShortName());
-        patient.setEmail(request.getEmail());
-        patient.setPhone(request.getPhone());
-        patient.setDateOfBirth(request.getDateOfBirth());
-        patient.setGender(request.getGender());
-        patient.setNotes(request.getNotes());
-        patient.setDefaultPrice(request.getDefaultPrice());
-        patient.setHandoverNotes(request.getHandoverNotes());
+        // 1. track meaningful changes
+        List<String> changes = new ArrayList<>();
 
+        if (request.getIsActive() != null &&
+                !request.getIsActive().equals(patient.getIsActive())) {
+            changes.add("status: " + (request.getIsActive() ? "activated" : "deactivated"));
+        }
+        if (request.getDefaultPrice() != null &&
+                !request.getDefaultPrice().equals(patient.getDefaultPrice())) {
+            changes.add("price: " + patient.getDefaultPrice()
+                    + " → " + request.getDefaultPrice());
+        }
+        if (request.getCalendarColor() != null &&
+                !request.getCalendarColor().equals(patient.getCalendarColor())) {
+            changes.add("calendar color changed");
+        }
+
+        // 2. apply changes
+        if (request.getFirstName() != null)
+            patient.setFirstName(request.getFirstName());
+        if (request.getLastName() != null)
+            patient.setLastName(request.getLastName());
+        if (request.getShortName() != null)
+            patient.setShortName(request.getShortName());
+        if (request.getEmail() != null)
+            patient.setEmail(request.getEmail());
+        if (request.getPhone() != null)
+            patient.setPhone(request.getPhone());
+        if (request.getDateOfBirth() != null)
+            patient.setDateOfBirth(request.getDateOfBirth());
+        if (request.getGender() != null)
+            patient.setGender(request.getGender());
+        if (request.getNotes() != null)
+            patient.setNotes(request.getNotes());
+        if (request.getDefaultPrice() != null)
+            patient.setDefaultPrice(request.getDefaultPrice());
+        if (request.getHandoverNotes() != null)
+            patient.setHandoverNotes(request.getHandoverNotes());
         if (request.getIsActive() != null)
             patient.setIsActive(request.getIsActive());
-
         if (request.getCalendarColor() != null)
             patient.setCalendarColor(request.getCalendarColor());
 
-        // only allow flag changes through explicit flag endpoint
-        return toResponseDto(patientRepository.save(patient));
+        // 3. save
+        Patient updatedPatient = patientRepository.save(patient);
+
+        // 4. log with details
+        String details = changes.isEmpty() ? "General info updated" : String.join(", ", changes);
+        auditService.log(AuditAction.UPDATE, "Patient", id, details);
+
+        return toResponseDto(updatedPatient);
     }
 
     @Override
@@ -184,6 +216,7 @@ public class PatientServiceImpl implements PatientService {
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + id));
         patient.setIsActive(false);
         patientRepository.save(patient);
+        auditService.log(AuditAction.DELETE, "Patient", id, "Patient deactivated");
     }
 
     private void createAssignment(User therapist, Patient patient) {
@@ -193,6 +226,8 @@ public class PatientServiceImpl implements PatientService {
                 .assignedAt(LocalDateTime.now())
                 .build();
         assignmentRepository.save(assignment);
+        auditService.log(AuditAction.ASSIGN, "Patient", patient.getId(),
+                "Assigned to therapist id: " + therapist.getId());
     }
 
     @Override
@@ -212,7 +247,9 @@ public class PatientServiceImpl implements PatientService {
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found: " + id));
         patient.setHasDebtFlag(true);
         patient.setDebtFlagNote(note);
-        return toResponseDto(patientRepository.save(patient));
+        Patient flaggedPatient = patientRepository.save(patient);
+        auditService.log(AuditAction.FLAG, "Patient", id, note);
+        return toResponseDto(flaggedPatient);
     }
 
     @Override
@@ -222,7 +259,9 @@ public class PatientServiceImpl implements PatientService {
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found: " + id));
         patient.setHasDebtFlag(false);
         patient.setDebtFlagNote(null);
-        return toResponseDto(patientRepository.save(patient));
+        Patient clearedPatient = patientRepository.save(patient);
+        auditService.log(AuditAction.CLEAR_FLAG, "Patient", id);
+        return toResponseDto(clearedPatient);
     }
 
     @Override
@@ -257,6 +296,7 @@ public class PatientServiceImpl implements PatientService {
                     a.setUnassignedAt(LocalDateTime.now());
                     assignmentRepository.save(a);
                 });
+        auditService.log(AuditAction.UNASSIGN, "Patient", patientId);
     }
 
     @Override
