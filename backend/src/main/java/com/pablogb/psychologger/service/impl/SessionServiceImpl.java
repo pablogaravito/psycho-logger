@@ -7,10 +7,12 @@ import com.pablogb.psychologger.exception.ResourceNotFoundException;
 import com.pablogb.psychologger.model.entity.Patient;
 import com.pablogb.psychologger.model.entity.Session;
 import com.pablogb.psychologger.model.entity.User;
+import com.pablogb.psychologger.model.enums.AuditAction;
 import com.pablogb.psychologger.repository.PatientRepository;
 import com.pablogb.psychologger.repository.PaymentRepository;
 import com.pablogb.psychologger.repository.SessionRepository;
 import com.pablogb.psychologger.security.SecurityUtils;
+import com.pablogb.psychologger.service.AuditService;
 import com.pablogb.psychologger.service.SessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class SessionServiceImpl implements SessionService {
     private final PatientRepository patientRepository;
     private final PaymentRepository paymentRepository;
     private final SecurityUtils securityUtils;
+    private final AuditService auditService;
 
     @Override
     @Transactional(readOnly = true)
@@ -82,6 +85,7 @@ public class SessionServiceImpl implements SessionService {
                     "Access denied — you can only view your own sessions");
         }
 
+        auditService.log(AuditAction.VIEW, "Session", id);
         return toResponseDto(session);
     }
 
@@ -111,7 +115,9 @@ public class SessionServiceImpl implements SessionService {
                 .patients(patients)
                 .build();
 
-        return toResponseDto(sessionRepository.save(session));
+        Session savedSession = sessionRepository.save(session);
+        auditService.log(AuditAction.CREATE, "Session", savedSession.getId());
+        return toResponseDto(savedSession);
     }
 
     @Override
@@ -135,7 +141,9 @@ public class SessionServiceImpl implements SessionService {
         session.setStatus(request.getStatus());
         session.setPatients(patients);
 
-        return toResponseDto(sessionRepository.save(session));
+        Session updatedSesion = sessionRepository.save(session);
+        auditService.log(AuditAction.UPDATE, "Session", id);
+        return toResponseDto(updatedSesion);
     }
 
     @Override
@@ -145,6 +153,8 @@ public class SessionServiceImpl implements SessionService {
                 .orElseThrow(() -> new ResourceNotFoundException("Session not found with id: " + id));
         paymentRepository.deleteBySessionId(session.getId());
         sessionRepository.delete(session);
+        auditService.log(AuditAction.DELETE, "Session", id,
+                "Session and linked payments deleted");
     }
 
 
