@@ -8,6 +8,7 @@ import com.pablogb.psychologger.exception.ResourceNotFoundException;
 import com.pablogb.psychologger.model.entity.*;
 import com.pablogb.psychologger.repository.*;
 import com.pablogb.psychologger.security.SecurityUtils;
+import com.pablogb.psychologger.service.AuditService;
 import com.pablogb.psychologger.service.PaymentService;
 import com.pablogb.psychologger.model.enums.PaymentStatus;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentPlanRepository paymentPlanRepository;
     private final SecurityUtils securityUtils;
     private final TherapistPatientAssignmentRepository assignmentRepository;
+    private final AuditService auditService;
 
     @Override
     @Transactional(readOnly = true)
