@@ -1,6 +1,7 @@
 package com.pablogb.psychologger.service.impl;
 
 import com.pablogb.psychologger.dto.request.SessionRequestDto;
+import com.pablogb.psychologger.dto.response.PageResponseDto;
 import com.pablogb.psychologger.dto.response.PatientSummaryDto;
 import com.pablogb.psychologger.dto.response.SessionResponseDto;
 import com.pablogb.psychologger.exception.ResourceNotFoundException;
@@ -15,6 +16,8 @@ import com.pablogb.psychologger.security.SecurityUtils;
 import com.pablogb.psychologger.service.AuditService;
 import com.pablogb.psychologger.service.SessionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,7 +55,26 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<SessionResponseDto> getSessionsByPatient(Integer patientId) {
+    public PageResponseDto<SessionResponseDto> getAllSessions(int page, int size) {
+        User currentUser = securityUtils.getCurrentUser();
+
+        if (!currentUser.getIsTherapist()) {
+            throw new ResourceNotFoundException(
+                    "Access denied — sessions are only visible to therapists");
+        }
+
+        PageRequest pageable = PageRequest.of(page, size);
+        Page<Session> sessionPage = sessionRepository
+                .findByTherapistIdOrderByScheduledAtDesc(
+                        currentUser.getId(), pageable);
+
+        return toPageResponse(sessionPage);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponseDto<SessionResponseDto> getSessionsByPatient(
+            Integer patientId, int page, int size) {
         User currentUser = securityUtils.getCurrentUser();
 
         if (!patientRepository.existsById(patientId)) {
@@ -60,16 +82,13 @@ public class SessionServiceImpl implements SessionService {
                     "Patient not found with id: " + patientId);
         }
 
-        // only return sessions where this therapist is the therapist
-        return sessionRepository
-                .findByPatientsIdOrderByScheduledAtDesc(patientId)
-                .stream()
-                .filter(s -> s.getTherapist().getId().equals(currentUser.getId()))
-                .map(this::toResponseDto)
-                .toList();
+        PageRequest pageable = PageRequest.of(page, size);
+        Page<Session> sessionPage = sessionRepository
+                .findByPatientsIdAndTherapistIdOrderByScheduledAtDesc(
+                        patientId, currentUser.getId(), pageable);
+
+        return toPageResponse(sessionPage);
     }
-
-
 
     @Override
     @Transactional(readOnly = true)
@@ -182,6 +201,20 @@ public class SessionServiceImpl implements SessionService {
                 .patients(patientSummaries)
                 .createdAt(session.getCreatedAt())
                 .updatedAt(session.getUpdatedAt())
+                .build();
+    }
+
+    private PageResponseDto<SessionResponseDto> toPageResponse(Page<Session> page) {
+        return PageResponseDto.<SessionResponseDto>builder()
+                .content(page.getContent().stream()
+                        .map(this::toResponseDto)
+                        .toList())
+                .page(page.getNumber())
+                .size(page.getSize())
+                .totalElements(page.getTotalElements())
+                .totalPages(page.getTotalPages())
+                .first(page.isFirst())
+                .last(page.isLast())
                 .build();
     }
 }

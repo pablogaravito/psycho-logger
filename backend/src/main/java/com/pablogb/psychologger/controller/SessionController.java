@@ -1,6 +1,7 @@
 package com.pablogb.psychologger.controller;
 
 import com.pablogb.psychologger.dto.request.SessionRequestDto;
+import com.pablogb.psychologger.dto.response.PageResponseDto;
 import com.pablogb.psychologger.dto.response.SessionResponseDto;
 import com.pablogb.psychologger.service.SessionService;
 import jakarta.validation.Valid;
@@ -19,8 +20,10 @@ public class SessionController {
     private final SessionService sessionService;
 
     @GetMapping
-    public ResponseEntity<List<SessionResponseDto>> getAllSessions() {
-        return ResponseEntity.ok(sessionService.getAllSessions());
+    public ResponseEntity<PageResponseDto<SessionResponseDto>> getAllSessions(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        return ResponseEntity.ok(sessionService.getAllSessions(page, size));
     }
 
     @GetMapping("/{id}")
@@ -29,8 +32,12 @@ public class SessionController {
     }
 
     @GetMapping("/patient/{patientId}")
-    public ResponseEntity<List<SessionResponseDto>> getSessionsByPatient(@PathVariable Integer patientId) {
-        return ResponseEntity.ok(sessionService.getSessionsByPatient(patientId));
+    public ResponseEntity<PageResponseDto<SessionResponseDto>> getSessionsByPatient(
+            @PathVariable Integer patientId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(sessionService.getSessionsByPatient(
+                patientId, page, size));
     }
 
     @PostMapping

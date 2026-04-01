@@ -2,6 +2,8 @@ package com.pablogb.psychologger.repository;
 
 import com.pablogb.psychologger.model.entity.Session;
 import com.pablogb.psychologger.model.enums.SessionStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,4 +25,10 @@ public interface SessionRepository extends JpaRepository<Session, Integer> {
 
     long countByTherapistIdAndScheduledAtBetween(
             Integer therapistId, LocalDateTime start, LocalDateTime end);
+
+    Page<Session> findByTherapistIdOrderByScheduledAtDesc(
+            Integer therapistId, Pageable pageable);
+
+    Page<Session> findByPatientsIdAndTherapistIdOrderByScheduledAtDesc(
+            Integer patientId, Integer therapistId, Pageable pageable);
 }
