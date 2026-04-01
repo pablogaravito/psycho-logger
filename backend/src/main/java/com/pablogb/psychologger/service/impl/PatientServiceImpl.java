@@ -1,6 +1,7 @@
 package com.pablogb.psychologger.service.impl;
 
 import com.pablogb.psychologger.dto.request.PatientRequestDto;
+import com.pablogb.psychologger.dto.response.PageResponseDto;
 import com.pablogb.psychologger.dto.response.PatientResponseDto;
 import com.pablogb.psychologger.exception.ResourceNotFoundException;
 import com.pablogb.psychologger.model.entity.*;
@@ -12,16 +13,16 @@ import com.pablogb.psychologger.service.AuditService;
 import com.pablogb.psychologger.service.PatientService;
 import com.pablogb.psychologger.dto.response.BirthdayPatientDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,43 +38,66 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PatientResponseDto> getAllPatients() {
+    public PageResponseDto<PatientResponseDto> getAllPatients(
+            int page, int size, boolean showInactive) {
         User currentUser = securityUtils.getCurrentUser();
         Integer orgId = currentUser.getOrganization().getId();
+        PageRequest pageable = PageRequest.of(page, size);
+        Page<Patient> patientPage;
 
         if (currentUser.getIsAdmin() && currentUser.getIsTherapist()) {
-            // admin+therapist sees ALL org patients
-            // their own assigned patients get full info
-            // other patients get basic info
-            List<Integer> assignedPatientIds = assignmentRepository
+            // fetch assigned IDs for full vs basic info distinction
+            Set<Integer> assignedPatientIds = assignmentRepository
                     .findByTherapistIdAndUnassignedAtIsNull(currentUser.getId())
                     .stream()
                     .map(a -> a.getPatient().getId())
-                    .toList();
+                    .collect(Collectors.toSet());
 
-            return patientRepository
-                    .findByOrganizationId(orgId)
-                    .stream()
-                    .map(p -> assignedPatientIds.contains(p.getId())
+            patientPage = showInactive
+                    ? patientRepository
+                    .findByOrganizationIdOrderByIsActiveDescLastNameAsc(
+                            orgId, pageable)
+                    : patientRepository
+                    .findByOrganizationIdAndIsActiveTrueOrderByLastNameAsc(
+                            orgId, pageable);
+
+            return toPageResponse(patientPage, p ->
+                    assignedPatientIds.contains(p.getId())
                             ? toResponseDto(p)
-                            : toBasicResponseDto(p))
-                    .toList();
+                            : toBasicResponseDto(p));
 
         } else if (currentUser.getIsAdmin()) {
-            // pure admin sees all but basic info only
-            return patientRepository
-                    .findByOrganizationId(orgId)
-                    .stream()
-                    .map(this::toBasicResponseDto)
-                    .toList();
+            patientPage = showInactive
+                    ? patientRepository
+                    .findByOrganizationIdOrderByIsActiveDescLastNameAsc(
+                            orgId, pageable)
+                    : patientRepository
+                    .findByOrganizationIdAndIsActiveTrueOrderByLastNameAsc(
+                            orgId, pageable);
+
+            return toPageResponse(patientPage, this::toBasicResponseDto);
 
         } else {
-            // pure therapist sees only assigned patients with full info
-            return assignmentRepository
-                    .findByTherapistIdAndUnassignedAtIsNull(currentUser.getId())
-                    .stream()
-                    .map(a -> toResponseDto(a.getPatient()))
-                    .toList();
+            // pure therapist — only their active assignments
+            Page<TherapistPatientAssignment> assignmentPage = showInactive
+                    ? assignmentRepository
+                    .findByTherapistIdAndUnassignedAtIsNullOrderByPatientLastNameAsc(
+                            currentUser.getId(), pageable)
+                    : assignmentRepository
+                    .findByTherapistIdAndUnassignedAtIsNullAndPatientIsActiveTrueOrderByPatientLastNameAsc(
+                            currentUser.getId(), pageable);
+
+            return PageResponseDto.<PatientResponseDto>builder()
+                    .content(assignmentPage.getContent().stream()
+                            .map(a -> toResponseDto(a.getPatient()))
+                            .toList())
+                    .page(assignmentPage.getNumber())
+                    .size(assignmentPage.getSize())
+                    .totalElements(assignmentPage.getTotalElements())
+                    .totalPages(assignmentPage.getTotalPages())
+                    .first(assignmentPage.isFirst())
+                    .last(assignmentPage.isLast())
+                    .build();
         }
     }
 
@@ -454,6 +478,19 @@ public class PatientServiceImpl implements PatientService {
                         ? writtenOffAmount : null)
                 .oldestWrittenOffDate(oldestWrittenOffDate)
                 .calendarColor(patient.getCalendarColor())
+                .build();
+    }
+
+    private <T> PageResponseDto<T> toPageResponse(Page<Patient> patientPage,
+                                                  java.util.function.Function<Patient, T> mapper) {
+        return PageResponseDto.<T>builder()
+                .content(patientPage.getContent().stream().map(mapper).toList())
+                .page(patientPage.getNumber())
+                .size(patientPage.getSize())
+                .totalElements(patientPage.getTotalElements())
+                .totalPages(patientPage.getTotalPages())
+                .first(patientPage.isFirst())
+                .last(patientPage.isLast())
                 .build();
     }
 }

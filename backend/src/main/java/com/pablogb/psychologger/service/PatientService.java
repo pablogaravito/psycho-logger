@@ -2,11 +2,13 @@ package com.pablogb.psychologger.service;
 
 import com.pablogb.psychologger.dto.request.PatientRequestDto;
 import com.pablogb.psychologger.dto.response.BirthdayPatientDto;
+import com.pablogb.psychologger.dto.response.PageResponseDto;
 import com.pablogb.psychologger.dto.response.PatientResponseDto;
 import java.util.List;
 
 public interface PatientService {
-    List<PatientResponseDto> getAllPatients();
+    //List<PatientResponseDto> getAllPatients();
+    PageResponseDto<PatientResponseDto> getAllPatients(int page, int size, boolean showInactive);
     PatientResponseDto getPatientById(Integer id);
     PatientResponseDto createPatient(PatientRequestDto request);
     PatientResponseDto updatePatient(Integer id, PatientRequestDto request);
