@@ -2,6 +2,8 @@ package com.pablogb.psychologger.repository;
 
 import com.pablogb.psychologger.model.entity.Payment;
 import com.pablogb.psychologger.model.enums.PaymentStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -51,4 +53,17 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
             @Param("end") LocalDateTime end);
 
     List<Payment> findByPatientIdAndStatus(Integer patientId, PaymentStatus status);
+
+    Page<Payment> findByPatientOrganizationId(Integer orgId, Pageable pageable);
+    Page<Payment> findByPatientOrganizationIdAndStatus(
+            Integer orgId, PaymentStatus status, Pageable pageable);
+    Page<Payment> findBySessionTherapistId(Integer therapistId, Pageable pageable);
+    Page<Payment> findBySessionTherapistIdAndStatus(
+            Integer therapistId, PaymentStatus status, Pageable pageable);
+    Page<Payment> findByPatientIdOrderByCreatedAtDesc(
+            Integer patientId, Pageable pageable);
+
+    Page<Payment> findByPatientIdInOrderByCreatedAtDesc(List<Integer> patientIds, Pageable pageable);
+
+    Page<Payment> findByPatientIdInAndStatusOrderByCreatedAtDesc(List<Integer> patientIds, PaymentStatus status, Pageable pageable);
 }

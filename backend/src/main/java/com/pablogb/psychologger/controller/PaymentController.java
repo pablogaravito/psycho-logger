@@ -2,6 +2,7 @@ package com.pablogb.psychologger.controller;
 
 import com.pablogb.psychologger.dto.request.PaymentRequestDto;
 import com.pablogb.psychologger.dto.request.PaymentUpdateDto;
+import com.pablogb.psychologger.dto.response.PageResponseDto;
 import com.pablogb.psychologger.dto.response.PatientDebtDto;
 import com.pablogb.psychologger.dto.response.PaymentResponseDto;
 import com.pablogb.psychologger.service.PaymentService;
@@ -21,13 +22,20 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @GetMapping
-    public ResponseEntity<List<PaymentResponseDto>> getAllPayments() {
-        return ResponseEntity.ok(paymentService.getAllPayments());
+    public ResponseEntity<PageResponseDto<PaymentResponseDto>> getAllPayments(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(required = false) String status) {
+        return ResponseEntity.ok(paymentService.getAllPayments(page, size, status));
     }
 
     @GetMapping("/patient/{patientId}")
-    public ResponseEntity<List<PaymentResponseDto>> getPaymentsByPatient(@PathVariable Integer patientId) {
-        return ResponseEntity.ok(paymentService.getPaymentsByPatient(patientId));
+    public ResponseEntity<PageResponseDto<PaymentResponseDto>> getPaymentsByPatient(
+            @PathVariable Integer patientId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(paymentService.getPaymentsByPatient(
+                patientId, page, size));
     }
 
     @PostMapping
