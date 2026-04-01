@@ -2,6 +2,7 @@ package com.pablogb.psychologger.service.impl;
 
 import com.pablogb.psychologger.dto.request.PaymentRequestDto;
 import com.pablogb.psychologger.dto.request.PaymentUpdateDto;
+import com.pablogb.psychologger.dto.response.PageResponseDto;
 import com.pablogb.psychologger.dto.response.PatientDebtDto;
 import com.pablogb.psychologger.dto.response.PaymentResponseDto;
 import com.pablogb.psychologger.exception.ResourceNotFoundException;
@@ -13,6 +14,8 @@ import com.pablogb.psychologger.service.AuditService;
 import com.pablogb.psychologger.service.PaymentService;
 import com.pablogb.psychologger.model.enums.PaymentStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.pablogb.psychologger.dto.response.DebtPaymentDto;
@@ -35,29 +38,46 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PaymentResponseDto> getAllPayments() {
+    public PageResponseDto<PaymentResponseDto> getAllPayments(
+            int page, int size, String status) {
         User currentUser = securityUtils.getCurrentUser();
+        PageRequest pageable = PageRequest.of(page, size);
+
+        Page<Payment> paymentPage;
 
         if (currentUser.getIsAdmin() && !currentUser.getIsTherapist()) {
-            // pure admin sees all org payments for billing purposes
-            return paymentRepository
-                    .findByPatientOrganizationId(currentUser.getOrganization().getId())
-                    .stream()
-                    .map(this::toResponseDto)
-                    .toList();
+            paymentPage = status != null && !status.isBlank()
+                    ? paymentRepository.findByPatientOrganizationIdAndStatus(
+                    currentUser.getOrganization().getId(),
+                    PaymentStatus.valueOf(status), pageable)
+                    : paymentRepository.findByPatientOrganizationId(
+                    currentUser.getOrganization().getId(), pageable);
+        } else {
+            paymentPage = status != null && !status.isBlank()
+                    ? paymentRepository.findBySessionTherapistIdAndStatus(
+                    currentUser.getId(),
+                    PaymentStatus.valueOf(status), pageable)
+                    : paymentRepository.findBySessionTherapistId(
+                    currentUser.getId(), pageable);
         }
 
-        // therapist sees only their patients' payments
-        return paymentRepository
-                .findBySessionTherapistId(currentUser.getId())
-                .stream()
-                .map(this::toResponseDto)
-                .toList();
+        return PageResponseDto.<PaymentResponseDto>builder()
+                .content(paymentPage.getContent().stream()
+                        .map(this::toResponseDto)
+                        .toList())
+                .page(paymentPage.getNumber())
+                .size(paymentPage.getSize())
+                .totalElements(paymentPage.getTotalElements())
+                .totalPages(paymentPage.getTotalPages())
+                .first(paymentPage.isFirst())
+                .last(paymentPage.isLast())
+                .build();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<PaymentResponseDto> getPaymentsByPatient(Integer patientId) {
+    public PageResponseDto<PaymentResponseDto> getPaymentsByPatient(
+            Integer patientId, int page, int size) {
         User currentUser = securityUtils.getCurrentUser();
 
         if (!patientRepository.existsById(patientId)) {
@@ -65,30 +85,39 @@ public class PaymentServiceImpl implements PaymentService {
                     "Patient not found with id: " + patientId);
         }
 
-        // admin can see all payments for billing
+        PageRequest pageable = PageRequest.of(page, size);
+        Page<Payment> paymentPage;
+
         if (currentUser.getIsAdmin()) {
-            return paymentRepository.findByPatientId(patientId)
+            paymentPage = paymentRepository
+                    .findByPatientIdOrderByCreatedAtDesc(patientId, pageable);
+        } else {
+            boolean isAssigned = assignmentRepository
+                    .findByTherapistIdAndUnassignedAtIsNull(currentUser.getId())
                     .stream()
-                    .map(this::toResponseDto)
-                    .toList();
+                    .anyMatch(a -> a.getPatient().getId().equals(patientId));
+
+            if (!isAssigned) {
+                throw new ResourceNotFoundException(
+                        "Access denied — patient not assigned to you");
+            }
+            paymentPage = paymentRepository
+                    .findByPatientIdOrderByCreatedAtDesc(patientId, pageable);
         }
 
-        // therapist only sees payments for their assigned patients
-        boolean isAssigned = assignmentRepository
-                .findByTherapistIdAndUnassignedAtIsNull(currentUser.getId())
-                .stream()
-                .anyMatch(a -> a.getPatient().getId().equals(patientId));
-
-        if (!isAssigned) {
-            throw new ResourceNotFoundException(
-                    "Access denied — patient not assigned to you");
-        }
-
-        return paymentRepository.findByPatientId(patientId)
-                .stream()
-                .map(this::toResponseDto)
-                .toList();
+        return PageResponseDto.<PaymentResponseDto>builder()
+                .content(paymentPage.getContent().stream()
+                        .map(this::toResponseDto)
+                        .toList())
+                .page(paymentPage.getNumber())
+                .size(paymentPage.getSize())
+                .totalElements(paymentPage.getTotalElements())
+                .totalPages(paymentPage.getTotalPages())
+                .first(paymentPage.isFirst())
+                .last(paymentPage.isLast())
+                .build();
     }
+
 
 
     @Override
