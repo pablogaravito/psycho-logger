@@ -1,6 +1,8 @@
 package com.pablogb.psychologger.repository;
 
 import com.pablogb.psychologger.model.entity.TherapistPatientAssignment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
@@ -13,4 +15,11 @@ public interface TherapistPatientAssignmentRepository extends JpaRepository<Ther
     List<TherapistPatientAssignment> findByPatientIdOrderByAssignedAtDesc(Integer patientId);
     List<TherapistPatientAssignment> findByPatientOrganizationId(Integer orgId);
     long countByTherapistIdAndUnassignedAtIsNull(Integer therapistId);
+    Page<TherapistPatientAssignment>
+    findByTherapistIdAndUnassignedAtIsNullOrderByPatientLastNameAsc(
+            Integer therapistId, Pageable pageable);
+
+    Page<TherapistPatientAssignment>
+    findByTherapistIdAndUnassignedAtIsNullAndPatientIsActiveTrueOrderByPatientLastNameAsc(
+            Integer therapistId, Pageable pageable);
 }

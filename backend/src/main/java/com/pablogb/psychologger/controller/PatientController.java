@@ -2,6 +2,7 @@ package com.pablogb.psychologger.controller;
 
 import com.pablogb.psychologger.dto.request.PatientRequestDto;
 import com.pablogb.psychologger.dto.response.BirthdayPatientDto;
+import com.pablogb.psychologger.dto.response.PageResponseDto;
 import com.pablogb.psychologger.dto.response.PatientResponseDto;
 import com.pablogb.psychologger.service.PatientService;
 import jakarta.validation.Valid;
@@ -21,8 +22,11 @@ public class PatientController {
     private final PatientService patientService;
 
     @GetMapping
-    public ResponseEntity<List<PatientResponseDto>> getAllPatients() {
-        return ResponseEntity.ok(patientService.getAllPatients());
+    public ResponseEntity<PageResponseDto<PatientResponseDto>> getAllPatients(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "false") boolean showInactive) {
+        return ResponseEntity.ok(patientService.getAllPatients(page, size, showInactive));
     }
 
     @GetMapping("/{id}")
