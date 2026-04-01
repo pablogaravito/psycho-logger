@@ -15,6 +15,7 @@ import Debts from "./pages/queries/Debts";
 import Birthdays from "./pages/queries/Birthdays";
 import Settings from "./pages/Settings";
 import TeamManagement from "./pages/admin/TeamManagement.jsx";
+import AuditLog from "./pages/admin/AuditLog.jsx";
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();

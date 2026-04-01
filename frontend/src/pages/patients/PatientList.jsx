@@ -1,42 +1,39 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/axios";
-import { calculateAge } from "../../utils/dateUtils";
 import { useAuth } from "../../hooks/useAuth";
+import { calculateAge } from "../../utils/dateUtils";
+import Pagination from "../../components/Pagination.jsx";
 
 export default function PatientList() {
   const navigate = useNavigate();
-  const [showInactive, setShowInactive] = useState(false);
   const { user } = useAuth();
+  const [showInactive, setShowInactive] = useState(false);
+  const [page, setPage] = useState(0);
 
-  const { data: patients, isLoading } = useQuery({
-    queryKey: ["patients"],
-    queryFn: () => api.get("/patients").then((r) => r.data),
+  const { data, isLoading } = useQuery({
+    queryKey: ["patients", page, showInactive],
+    queryFn: () =>
+      api
+        .get(`/patients?page=${page}&size=15&showInactive=${showInactive}`)
+        .then((r) => r.data),
   });
 
   const { data: users } = useQuery({
     queryKey: ["users"],
     queryFn: () => api.get("/users").then((r) => r.data),
-    enabled: user?.isAdmin, // only fetch if admin, therapists don't need this
+    enabled: user?.isAdmin,
   });
 
   const activeTherapists =
     users?.filter((u) => u.isTherapist && u.isActive) || [];
   const showTherapistColumn = user?.isAdmin && activeTherapists.length > 1;
 
-  const filtered = useMemo(() => {
-    if (!patients) return [];
-    return patients
-      .filter((p) => (showInactive ? true : p.isActive))
-      .sort((a, b) => {
-        // active first, then alphabetical
-        if (a.isActive !== b.isActive) return a.isActive ? -1 : 1;
-        const nameA = `${a.firstName} ${a.lastName}`.toLowerCase();
-        const nameB = `${b.firstName} ${b.lastName}`.toLowerCase();
-        return nameA.localeCompare(nameB);
-      });
-  }, [patients, showInactive]);
+  const handleShowInactive = (val) => {
+    setShowInactive(val);
+    setPage(0);
+  };
 
   if (isLoading) return <div className="text-gray-400">Loading...</div>;
 
@@ -46,7 +43,7 @@ export default function PatientList() {
         <div>
           <h1 className="text-2xl font-bold text-white">Patients</h1>
           <p className="text-gray-400 text-sm mt-1">
-            {filtered.length} {showInactive ? "total" : "active"}
+            {data?.totalElements} {showInactive ? "total" : "active"}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -54,7 +51,7 @@ export default function PatientList() {
             <input
               type="checkbox"
               checked={showInactive}
-              onChange={(e) => setShowInactive(e.target.checked)}
+              onChange={(e) => handleShowInactive(e.target.checked)}
               className="accent-indigo-500"
             />
             Show inactive
@@ -96,7 +93,7 @@ export default function PatientList() {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((patient) => (
+            {data?.content?.map((patient) => (
               <tr
                 key={patient.id}
                 className={`border-b border-gray-800 hover:bg-gray-800 transition cursor-pointer ${
@@ -106,13 +103,7 @@ export default function PatientList() {
               >
                 <td className="px-6 py-4 text-white font-medium">
                   <div className="flex items-center gap-2">
-                    {patient.hasDebtFlag && (
-                      <span
-                        title={patient.debtFlagNote || "Has outstanding debt"}
-                      >
-                        🚩
-                      </span>
-                    )}
+                    {patient.hasDebtFlag && <span>🚩</span>}
                     {patient.firstName} {patient.lastName}
                   </div>
                 </td>
@@ -152,20 +143,15 @@ export default function PatientList() {
                   </td>
                 )}
                 <td className="px-6 py-4 text-right">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/patients/${patient.id}`);
-                    }}
-                    className="text-indigo-400 hover:text-indigo-300 text-xs font-medium"
-                  >
+                  <span className="text-indigo-400 hover:text-indigo-300 text-xs font-medium">
                     View →
-                  </button>
+                  </span>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+        <Pagination data={data} setPage={setPage} />
       </div>
     </div>
   );
