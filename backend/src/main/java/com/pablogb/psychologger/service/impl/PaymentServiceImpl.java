@@ -53,12 +53,20 @@ public class PaymentServiceImpl implements PaymentService {
                     : paymentRepository.findByPatientOrganizationId(
                     currentUser.getOrganization().getId(), pageable);
         } else {
+            // get assigned patient IDs
+            List<Integer> assignedPatientIds = assignmentRepository
+                    .findByTherapistIdAndUnassignedAtIsNull(currentUser.getId())
+                    .stream()
+                    .map(a -> a.getPatient().getId())
+                    .toList();
+
             paymentPage = status != null && !status.isBlank()
-                    ? paymentRepository.findBySessionTherapistIdAndStatus(
-                    currentUser.getId(),
-                    PaymentStatus.valueOf(status), pageable)
-                    : paymentRepository.findBySessionTherapistId(
-                    currentUser.getId(), pageable);
+                    ? paymentRepository.findByPatientIdInAndStatusOrderByCreatedAtDesc(
+                    assignedPatientIds,
+                    PaymentStatus.valueOf(status),
+                    pageable)
+                    : paymentRepository.findByPatientIdInOrderByCreatedAtDesc(
+                    assignedPatientIds, pageable);
         }
 
         return PageResponseDto.<PaymentResponseDto>builder()

@@ -1,9 +1,10 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/axios";
-import { formatDateShort } from "../../utils/dateUtils";
 import { useAuth } from "../../hooks/useAuth";
+import { formatDateShort } from "../../utils/dateUtils";
+import Pagination from "../../components/Pagination.jsx";
 
 const STATUS_COLORS = {
   PAID: "bg-green-900 text-green-400",
@@ -16,22 +17,20 @@ const STATUS_COLORS = {
 export default function PaymentList() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { preferences } = useAuth();
   const [filter, setFilter] = useState("PENDING");
+  const [page, setPage] = useState(0);
   const [editingId, setEditingId] = useState(null);
   const [editAmount, setEditAmount] = useState("");
-  const { preferences } = useAuth();
-  const { dateFormat } = preferences || {};
 
-  const { data: payments, isLoading } = useQuery({
-    queryKey: ["payments"],
-    queryFn: () => api.get("/payments").then((r) => r.data),
+  const { data, isLoading } = useQuery({
+    queryKey: ["payments", filter, page],
+    queryFn: () => {
+      const params = new URLSearchParams({ page, size: 15 });
+      if (filter !== "ALL") params.append("status", filter);
+      return api.get(`/payments?${params}`).then((r) => r.data);
+    },
   });
-
-  const filtered = useMemo(() => {
-    if (!payments) return [];
-    if (filter === "ALL") return payments;
-    return payments.filter((p) => p.status === filter);
-  }, [payments, filter]);
 
   const markPaidMutation = useMutation({
     mutationFn: ({ id, amount }) =>
@@ -78,6 +77,11 @@ export default function PaymentList() {
     setEditAmount(payment.amount?.toString() || "");
   };
 
+  const handleFilterChange = (f) => {
+    setFilter(f);
+    setPage(0);
+  };
+
   if (isLoading) return <div className="text-gray-400">Loading...</div>;
 
   return (
@@ -86,7 +90,7 @@ export default function PaymentList() {
         <div>
           <h1 className="text-2xl font-bold text-white">Payments</h1>
           <p className="text-gray-400 text-sm mt-1">
-            {filtered.length}{" "}
+            {data?.totalElements}{" "}
             {filter === "ALL" ? "total" : filter.toLowerCase()}
           </p>
         </div>
@@ -97,7 +101,7 @@ export default function PaymentList() {
         {["PENDING", "PAID", "WRITTEN_OFF", "ALL"].map((f) => (
           <button
             key={f}
-            onClick={() => setFilter(f)}
+            onClick={() => handleFilterChange(f)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
               filter === f
                 ? "bg-indigo-600 text-white"
@@ -132,7 +136,7 @@ export default function PaymentList() {
             </tr>
           </thead>
           <tbody>
-            {filtered.length === 0 ? (
+            {data?.content?.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
                   No {filter === "ALL" ? "" : filter.toLowerCase()} payments
@@ -140,12 +144,11 @@ export default function PaymentList() {
                 </td>
               </tr>
             ) : (
-              filtered.map((payment) => (
+              data?.content?.map((payment) => (
                 <tr
                   key={payment.id}
                   className="border-b border-gray-800 last:border-0 hover:bg-gray-800 transition"
                 >
-                  {/* Patient */}
                   <td className="px-6 py-4">
                     <span
                       onClick={() => navigate(`/patients/${payment.patientId}`)}
@@ -154,8 +157,6 @@ export default function PaymentList() {
                       {payment.patientName}
                     </span>
                   </td>
-
-                  {/* Session link */}
                   <td className="px-6 py-4 text-gray-400">
                     {payment.sessionId ? (
                       <span
@@ -170,8 +171,6 @@ export default function PaymentList() {
                       "—"
                     )}
                   </td>
-
-                  {/* Amount — editable when marking as paid */}
                   <td className="px-6 py-4">
                     {editingId === payment.id ? (
                       <input
@@ -187,8 +186,6 @@ export default function PaymentList() {
                       </span>
                     )}
                   </td>
-
-                  {/* Status */}
                   <td className="px-6 py-4">
                     <span
                       className={`text-xs font-semibold px-2 py-1 rounded-full ${
@@ -199,28 +196,17 @@ export default function PaymentList() {
                       {payment.status}
                     </span>
                   </td>
-
-                  {/* Paid at */}
                   <td className="px-6 py-4 text-gray-400 text-xs">
                     {payment.paidAt
-                      ? formatDateShort(payment.paidAt, dateFormat)
+                      ? formatDateShort(payment.paidAt, preferences?.dateFormat)
                       : "—"}
                   </td>
-
-                  {/* Actions */}
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2 justify-end">
                       {payment.status === "PENDING" && (
                         <>
                           {editingId === payment.id ? (
                             <>
-                              <input
-                                type="number"
-                                value={editAmount}
-                                onChange={(e) => setEditAmount(e.target.value)}
-                                className="w-24 bg-gray-700 border border-indigo-500 text-white rounded px-2 py-1 text-sm focus:outline-none"
-                                autoFocus
-                              />
                               <button
                                 onClick={() =>
                                   markPaidMutation.mutate({
@@ -270,7 +256,6 @@ export default function PaymentList() {
                           )}
                         </>
                       )}
-
                       {payment.status === "WRITTEN_OFF" && (
                         <button
                           onClick={() => reactivateMutation.mutate(payment.id)}
@@ -287,6 +272,7 @@ export default function PaymentList() {
             )}
           </tbody>
         </table>
+        <Pagination data={data} setPage={setPage} />
       </div>
     </div>
   );

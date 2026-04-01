@@ -37,24 +37,6 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<SessionResponseDto> getAllSessions() {
-        User currentUser = securityUtils.getCurrentUser();
-
-        // only therapists can see sessions, and only their own
-        if (!currentUser.getIsTherapist()) {
-            throw new ResourceNotFoundException(
-                    "Access denied — sessions are only visible to therapists");
-        }
-
-        return sessionRepository
-                .findByTherapistIdOrderByScheduledAtDesc(currentUser.getId())
-                .stream()
-                .map(this::toResponseDto)
-                .toList();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public PageResponseDto<SessionResponseDto> getAllSessions(int page, int size) {
         User currentUser = securityUtils.getCurrentUser();
 
