@@ -11,12 +11,15 @@ export default function PatientList() {
   const { user } = useAuth();
   const [showInactive, setShowInactive] = useState(false);
   const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(15);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["patients", page, showInactive],
+    queryKey: ["patients", page, pageSize, showInactive],
     queryFn: () =>
       api
-        .get(`/patients?page=${page}&size=15&showInactive=${showInactive}`)
+        .get(
+          `/patients?page=${page}&size=${pageSize}&showInactive=${showInactive}`,
+        )
         .then((r) => r.data),
   });
 
@@ -151,7 +154,12 @@ export default function PatientList() {
             ))}
           </tbody>
         </table>
-        <Pagination data={data} setPage={setPage} />
+        <Pagination
+          data={data}
+          setPage={setPage}
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+        />
       </div>
     </div>
   );

@@ -20,13 +20,14 @@ export default function PaymentList() {
   const { preferences } = useAuth();
   const [filter, setFilter] = useState("PENDING");
   const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(15);
   const [editingId, setEditingId] = useState(null);
   const [editAmount, setEditAmount] = useState("");
 
   const { data, isLoading } = useQuery({
-    queryKey: ["payments", filter, page],
+    queryKey: ["payments", filter, page, pageSize],
     queryFn: () => {
-      const params = new URLSearchParams({ page, size: 15 });
+      const params = new URLSearchParams({ page, size: pageSize });
       if (filter !== "ALL") params.append("status", filter);
       return api.get(`/payments?${params}`).then((r) => r.data);
     },
@@ -272,7 +273,12 @@ export default function PaymentList() {
             )}
           </tbody>
         </table>
-        <Pagination data={data} setPage={setPage} />
+        <Pagination
+          data={data}
+          setPage={setPage}
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+        />
       </div>
     </div>
   );

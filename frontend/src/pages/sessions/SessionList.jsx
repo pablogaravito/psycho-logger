@@ -11,11 +11,12 @@ export default function SessionList() {
   const { preferences } = useAuth();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(15);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["sessions", page],
+    queryKey: ["sessions", page, pageSize],
     queryFn: () =>
-      api.get(`/sessions?page=${page}&size=15`).then((r) => r.data),
+      api.get(`/sessions?page=${page}&size=${pageSize}`).then((r) => r.data),
   });
 
   // search within current page only
@@ -153,7 +154,12 @@ export default function SessionList() {
             )}
           </tbody>
         </table>
-        <Pagination data={data} setPage={setPage} />
+        <Pagination
+          data={data}
+          setPage={setPage}
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+        />
       </div>
     </div>
   );
