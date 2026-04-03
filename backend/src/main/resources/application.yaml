@@ -2,12 +2,6 @@ spring:
   application:
     name: psycho-logger
 
-  datasource:
-    url: jdbc:mysql://localhost:3306/psychologger_app
-    username: psychologger_user
-    password: ${DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
   jpa:
     hibernate:
       ddl-auto: validate
@@ -25,17 +19,15 @@ spring:
 server:
   port: 8080
 
-security:
-  jwt:
-    secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
-    expiration: 86400000 # 1 day in milliseconds
-    # expiration: 30000  # 30 seconds for testing logging out
+backup:
+  mysqldump:
+    path: mysqldump
 
-whisper:
-  model:
-    path: native-bin/ggml-small.bin
-  exe:
-    path: native-bin/whisper-cli.exe
-ffmpeg:
-  exe:
-    path: native-bin/ffmpeg.exe
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never

@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:mysql://mysql:3306/psychologger_app
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+whisper:
+  model:
+    path: /app/native-bin/ggml-small.bin
+  exe:
+    path: /app/native-bin/whisper-cli
+
+ffmpeg:
+  exe:
+    path: ffmpeg
+
+security:
+  jwt:
+    secret-key: ${JWT_SECRET}
+    expiration: 86400000
