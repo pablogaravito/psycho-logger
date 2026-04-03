@@ -10,7 +10,9 @@ const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/psycho-logger">
+      {" "}
+      {/* ← add basename */}
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <App />

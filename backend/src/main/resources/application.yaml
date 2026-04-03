@@ -22,6 +22,8 @@ server:
 backup:
   mysqldump:
     path: mysqldump
+  mysql:
+    path: mysql
 
 management:
   endpoints:

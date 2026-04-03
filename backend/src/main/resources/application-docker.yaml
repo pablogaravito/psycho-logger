@@ -24,3 +24,7 @@ security:
   jwt:
     secret-key: ${JWT_SECRET}
     expiration: 86400000
+
+backup:
+  mysqldump:
+    path: mysqldump
