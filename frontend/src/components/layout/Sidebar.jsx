@@ -20,6 +20,7 @@ export default function Sidebar() {
   const adminNavigation = [
     { name: "Team", path: "/admin/team", icon: "👥" },
     { name: "Audit Log", path: "/admin/audit", icon: "🔍" },
+    { name: "Backup", path: "/admin/backup", icon: "💾" },
   ];
 
   return (

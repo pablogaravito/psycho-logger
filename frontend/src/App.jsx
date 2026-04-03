@@ -16,6 +16,7 @@ import Birthdays from "./pages/queries/Birthdays";
 import Settings from "./pages/Settings";
 import TeamManagement from "./pages/admin/TeamManagement.jsx";
 import AuditLog from "./pages/admin/AuditLog.jsx";
+import Backup from "./pages/admin/Backup.jsx";
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -52,6 +53,7 @@ export default function App() {
         <Route path="settings" element={<Settings />} />
         <Route path="admin/team" element={<TeamManagement />} />
         <Route path="admin/audit" element={<AuditLog />} />
+        <Route path="admin/backup" element={<Backup />} />
       </Route>
     </Routes>
   );
