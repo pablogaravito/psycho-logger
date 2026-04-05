@@ -33,8 +33,11 @@ export default function SessionForm() {
   const [originalPatientIds, setOriginalPatientIds] = useState([]);
 
   const { data: patients } = useQuery({
-    queryKey: ["patients"],
-    queryFn: () => api.get("/patients").then((r) => r.data),
+    queryKey: ["patients-all"],
+    queryFn: () =>
+      api
+        .get("/patients?page=0&size=1000&showInactive=false")
+        .then((r) => r.data.content), // ← extract content directly
   });
 
   const { data: session } = useQuery({

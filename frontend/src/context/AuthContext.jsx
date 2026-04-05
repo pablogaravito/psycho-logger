@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
 
   const fetchPreferences = async (token) => {
     try {
-      const res = await fetch("http://localhost:8080/api/preferences", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/preferences`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const prefs = await res.json();
