@@ -22,7 +22,6 @@ public class AuditServiceImpl implements AuditService {
     private final SecurityUtils securityUtils;
 
     @Override
-    @Async
     public void log(AuditAction action, String entityType, Integer entityId) {
         log(action, entityType, entityId, null);
     }
@@ -49,7 +48,7 @@ public class AuditServiceImpl implements AuditService {
     }
 
     @Override
-    @Async
+    @Async("auditExecutor")
     public void logWithUser(AuditAction action, String entityType,
                             Integer entityId, String details, User user) {
         try {

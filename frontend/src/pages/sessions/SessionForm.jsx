@@ -65,18 +65,36 @@ export default function SessionForm() {
     enabled: Boolean(singlePatientId) && !isEditing,
   });
 
+  const { data: userSettings } = useQuery({
+    queryKey: ["user-settings"],
+    queryFn: () => api.get("/settings/user").then((r) => r.data),
+  });
+
   useEffect(() => {
-    if (sessionDefaults && !isEditing) {
-      setForm((prev) => ({
-        ...prev,
-        durationMinutes: sessionDefaults.defaultSessionDuration || 50,
-      }));
-      setPaymentCurrency(sessionDefaults.defaultCurrency || "SOL");
-      if (sessionDefaults.defaultSessionPrice != null) {
-        setPaymentAmount(sessionDefaults.defaultSessionPrice.toString());
+    if (!isEditing) {
+      if (sessionDefaults) {
+        // patient selected — use patient-specific defaults
+        setForm((prev) => ({
+          ...prev,
+          durationMinutes: sessionDefaults.defaultSessionDuration || 50,
+        }));
+        setPaymentCurrency(sessionDefaults.defaultCurrency || "SOL");
+        if (sessionDefaults.defaultSessionPrice != null) {
+          setPaymentAmount(sessionDefaults.defaultSessionPrice.toString());
+        }
+      } else if (userSettings) {
+        // no patient selected — fall back to user settings directly
+        setForm((prev) => ({
+          ...prev,
+          durationMinutes: userSettings.defaultSessionDuration || 50,
+        }));
+        setPaymentCurrency(userSettings.defaultCurrency || "SOL"); // from org settings ideally
+        if (userSettings.defaultSessionPrice != null) {
+          setPaymentAmount(userSettings.defaultSessionPrice.toString());
+        }
       }
     }
-  }, [sessionDefaults, isEditing]);
+  }, [sessionDefaults, userSettings, isEditing]);
 
   useEffect(() => {
     if (session) {

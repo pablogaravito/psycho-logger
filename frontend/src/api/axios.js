@@ -14,7 +14,7 @@ api.interceptors.request.use((config) => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         localStorage.setItem("session_expired", "true"); // flag for login page
-        window.location.href = "/login";
+        window.location.href = "/psycho-logger/login";
         return Promise.reject(new Error("Token expired"));
       }
     } catch (e) {
