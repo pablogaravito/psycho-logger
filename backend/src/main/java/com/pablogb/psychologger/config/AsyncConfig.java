@@ -4,10 +4,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
 import java.util.concurrent.Executor;
 
 @Configuration
+@EnableAsync
 public class AsyncConfig {
 
     @Bean(name = "transcriptionExecutor")
@@ -19,5 +21,17 @@ public class AsyncConfig {
         executor.setThreadNamePrefix("transcription-");
         executor.initialize();
         return executor;
+    }
+
+    @Bean(name = "auditExecutor")
+    public Executor auditExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(5);
+        executor.setQueueCapacity(50);
+        executor.setThreadNamePrefix("audit-");
+        executor.initialize();
+        // this is the key — wraps executor to propagate security context
+        return new DelegatingSecurityContextAsyncTaskExecutor(executor);
     }
 }
