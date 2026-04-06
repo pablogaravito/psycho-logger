@@ -22,7 +22,13 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /whisper
 RUN git clone https://github.com/ggerganov/whisper.cpp .
-RUN cmake -B build && cmake --build build --config Release
+
+# build with static linking so no external .so dependencies
+RUN cmake -B build \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DWHISPER_BUILD_TESTS=OFF \
+    -DWHISPER_BUILD_EXAMPLES=ON \
+    && cmake --build build --config Release -j$(nproc)
 
 # ─── Stage 3: Run ─────────────────────────────────────────────
 FROM eclipse-temurin:21-jre-jammy
