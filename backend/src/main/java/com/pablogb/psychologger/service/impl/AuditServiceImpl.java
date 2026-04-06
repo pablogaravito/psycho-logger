@@ -28,7 +28,7 @@ public class AuditServiceImpl implements AuditService {
     }
 
     @Override
-    @Async
+    @Async("auditExecutor")
     public void log(AuditAction action, String entityType,
                     Integer entityId, String details) {
         try {
