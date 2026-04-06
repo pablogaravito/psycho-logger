@@ -13,6 +13,9 @@ import com.pablogb.psychologger.service.AuditService;
 import com.pablogb.psychologger.service.PatientService;
 import com.pablogb.psychologger.dto.response.BirthdayPatientDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +40,7 @@ public class PatientServiceImpl implements PatientService {
     private final SecurityUtils securityUtils;
     private final PaymentRepository paymentRepository;
     private final AuditService auditService;
+
 
     @Override
     @Transactional(readOnly = true)
@@ -102,7 +108,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public PatientResponseDto getPatientById(Integer id) {
         User currentUser = securityUtils.getCurrentUser();
         Patient patient = patientRepository.findById(id)
@@ -173,64 +179,136 @@ public class PatientServiceImpl implements PatientService {
         return toResponseDto(saved);
     }
 
+//    @Override
+//    @Transactional
+//    public PatientResponseDto updatePatient(Integer id, PatientRequestDto request) {
+//        Patient patient = patientRepository.findById(id)
+//                .orElseThrow(() -> new ResourceNotFoundException(
+//                        "Patient not found with id: " + id));
+//
+//        // 1. track meaningful changes
+//        List<String> changes = new ArrayList<>();
+//
+//        if (request.getIsActive() != null &&
+//                !request.getIsActive().equals(patient.getIsActive())) {
+//            changes.add("status: " + (request.getIsActive() ? "activated" : "deactivated"));
+//        }
+//        if (request.getDefaultPrice() != null &&
+//                request.getDefaultPrice().compareTo(
+//                        patient.getDefaultPrice() != null
+//                                ? patient.getDefaultPrice()
+//                                : BigDecimal.ZERO) != 0) {
+//            changes.add("price: " + patient.getDefaultPrice()
+//                    + " → " + request.getDefaultPrice());
+//        }
+//        if (request.getCalendarColor() != null &&
+//                !request.getCalendarColor().equals(patient.getCalendarColor())) {
+//            changes.add("calendar color changed");
+//        }
+//
+//        // 2. apply changes
+//        if (request.getFirstName() != null)
+//            patient.setFirstName(request.getFirstName());
+//        if (request.getLastName() != null)
+//            patient.setLastName(request.getLastName());
+//        if (request.getShortName() != null)
+//            patient.setShortName(request.getShortName());
+//        if (request.getEmail() != null)
+//            patient.setEmail(request.getEmail());
+//        if (request.getPhone() != null)
+//            patient.setPhone(request.getPhone());
+//        if (request.getDateOfBirth() != null)
+//            patient.setDateOfBirth(request.getDateOfBirth());
+//        if (request.getGender() != null)
+//            patient.setGender(request.getGender());
+//        if (request.getNotes() != null)
+//            patient.setNotes(request.getNotes());
+//        if (request.getDefaultPrice() != null)
+//            patient.setDefaultPrice(request.getDefaultPrice());
+//        if (request.getHandoverNotes() != null)
+//            patient.setHandoverNotes(request.getHandoverNotes());
+//        if (request.getIsActive() != null)
+//            patient.setIsActive(request.getIsActive());
+//        if (request.getCalendarColor() != null)
+//            patient.setCalendarColor(request.getCalendarColor());
+//
+//        // 3. save
+//        Patient updatedPatient = patientRepository.save(patient);
+//
+//        // 4. log with details
+//        String details = changes.isEmpty() ? "General info updated" : String.join(", ", changes);
+//        auditService.log(AuditAction.UPDATE, "Patient", id, details);
+//
+//        return toResponseDto(updatedPatient);
+//    }
+
     @Override
     @Transactional
     public PatientResponseDto updatePatient(Integer id, PatientRequestDto request) {
         Patient patient = patientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Patient not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Patient not found with id: " + id));
 
-        // 1. track meaningful changes
         List<String> changes = new ArrayList<>();
 
-        if (request.getIsActive() != null &&
-                !request.getIsActive().equals(patient.getIsActive())) {
-            changes.add("status: " + (request.getIsActive() ? "activated" : "deactivated"));
-        }
-        if (request.getDefaultPrice() != null &&
-                !request.getDefaultPrice().equals(patient.getDefaultPrice())) {
-            changes.add("price: " + patient.getDefaultPrice()
-                    + " → " + request.getDefaultPrice());
-        }
-        if (request.getCalendarColor() != null &&
-                !request.getCalendarColor().equals(patient.getCalendarColor())) {
-            changes.add("calendar color changed");
-        }
+        // 1. Standard Fields (Cleaner method calls)
+        update(request.getFirstName(), patient::getFirstName, patient::setFirstName, "first name", changes);
+        update(request.getLastName(), patient::getLastName, patient::setLastName, "last name", changes);
+        update(request.getShortName(), patient::getShortName, patient::setShortName, "short name", changes);
+        update(request.getEmail(), patient::getEmail, patient::setEmail, "email", changes);
+        update(request.getPhone(), patient::getPhone, patient::setPhone, "phone", changes);
+        update(request.getDateOfBirth(), patient::getDateOfBirth, patient::setDateOfBirth, "date of birth", changes);
+        update(request.getGender(), patient::getGender, patient::setGender, "gender", changes);
+        update(request.getNotes(), patient::getNotes, patient::setNotes, "notes", changes);
+        update(request.getHandoverNotes(), patient::getHandoverNotes, patient::setHandoverNotes, "handover notes", changes);
 
-        // 2. apply changes
-        if (request.getFirstName() != null)
-            patient.setFirstName(request.getFirstName());
-        if (request.getLastName() != null)
-            patient.setLastName(request.getLastName());
-        if (request.getShortName() != null)
-            patient.setShortName(request.getShortName());
-        if (request.getEmail() != null)
-            patient.setEmail(request.getEmail());
-        if (request.getPhone() != null)
-            patient.setPhone(request.getPhone());
-        if (request.getDateOfBirth() != null)
-            patient.setDateOfBirth(request.getDateOfBirth());
-        if (request.getGender() != null)
-            patient.setGender(request.getGender());
-        if (request.getNotes() != null)
-            patient.setNotes(request.getNotes());
-        if (request.getDefaultPrice() != null)
-            patient.setDefaultPrice(request.getDefaultPrice());
-        if (request.getHandoverNotes() != null)
-            patient.setHandoverNotes(request.getHandoverNotes());
-        if (request.getIsActive() != null)
-            patient.setIsActive(request.getIsActive());
-        if (request.getCalendarColor() != null)
-            patient.setCalendarColor(request.getCalendarColor());
+        // 2. Custom Fields
+        updateStatus(request.getIsActive(), patient, changes);
+        updatePrice(request.getDefaultPrice(), patient, changes);
+        updateColor(request.getCalendarColor(), patient, changes);
 
-        // 3. save
-        Patient updatedPatient = patientRepository.save(patient);
-
-        // 4. log with details
         String details = changes.isEmpty() ? "General info updated" : String.join(", ", changes);
+        Patient updatedPatient = patientRepository.save(patient);
         auditService.log(AuditAction.UPDATE, "Patient", id, details);
 
+        // Tip: Since it's @Transactional, Hibernate auto-saves changes when the method completes!
         return toResponseDto(updatedPatient);
+    }
+
+// --- HELPERS ---
+
+    // Standard update: takes the getter and setter instead of evaluating the value upfront
+    private <T> void update(T newValue, Supplier<T> getter, Consumer<T> setter, String label, List<String> changes) {
+        if (newValue != null) {
+            T oldValue = getter.get();
+            if (!newValue.equals(oldValue)) {
+                changes.add(label + ": " + oldValue + " → " + newValue);
+                setter.accept(newValue);
+            }
+        }
+    }
+
+    private void updateStatus(Boolean newValue, Patient patient, List<String> changes) {
+        if (newValue != null && !newValue.equals(patient.getIsActive())) {
+            changes.add("status: " + (newValue ? "activated" : "deactivated"));
+            patient.setIsActive(newValue);
+        }
+    }
+
+    private void updatePrice(BigDecimal newValue, Patient patient, List<String> changes) {
+        if (newValue != null) {
+            BigDecimal oldPrice = patient.getDefaultPrice() != null ? patient.getDefaultPrice() : BigDecimal.ZERO;
+            if (newValue.compareTo(oldPrice) != 0) {
+                changes.add("price: " + oldPrice + " → " + newValue);
+                patient.setDefaultPrice(newValue);
+            }
+        }
+    }
+
+    private void updateColor(Integer newValue, Patient patient, List<String> changes) {
+        if (newValue != null && !newValue.equals(patient.getCalendarColor())) {
+            changes.add("calendar color changed");
+            patient.setCalendarColor(newValue);
+        }
     }
 
     @Override
