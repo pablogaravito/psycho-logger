@@ -86,7 +86,7 @@ public class SessionServiceImpl implements SessionService {
                     "Access denied — you can only view your own sessions");
         }
 
-        auditService.log(AuditAction.VIEW, "Session", id);
+        //auditService.log(AuditAction.VIEW, "Session", id);
         return toResponseDto(session);
     }
 
