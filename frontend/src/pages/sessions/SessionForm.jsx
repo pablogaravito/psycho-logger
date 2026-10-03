@@ -392,9 +392,9 @@ export default function SessionForm() {
               name="content"
               value={form.content}
               onChange={handleChange}
-              rows={8}
+              rows={10}
               placeholder="Write your session notes here..."
-              className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition resize-none"
+              className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 transition resize-y"
             />
           </div>
 
