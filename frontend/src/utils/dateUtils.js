@@ -75,7 +75,26 @@ const DAYS_ES = [
 
 // helper — extract date parts
 function parts(dateInput) {
-  const d = new Date(dateInput);
+  // For date-only fields (like date of birth), we need to parse the date without timezone conversion.
+  // If the input is a string in ISO format (YYYY-MM-DD) or with a time component, we handle it appropriately.
+  let d;
+  if (typeof dateInput === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
+    // Pure date string (no time) - parse as local date to avoid UTC shift
+    const [year, month, day] = dateInput.split('-').map(Number);
+    d = new Date(year, month - 1, day);
+  } else if (typeof dateInput === 'string' && dateInput.includes('T')) {
+    // ISO string with time - we need to extract date part only for display purposes.
+    // To avoid timezone issues, we can create a date from the UTC date parts.
+    const dateObj = new Date(dateInput);
+    // Use UTC methods to get the date as stored in the database (assuming midnight UTC)
+    const year = dateObj.getUTCFullYear();
+    const month = dateObj.getUTCMonth();
+    const day = dateObj.getUTCDate();
+    d = new Date(year, month, day);
+  } else {
+    // Fallback to normal Date parsing
+    d = new Date(dateInput);
+  }
   return {
     d,
     day: String(d.getDate()).padStart(2, "0"),
