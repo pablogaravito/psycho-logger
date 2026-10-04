@@ -75,26 +75,9 @@ const DAYS_ES = [
 
 // helper — extract date parts
 function parts(dateInput) {
-  // For date-only fields (like date of birth), we need to parse the date without timezone conversion.
-  // If the input is a string in ISO format (YYYY-MM-DD) or with a time component, we handle it appropriately.
-  let d;
-  if (typeof dateInput === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateInput)) {
-    // Pure date string (no time) - parse as local date to avoid UTC shift
-    const [year, month, day] = dateInput.split('-').map(Number);
-    d = new Date(year, month - 1, day);
-  } else if (typeof dateInput === 'string' && dateInput.includes('T')) {
-    // ISO string with time - we need to extract date part only for display purposes.
-    // To avoid timezone issues, we can create a date from the UTC date parts.
-    const dateObj = new Date(dateInput);
-    // Use UTC methods to get the date as stored in the database (assuming midnight UTC)
-    const year = dateObj.getUTCFullYear();
-    const month = dateObj.getUTCMonth();
-    const day = dateObj.getUTCDate();
-    d = new Date(year, month, day);
-  } else {
-    // Fallback to normal Date parsing
-    d = new Date(dateInput);
-  }
+  // For timestamps (session dates, created/updated times), use local time
+  // This ensures 2026-08-25T02:00:00Z (UTC) displays as Aug 24 locally
+  const d = new Date(dateInput);
   return {
     d,
     day: String(d.getDate()).padStart(2, "0"),
@@ -202,10 +185,29 @@ export function formatTimestamp(dateInput, dateFormat, timeFormat) {
   return `${formatDateShort(dateInput, dateFormat)}, ${formatTime(dateInput, timeFormat)}`;
 }
 
+// Helper for date-only calculations (like age calculation)
+export function parseDateOnly(dateString) {
+  if (!dateString) return null;
+  
+  if (typeof dateString === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+    // Pure date string: YYYY-MM-DD
+    const [year, month, day] = dateString.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  }
+  
+  // Fallback for ISO strings
+  const dateObj = new Date(dateString);
+  return new Date(
+    dateObj.getUTCFullYear(),
+    dateObj.getUTCMonth(),
+    dateObj.getUTCDate()
+  );
+}
+
 export function calculateAge(dateOfBirth) {
   if (!dateOfBirth) return null;
   const today = new Date();
-  const dob = new Date(dateOfBirth);
+  const dob = parseDateOnly(dateOfBirth);
   let age = today.getFullYear() - dob.getFullYear();
   const monthDiff = today.getMonth() - dob.getMonth();
   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
@@ -218,4 +220,47 @@ export function formatAge(dateOfBirth, uiLanguage) {
   const age = calculateAge(dateOfBirth);
   if (age === null) return null;
   return uiLanguage === "es" ? `${age} años` : `${age} years old`;
+}
+// Style 4 — date-only fields (like Date of Birth): treat YYYY-MM-DD as pure calendar date
+export function formatDateOnly(dateString, dateFormat, uiLanguage) {
+  if (!dateString) return "—";
+  
+  // Parse as pure calendar date (no timezone conversion)
+  // Handles both YYYY-MM-DD format and ISO strings with time
+  let year, monthIndex, dayNum;
+  
+  if (typeof dateString === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+    // Pure date string: YYYY-MM-DD
+    const [y, m, d] = dateString.split('-').map(Number);
+    year = y;
+    monthIndex = m - 1; // Convert to 0-indexed
+    dayNum = d;
+  } else {
+    // For backward compatibility with ISO strings
+    const dateObj = new Date(dateString);
+    // Use UTC methods to avoid timezone shift for date-only fields
+    year = dateObj.getUTCFullYear();
+    monthIndex = dateObj.getUTCMonth();
+    dayNum = dateObj.getUTCDate();
+  }
+  
+  const day = String(dayNum).padStart(2, "0");
+  const month = String(monthIndex + 1).padStart(2, "0");
+  
+  switch (dateFormat) {
+    case "MM/DD/YYYY":
+      return `${month}/${day}/${year}`;
+    case "YYYY-MM-DD":
+      return `${year}-${month}-${day}`;
+    case "DD MMM YYYY":
+      // For DD MMM YYYY format
+      const isEs = uiLanguage === "es";
+      const monthShort = isEs
+        ? MONTHS_SHORT_ES[monthIndex]
+        : MONTHS_SHORT_EN[monthIndex];
+      return `${dayNum} ${monthShort} ${year}`;
+    case "DD/MM/YYYY":
+    default:
+      return `${day}/${month}/${year}`;
+  }
 }
