@@ -4,10 +4,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../../api/axios";
 import { useAuth } from "../../hooks/useAuth";
 import {
-  formatDateLong,
   formatDateShort,
   formatDateMedium,
   formatAge,
+  formatDateOnly,
 } from "../../utils/dateUtils";
 import Pagination from "../../components/Pagination.jsx";
 import ScheduleAppointmentModal from "../../components/ScheduleAppointmentModal.jsx";
@@ -203,7 +203,7 @@ export default function PatientProfile() {
             <p className="text-white mt-0.5">
               {patient?.dateOfBirth ? (
                 <>
-                  {formatDateLong(patient.dateOfBirth, uiLanguage)}
+                  {formatDateOnly(patient.dateOfBirth, dateFormat, uiLanguage)}
                   <span className="text-gray-400 text-sm ml-2">
                     ({formatAge(patient.dateOfBirth, uiLanguage)})
                   </span>

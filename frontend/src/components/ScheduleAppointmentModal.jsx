@@ -2,7 +2,7 @@ import { useState } from "react";
 import { GOOGLE_COLORS } from "./CalendarColorPicker";
 import { useQuery } from "@tanstack/react-query";
 import api from "../api/axios";
-import { formatDateShort } from "../utils/dateUtils";
+import { formatDateOnly } from "../utils/dateUtils";
 import { useAuth } from "../hooks/useAuth";
 
 export default function ScheduleAppointmentModal({ patient, onClose }) {
@@ -183,7 +183,7 @@ export default function ScheduleAppointmentModal({ patient, onClose }) {
               </p>
             </div>
             <p className="text-gray-400 mt-1 ml-5">
-              {formatDateShort(date, dateFormat)} · {time} · {duration} min
+              {formatDateOnly(date, dateFormat)} · {time} · {duration} min
             </p>
           </div>
         </div>
